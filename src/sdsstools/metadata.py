@@ -13,14 +13,14 @@ import pkg_resources
 
 from ._vendor import pytoml
 
-METADATA_FILES = ['pyproject.toml', 'setup.cfg']
+METADATA_FILES = ['pyproject.toml', 'setup.cfg', 'setup.py']
 
 
 def get_metadata_files(path):
     """Finds the list of metadata files for a package.
 
-    Returns the path of the ``pyproject.toml`` or ``setup.cfg`` that
-    defines the metadata for the project.
+    Returns the path of the ``pyproject.toml``, ``setup.cfg``, or ``setup.py``
+    that defines the metadata for the project.
 
     Parameters
     ----------
