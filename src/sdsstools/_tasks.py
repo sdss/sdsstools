@@ -132,4 +132,4 @@ docs.add_task(clean_docs, 'clean')
 docs.add_task(show_docs, 'show')
 ns.add_collection(docs)
 
-ns.configure({'sphinx': {'target': 'docs/sphinx/_build'}})
+ns.configure({'sphinx': {'target': 'docs/sphinx'}})
