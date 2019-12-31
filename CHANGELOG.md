@@ -7,6 +7,10 @@
 - `sdss deploy` now also builds a wheel.
 - `twine` and `wheel` dev dependencies for `sdss deploy`.
 
+### Changed
+
+- Bundle `toml` in `_vendor` instead of `pytoml`, which is deprecated.
+
 ## [0.1.0](https://github.com/sdss/sdsstools/releases/tag/0.1.0) - 2019-12-30
 
 ### Added

@@ -11,7 +11,8 @@ import pathlib
 
 import pkg_resources
 
-from ._vendor import pytoml
+from ._vendor import toml
+
 
 METADATA_FILES = ['pyproject.toml', 'setup.cfg', 'setup.py']
 
@@ -78,7 +79,7 @@ def get_package_version(path=None, package_name=None):
         metadata_file = get_metadata_files(path)
         if metadata_file:
             if 'pyproject.toml' in str(metadata_file):
-                pyproject = pytoml.load(open(metadata_file))
+                pyproject = toml.load(open(metadata_file))
                 if 'tool' in pyproject and 'poetry' in pyproject['tool']:
                     return pyproject['tool']['poetry']['version']
             elif 'setup.cfg' in str(metadata_file):
