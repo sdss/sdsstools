@@ -35,6 +35,8 @@ def get_metadata_files(path):
     """
 
     path = pathlib.Path(path).absolute()
+    if path.is_file():
+        path = path.parent
 
     for mf in METADATA_FILES:
         if (path / mf).exists():
