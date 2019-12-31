@@ -1,3 +1,4 @@
+import sys
 
 from .metadata import get_package_version
 from .logger import get_logger
@@ -16,3 +17,7 @@ from .configuration import *
 from .logger import *
 from .metadata import *
 from ._vendor import releases, toml
+
+# Allow to access releases as sdsstools.releases. This is important to
+# define it as an extension in Sphinx.
+sys.modules['sdsstools.releases'] = releases
