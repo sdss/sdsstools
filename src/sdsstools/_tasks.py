@@ -58,7 +58,7 @@ def show_docs(ctx, target=None):
 
 @task
 def clean(ctx):
-    """Cleans up the crap before a Pip build"""
+    """Cleans up build files and test files."""
 
     print('Cleaning')
     ctx.run('rm -rf htmlcov **/htmlcov .coverage* **/.coverage*')
@@ -69,16 +69,16 @@ def clean(ctx):
 
 @task(clean)
 def deploy(ctx, test=False):
-    """Deploy the project to pypi"""
+    """Deploy the project to PyPI"""
 
     if test is False:
-        print('Deploying to Pypi!')
+        print('Deploying to PyPI!')
         repository_url = ''
     else:
         print('Deploying to Test PyPI!')
         repository_url = '--repository-url https://test.pypi.org/legacy/'
 
-    ctx.run('python setup.py sdist')
+    ctx.run('python setup.py sdist bdist_wheel')
     ctx.run(f'twine upload {repository_url} dist/*')
 
 
@@ -132,4 +132,4 @@ docs.add_task(clean_docs, 'clean')
 docs.add_task(show_docs, 'show')
 ns.add_collection(docs)
 
-ns.configure({'sphinx': {'target': "docs/sphinx/_build"}})
+ns.configure({'sphinx': {'target': 'docs/sphinx/_build'}})
