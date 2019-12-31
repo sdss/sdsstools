@@ -1,6 +1,7 @@
 # sdsstools
 
 ![Versions](https://img.shields.io/badge/python->3.7-blue)
+[![PyPI version](https://badge.fury.io/py/sdsstools.svg)](https://badge.fury.io/py/sdsstools)
 
 `sdsstools` provides several common tools for logging, configuration handling, version parsing, packaging, etc. It's main purpose is to consolidate some of the utilities originally found in the [python_template](https://github.com/sdss/python_template), allowing them to become dependencies that can be updated.
 
