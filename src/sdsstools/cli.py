@@ -10,7 +10,7 @@ import os
 
 import yaml
 
-from sdsstools import __version__, _tasks
+from sdsstools import __version__
 from sdsstools.metadata import get_metadata_files
 
 
@@ -19,6 +19,7 @@ def main():
 
     try:
         from invoke import Collection, Program
+        from sdsstools import _tasks
     except (ImportError, ModuleNotFoundError):
         raise ImportError('Cannot find invoke. Make sure sdsstools '
                           'is installed for development.')
