@@ -15,3 +15,4 @@ log = get_logger(NAME)
 from .configuration import *
 from .logger import *
 from .metadata import *
+from ._vendor import releases, toml

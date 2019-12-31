@@ -6,6 +6,7 @@
 
 - `sdss deploy` now also builds a wheel.
 - `twine` and `wheel` dev dependencies for `sdss deploy`.
+- Added a version of [releases](https://github.com/bitprophet/releases)
 
 ### Changed
 
