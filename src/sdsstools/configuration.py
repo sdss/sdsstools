@@ -6,6 +6,7 @@
 # @Filename: configuration.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+import inspect
 import os
 
 import yaml
@@ -52,7 +53,8 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
     name : str
         The name of the package.
     config_file : str
-        The path to the configuration file.
+        The path to the configuration file. If `None`, defaults to
+        ``etc/<name>.yml`` relative to the file that called `.get_config`.
     allow_user : bool
         If `True`, looks for an user configuration file and merges is to the
         default configuration. Otherwise it returns just the default
@@ -79,7 +81,13 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
 
     assert merge_mode in ['update', 'replace'], 'invalid merge mode.'
 
-    if config_file:
+    if not config_file:
+        frame = inspect.stack()[1]
+        module = inspect.getmodule(frame[0])
+        dirname = os.path.dirname(module.__file__)
+        config_file = os.path.join(dirname, f'etc/{name}.yml')
+
+    if os.path.exists(config_file):
         config = read_yaml_file(config_file)
     else:
         config = {}
