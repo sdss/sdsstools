@@ -10,3 +10,8 @@ NAME = 'sdsstools'
 
 # Get a logger, mostly for the nice colouring.
 log = get_logger(NAME)
+
+
+from .configuration import *
+from .logger import *
+from .metadata import *
