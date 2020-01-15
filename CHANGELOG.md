@@ -1,6 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.2...HEAD)
+## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.3...HEAD)
+
+## [0.1.3](https://github.com/sdss/sdsstools/compare/0.1.2...0.1.3) - 2020-01-14
 
 ### Fixed
 
