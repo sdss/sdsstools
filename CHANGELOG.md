@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.2...HEAD)
 
+### Fixed
+
+- One call to ``PyYAML`` was still using ``load`` instead of ``safe_load``.
+
 ## [0.1.2](https://github.com/sdss/sdsstools/compare/0.1.1...0.1.2) - 2019-12-31
 
 ### Fixed

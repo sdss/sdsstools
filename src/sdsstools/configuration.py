@@ -109,7 +109,7 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
     else:
         return config
 
-    user_config = yaml.load(open(custom_config_fn)) or {}
+    user_config = read_yaml_file(custom_config_fn) or {}
 
     if merge_mode == 'update':
         return merge_config(user_config, config)
