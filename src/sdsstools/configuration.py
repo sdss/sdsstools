@@ -8,6 +8,7 @@
 
 import inspect
 import os
+import pathlib
 
 import yaml
 
@@ -18,8 +19,12 @@ __all__ = ['read_yaml_file', 'merge_config', 'get_config']
 def read_yaml_file(path):
     """Read a YAML file and returns a dictionary."""
 
-    with open(path, 'r') as fp:
-        config = yaml.safe_load(fp)
+    if isinstance(path, (str, pathlib.Path)):
+        with open(path, 'r') as fp:
+            config = yaml.safe_load(fp)
+    else:
+        # Assume it's an stream
+        config = yaml.safe_load(path)
 
     return config
 

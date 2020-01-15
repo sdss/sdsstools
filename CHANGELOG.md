@@ -4,7 +4,8 @@
 
 ### Fixed
 
-- One call to ``PyYAML`` was still using ``load`` instead of ``safe_load``.
+- One call to `PyYAML` was still using `load` instead of `safe_load`.
+- `read_yaml_file` also accepts a file-like object.
 
 ## [0.1.2](https://github.com/sdss/sdsstools/compare/0.1.1...0.1.2) - 2019-12-31
 
