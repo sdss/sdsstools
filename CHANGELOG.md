@@ -1,6 +1,12 @@
 # Changelog
 
-## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.3...HEAD)
+## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.4...HEAD)
+
+## [0.1.4](https://github.com/sdss/sdsstools/compare/0.1.4...0.1.4) - 2020-01-23
+
+### Added
+
+- Added ``SDSSLogger.asyncio_exception_handler`` to report loop exceptions to the logger.
 
 ## [0.1.3](https://github.com/sdss/sdsstools/compare/0.1.2...0.1.3) - 2020-01-14
 
