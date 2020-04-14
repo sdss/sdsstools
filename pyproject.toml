@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sdsstools"
-version = "0.1.7-alpha.0"
+version = "0.1.7-beta1"
 description = "Small tools for SDSS products"
 authors = ["José Sánchez-Gallego <gallegoj@uw.edu>"]
 license = "BSD-3-Clause"
@@ -61,5 +61,5 @@ ignore = [
 max-line-length = 99
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=1.0.0a5"]
+build-backend = "poetry.core.masonry.api"
