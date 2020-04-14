@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.6...HEAD)
 
+### Changed
+
+- Set minimum Python version to 3.6. Add `six` dependency.
+
 ## [0.1.6](https://github.com/sdss/sdsstools/compare/0.1.5...0.1.6) - 2020-03-31
 
 ### Added
