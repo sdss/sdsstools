@@ -26,6 +26,7 @@ twine = {version = "^3.1.1", optional = true}
 wheel = {version = "^0.33.6", optional = true}
 semantic-version = "^2.8.4"  # For sdsstools.releases
 docutils = "^0.16"
+six = "^1.14.0"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.9.0"
