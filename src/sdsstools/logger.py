@@ -140,6 +140,9 @@ class SDSSLogger(logging.Logger):
         self.fh = None
         self.log_filename = None
 
+        # A header that precedes every message.
+        self.header = ''
+
         # Catches exceptions
         sys.excepthook = self._catch_exceptions
 
@@ -226,6 +229,8 @@ class SDSSLogger(logging.Logger):
 
     def handle(self, record):
         """Handles a record but first stores it."""
+
+        record.msg = self.header + record.msg
 
         if record.levelno == logging.ERROR:
             self._last_error = record.getMessage()

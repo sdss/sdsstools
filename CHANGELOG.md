@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.7...HEAD)
 
+### Added
+
+- Allow to set a header string in the logger that gets prepended to every message.
+
 ## [0.1.7](https://github.com/sdss/sdsstools/compare/0.1.6...0.1.7) - 2020-04-14
 
 ### Changed
