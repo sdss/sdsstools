@@ -230,7 +230,8 @@ class SDSSLogger(logging.Logger):
     def handle(self, record):
         """Handles a record but first stores it."""
 
-        record.msg = self.header + record.msg
+        if hasattr(self, 'header'):
+            record.msg = self.header + record.msg
 
         if record.levelno == logging.ERROR:
             self._last_error = record.getMessage()
