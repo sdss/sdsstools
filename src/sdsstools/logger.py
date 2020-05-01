@@ -14,7 +14,7 @@ import shutil
 import sys
 import traceback
 import warnings
-from logging.handlers import TimedRotatingFileHandler
+from logging.handlers import FileHandler, TimedRotatingFileHandler
 
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
@@ -194,7 +194,7 @@ class SDSSLogger(logging.Logger):
     def save_log(self, path):
         shutil.copyfile(self.log_filename, os.path.expanduser(path))
 
-    def start_file_logger(self, path, log_level=logging.DEBUG):
+    def start_file_logger(self, path, log_level=logging.DEBUG, mode='a', rotating=True):
         """Start file logging."""
 
         log_file_path = os.path.expanduser(path)
@@ -205,10 +205,14 @@ class SDSSLogger(logging.Logger):
             if not os.path.exists(logdir):
                 os.makedirs(logdir)
 
-            self.fh = TimedRotatingFileHandler(
-                str(log_file_path), when='midnight', utc=True)
-
-            self.fh.suffix = '%Y-%m-%d_%H:%M:%S'
+            if rotating:
+                self.fh = TimedRotatingFileHandler(str(log_file_path),
+                                                   mode=mode,
+                                                   when='midnight',
+                                                   utc=True)
+                self.fh.suffix = '%Y-%m-%d_%H:%M:%S'
+            else:
+                self.fh = FileHandler(str(log_file_path), mode=mode)
 
         except (IOError, OSError) as ee:
 

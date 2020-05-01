@@ -5,6 +5,7 @@
 ### Added
 
 - Allow to set a header string in the logger that gets prepended to every message.
+- Allow to start the file logger with a `FileHandler`, and pass the file mode.
 
 ## [0.1.7](https://github.com/sdss/sdsstools/compare/0.1.6...0.1.7) - 2020-04-14
 

@@ -47,7 +47,7 @@ NAME = 'myrepo'
 log = get_logger(NAME)
 ```
 
-The file logger is disabled by default and can be started by calling `log.start_file_logger(path)`.
+The file logger is disabled by default and can be started by calling `log.start_file_logger(path)`. By default a `TimedRotatingFileHandler` is created. If you want a normal `FileHandler` use `rotate=False`. The file mode defaults to `mode='a'` (append).
 
 ## Configuration
 
