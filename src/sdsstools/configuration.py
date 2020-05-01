@@ -66,7 +66,8 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
         configuration.
     user_path : str
         The path to the user configuration file. Defaults to
-        ``~/.config/<name>/<name>.yml``. Ignored if the file does not exist.
+        ``~/.config/sdss/<name>/<name>.yml``. Ignored if the file does not
+        exist.
     config_envvar : str
         The environment variable that contains the path to the user
         configuration file. Defaults to ``<name>_CONFIG_PATH``. If the
@@ -105,7 +106,7 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
     if user_path is not None:
         user_path = os.path.expanduser(os.path.expandvars(user_path))
     else:
-        user_path = os.path.expanduser('~/.config/{0}/{0}.yml'.format(name))
+        user_path = os.path.expanduser('~/.config/sdss/{0}/{0}.yml'.format(name))
 
     if config_envvar in os.environ:
         custom_config_fn = os.environ[config_envvar]
