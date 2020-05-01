@@ -14,7 +14,7 @@ import shutil
 import sys
 import traceback
 import warnings
-from logging.handlers import FileHandler, TimedRotatingFileHandler
+from logging.handlers import TimedRotatingFileHandler
 
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
@@ -212,7 +212,7 @@ class SDSSLogger(logging.Logger):
                                                    utc=True)
                 self.fh.suffix = '%Y-%m-%d_%H:%M:%S'
             else:
-                self.fh = FileHandler(str(log_file_path), mode=mode)
+                self.fh = logging.FileHandler(str(log_file_path), mode=mode)
 
         except (IOError, OSError) as ee:
 
