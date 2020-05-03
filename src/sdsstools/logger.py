@@ -234,7 +234,7 @@ class SDSSLogger(logging.Logger):
     def handle(self, record):
         """Handles a record but first stores it."""
 
-        if hasattr(self, 'header'):
+        if hasattr(self, 'header') and self.header is not None:
             record.msg = self.header + record.msg
 
         if record.levelno == logging.ERROR:
