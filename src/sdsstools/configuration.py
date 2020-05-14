@@ -7,6 +7,7 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 import inspect
+import itertools
 import os
 import pathlib
 
@@ -88,12 +89,15 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
     assert merge_mode in ['update', 'replace'], 'invalid merge mode.'
 
     if not config_file:
-        frame = inspect.stack()[1]
-        module = inspect.getmodule(frame[0])
-        dirname = os.path.dirname(module.__file__)
-        config_file = os.path.join(dirname, f'etc/{name}.yml')
+        try:
+            frame = inspect.stack()[1]
+            module = inspect.getmodule(frame[0])
+            dirname = os.path.dirname(module.__file__)
+            config_file = os.path.join(dirname, f'etc/{name}.yml')
+        except AttributeError:
+            config_file = None
 
-    if os.path.exists(config_file):
+    if config_file and os.path.exists(config_file):
         config = read_yaml_file(config_file)
     else:
         config = {}
@@ -106,7 +110,15 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
     if user_path is not None:
         user_path = os.path.expanduser(os.path.expandvars(user_path))
     else:
-        user_path = os.path.expanduser('~/.config/sdss/{0}/{0}.yml'.format(name))
+        # Test a few default paths and exit when finds one.
+        default_paths = [f'~/.config/sdss/{name}',
+                         f'~/.config/sdss/{name}/{name}',
+                         f'~/.{name}/{name}']
+        extensions = ['.yaml', '.yml']
+        for path, extension in itertools.product(default_paths, extensions):
+            user_path = os.path.expanduser(path + extension)
+            if os.path.exists(user_path):
+                break
 
     if config_envvar in os.environ:
         custom_config_fn = os.environ[config_envvar]

@@ -1,10 +1,17 @@
 # Changelog
 
-## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.8...HEAD)
+## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.9...HEAD)
+
+## [0.1.9](https://github.com/sdss/sdsstools/compare/0.1.9...HEAD)
+
+## Changed
+
+- Test several user configuration paths: `~/.config/sdss/<NAME>.y(a)ml`, `~/.config/sdss/<NAME>/<NAME>.y(a)ml`, and `~/.<NAME>/<NAME>.y(a)ml`.
 
 ### Fixed
 
 - Handle case where log header is None.
+- Use `get_config` when there is not a parent package.
 
 ## [0.1.8](https://github.com/sdss/sdsstools/compare/0.1.7...0.1.8)
 
