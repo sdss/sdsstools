@@ -52,7 +52,7 @@ def get_metadata_files(path):
     return None
 
 
-def get_package_version(path=None, package_name=None):
+def get_package_version(path=None, package_name=None, pep_440=False):
     """Returns the version of a package.
 
     First tries to determine if a metadata file is available and parses it.
@@ -65,6 +65,8 @@ def get_package_version(path=None, package_name=None):
         The path relative to which to search for metadata files.
     package_name : str
         The name of the package.
+    pep_440 : bool
+        If `True`, normalises the version string according to PEP 440.
 
     Returns
     -------
@@ -75,24 +77,29 @@ def get_package_version(path=None, package_name=None):
 
     assert path or package_name, 'either path or package_name are needed.'
 
+    version = None
+
     if path:
         metadata_file = get_metadata_files(path)
         if metadata_file:
             if 'pyproject.toml' in str(metadata_file):
                 pyproject = toml.load(open(metadata_file))
                 if 'tool' in pyproject and 'poetry' in pyproject['tool']:
-                    return pyproject['tool']['poetry']['version']
+                    version = pyproject['tool']['poetry']['version']
             elif 'setup.cfg' in str(metadata_file):
                 setupcfg = configparser.ConfigParser()
                 setupcfg.read(metadata_file)
                 if (setupcfg.has_section('metadata') and
                         setupcfg.has_option('metadata', 'version')):
-                    return setupcfg.get('metadata', 'version')
+                    version = setupcfg.get('metadata', 'version')
 
     if package_name:
         try:
-            return pkg_resources.get_distribution(package_name).version
+            version = pkg_resources.get_distribution(package_name).version
         except pkg_resources.DistributionNotFound:
             return None
 
-    return None
+    if version and pep_440:
+        version = str(pkg_resources.packaging.version.Version(version))
+
+    return version
