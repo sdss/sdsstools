@@ -2,7 +2,7 @@
 
 ## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.10...HEAD)
 
-## [0.1.10](https://github.com/sdss/sdsstools/compare/0.1.9...0.1.10)
+## [0.1.10](https://github.com/sdss/sdsstools/compare/0.1.9...0.1.10) - 2020-06-24
 
 ### Added
 
