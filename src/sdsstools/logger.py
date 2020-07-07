@@ -207,7 +207,6 @@ class SDSSLogger(logging.Logger):
 
             if rotating:
                 self.fh = TimedRotatingFileHandler(str(log_file_path),
-                                                   mode=mode,
                                                    when='midnight',
                                                    utc=True)
                 self.fh.suffix = '%Y-%m-%d_%H:%M:%S'
