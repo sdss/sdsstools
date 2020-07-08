@@ -2,11 +2,11 @@
 
 ## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.11...HEAD)
 
-## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.10...0.1.11) - 2020-07-07
+## [0.1.11](https://github.com/sdss/sdsstools/compare/0.1.10...0.1.11) - 2020-07-07
 
 ### Fixed
 
-- `TimedRotatingFileHandler` does not accept ``mode``.
+- `TimedRotatingFileHandler` does not accept `mode`.
 
 ## [0.1.10](https://github.com/sdss/sdsstools/compare/0.1.9...0.1.10) - 2020-06-24
 
