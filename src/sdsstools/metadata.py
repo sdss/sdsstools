@@ -93,11 +93,11 @@ def get_package_version(path=None, package_name=None, pep_440=False):
                         setupcfg.has_option('metadata', 'version')):
                     version = setupcfg.get('metadata', 'version')
 
-    if package_name:
+    if package_name and not version:
         try:
             version = pkg_resources.get_distribution(package_name).version
         except pkg_resources.DistributionNotFound:
-            return None
+            pass
 
     if version and pep_440:
         version = str(pkg_resources.packaging.version.Version(version))

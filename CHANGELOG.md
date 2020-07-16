@@ -1,6 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/sdss/sdsstools/compare/0.1.11...HEAD)
+## [0.1.12](https://github.com/sdss/sdsstools/compare/0.1.11...0.1.12)
+
+- Prefer `pyproject.toml` or `setup.cfg` over package metadata to retrieve module version.
 
 ## [0.1.11](https://github.com/sdss/sdsstools/compare/0.1.10...0.1.11) - 2020-07-07
 
