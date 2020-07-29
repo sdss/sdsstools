@@ -60,7 +60,6 @@ ignore = [
     "N",
     "W504"
 ]
-max-line-length = 99
 
 [build-system]
 requires = ["poetry-core>=1.0.0a5"]
