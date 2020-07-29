@@ -7,6 +7,6 @@ ignore =
 
 per-file-ignores =
     */__init__.py:E,W,F
-    */_vendor/*:E,W,F
+    */_vendor/*:E,W,F,C
 
 max-line-length = 99
