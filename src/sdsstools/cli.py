@@ -18,8 +18,8 @@ def main():
     """Invokes the tasks defined in _tasks.py, with some configuration."""
 
     try:
-        from invoke import Collection, Program
-        from sdsstools import _tasks
+        from invoke import Collection, Program  # isort:skip
+        from sdsstools import _tasks            # isort:skip
     except (ImportError, ModuleNotFoundError):
         raise ImportError('Cannot find invoke. Make sure sdsstools '
                           'is installed for development.')

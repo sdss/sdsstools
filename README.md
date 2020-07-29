@@ -2,6 +2,8 @@
 
 ![Versions](https://img.shields.io/badge/python->3.7-blue)
 [![PyPI version](https://badge.fury.io/py/sdsstools.svg)](https://badge.fury.io/py/sdsstools)
+![Build](https://img.shields.io/github/workflow/status/sdss/sdsstools/Test)
+[![codecov](https://codecov.io/gh/sdss/sdsstools/branch/master/graph/badge.svg)](https://codecov.io/gh/sdss/sdsstools)
 
 `sdsstools` provides several common tools for logging, configuration handling, version parsing, packaging, etc. It's main purpose is to consolidate some of the utilities originally found in the [python_template](https://github.com/sdss/python_template), allowing them to become dependencies that can be updated.
 
@@ -64,7 +66,9 @@ config = get_config(NAME, allow_user=True)
 
 In addition to the (recommended) location `~/.config/sdss/<NAME>.yaml`, `get_config` also looks for user configuration files in `~/.config/sdss/<NAME>.yml`, `~/.config/sdss/<NAME>/<NAME>.y(a)ml`, and `~/.<NAME>/<NAME>.y(a)ml`.
 
-Additionally, `sdsstools.configuration` includes two other tools, `merge_config`, that allows to merge dictionaries recursively, and `read_yaml_file`, to read a YAML file.
+`get_config` returns an instance of [Configuration](https://github.com/sdss/sdsstools/blob/5af8339d2696d92e122b4195272130101b54daa7/src/sdsstools/configuration.py#L162), which behaves as a dictionary but allows to dynamically reload the configuration from a new user file by calling `load()`.
+
+`sdsstools.configuration` includes two other tools, `merge_config`, that allows to merge dictionaries recursively, and `read_yaml_file`, to read a YAML file.
 
 ## Metadata
 

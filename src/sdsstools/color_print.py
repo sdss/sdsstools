@@ -27,8 +27,8 @@ except NameError:
     stdio = sys
 else:
     try:
-        from IPython.zmq.iostream import OutStream
         from IPython.utils import io
+        from IPython.zmq.iostream import OutStream
         stdio = io
     except ImportError:
         OutStream = None
