@@ -1,11 +1,12 @@
 # Changelog
 
+## [Next version](https://github.com/sdss/sdsstools/compare/0.2.0...HEAD)
+
+
 ## [0.2.0](https://github.com/sdss/sdsstools/compare/0.1.12...0.2.0) - 2020-07-29
 
 - Feature [#5](https://github.com/sdss/sdsstools/issues/5): `get_config` now returns an instance of `Configuration`, which can also be used at a lower level. `Configuration` stores the base configuration if it was specified, and can be used to load a new configuration file dynamically. Since `Configuration` subclasses from a dictionary and the functionality in `get_config` has not changed, this should be a non-breaking change.
-
 - Support: added initial framework for tests and tests with 98% coverage for `configuration.py`.
-
 - Support: add GitHub workflows for linting and testing.
 
 
