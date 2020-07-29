@@ -10,11 +10,37 @@ import inspect
 import itertools
 import os
 import pathlib
+import re
 
 import yaml
 
 
-__all__ = ['read_yaml_file', 'merge_config', 'get_config']
+__all__ = ['read_yaml_file', 'merge_config', 'get_config', 'Configuration']
+
+
+__ENVVARS__ = {}
+
+# Potential paths where the user configuration file could be. Must not include
+# the yml or yaml extension.
+DEFAULT_PATHS = ['~/.config/sdss/{name}',
+                 '~/.config/sdss/{name}/{name}',
+                 '~/.{name}/{name}']
+
+env_matcher = re.compile(r'\$\{([^}^{]+)\}')
+
+
+def env_constructor(loader, node):
+    """Extract the matched value, expand env variable, and replace the match."""
+
+    value = node.value
+    match = env_matcher.match(value)
+    env_var = match.group()[2:-1]
+
+    return os.environ.get(env_var, __ENVVARS__.get(env_var, value)) + value[match.end():]
+
+
+yaml.add_implicit_resolver('!env', env_matcher)
+yaml.add_constructor('!env', env_constructor)
 
 
 def read_yaml_file(path):
@@ -22,10 +48,10 @@ def read_yaml_file(path):
 
     if isinstance(path, (str, pathlib.Path)):
         with open(path, 'r') as fp:
-            config = yaml.safe_load(fp)
+            config = yaml.load(fp, Loader=yaml.FullLoader)
     else:
         # Assume it's an stream
-        config = yaml.safe_load(path)
+        config = yaml.load(path, Loader=yaml.FullLoader)
 
     return config
 
@@ -44,7 +70,7 @@ def merge_config(user, default):
 
 
 def get_config(name, config_file=None, allow_user=True, user_path=None,
-               config_envvar=None, merge_mode='update'):
+               config_envvar=None, merge_mode='update', default_envvars={}):
     """Returns a configuration dictionary.
 
     The configuration dictionary is created by merging the default
@@ -78,11 +104,14 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
         ``update``, the user dictionary will be used to update the default
         configuration. If ``replace``, only the user configuration will be
         returned.
+    default_envvars : dict
+        Default values for environment variables used in the configuration
+        file.
 
     Returns
     -------
-    config : dict
-        A dictionary containing the configuration.
+    .Configuration
+        A `.Configuration` instance.
 
     """
 
@@ -97,13 +126,9 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
         except AttributeError:
             config_file = None
 
-    if config_file and os.path.exists(config_file):
-        config = read_yaml_file(config_file)
-    else:
-        config = {}
-
     if allow_user is False:
-        return config
+        return Configuration(base_config=config_file,
+                             default_envvars=default_envvars)
 
     config_envvar = config_envvar or '{}_CONFIG_PATH'.format(name.upper())
 
@@ -111,25 +136,88 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
         user_path = os.path.expanduser(os.path.expandvars(user_path))
     else:
         # Test a few default paths and exit when finds one.
-        default_paths = [f'~/.config/sdss/{name}',
-                         f'~/.config/sdss/{name}/{name}',
-                         f'~/.{name}/{name}']
         extensions = ['.yaml', '.yml']
-        for path, extension in itertools.product(default_paths, extensions):
-            user_path = os.path.expanduser(path + extension)
-            if os.path.exists(user_path):
+        for path, extension in itertools.product(DEFAULT_PATHS, extensions):
+            path = str(path).format(name=name)
+            test_path = os.path.expanduser(path + extension)
+            if os.path.exists(test_path):
+                user_path = test_path
                 break
 
     if config_envvar in os.environ:
         custom_config_fn = os.environ[config_envvar]
-    elif os.path.exists(user_path):
+    elif user_path and os.path.exists(user_path):
         custom_config_fn = user_path
     else:
-        return config
-
-    user_config = read_yaml_file(custom_config_fn) or {}
+        custom_config_fn = None
 
     if merge_mode == 'update':
-        return merge_config(user_config, config)
+        return Configuration(custom_config_fn, base_config=config_file,
+                             default_envvars=default_envvars)
     else:
-        return user_config
+        return Configuration(custom_config_fn, base_config=None,
+                             default_envvars=default_envvars)
+
+
+class Configuration(dict):
+    """A configuration class.
+
+    Parameters
+    ----------
+    config : str or dict
+        The path to the configuration file or the already parsed configuration
+        as a dictionary.
+    base_config : str or dict
+        A base configuration or file that the input configuration will update.
+    default_envvars : dict
+        Default values for environment variables used in the configuration
+        file.
+
+    """
+
+    def __init__(self, config=None, base_config=None, default_envvars={}):
+
+        global __ENVVARS__
+
+        super().__init__()
+
+        if base_config:
+            self._BASE = self._parse_config(base_config, use_base=False)
+        else:
+            self._BASE = {}
+
+        __ENVVARS__ = default_envvars
+
+        self.load(config)
+
+    def _parse_config(self, config, use_base=True):
+        """Parses the configuration and merges it with the base one."""
+
+        if use_base is False or self._BASE is None:
+
+            if isinstance(config, dict):
+                return config
+            elif isinstance(config, (str, pathlib.Path)):
+                return read_yaml_file(config)
+            else:
+                raise ValueError('Invalid config of type {}'.format(type(config)))
+
+        return merge_config(self._parse_config(config, use_base=False), self._BASE)
+
+    def load(self, config=None):
+        """Loads a configuration file.
+
+        Parameters
+        ----------
+        config : str or dict
+            The configuration file or dictionary to load. If a base
+            configuration was defined when the object was instantiated, it
+            will be merged. If ``config=None``, the object will revert to the
+            base configuration.
+
+        """
+
+        if config is None:
+            config = {}
+
+        super().__init__(self._parse_config(config))
