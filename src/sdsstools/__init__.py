@@ -1,3 +1,5 @@
+# isort:skip_file
+
 import sys
 
 from .metadata import get_package_version

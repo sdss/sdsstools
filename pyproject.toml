@@ -51,6 +51,8 @@ balanced_wrapping = true
 include_trailing_comma = false
 lines_after_imports = 2
 use_parentheses = true
+skip_glob = ["*/_vendor"]
+
 
 [tool.flake8]
 ignore = [
