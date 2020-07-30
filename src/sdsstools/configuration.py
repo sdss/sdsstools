@@ -187,6 +187,8 @@ class Configuration(dict):
         else:
             self._BASE = {}
 
+        self.CONFIG_FILE = None
+
         __ENVVARS__ = default_envvars
 
         self.load(config)
@@ -220,5 +222,10 @@ class Configuration(dict):
 
         if config is None:
             config = {}
+            self.CONFIG_FILE = None
 
         super().__init__(self._parse_config(config))
+
+        # Save name of the configuration file (if the input is a file).
+        if isinstance(config, (str, pathlib.Path)):
+            self.CONFIG_FILE = str(config)

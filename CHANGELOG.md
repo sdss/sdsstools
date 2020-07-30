@@ -2,6 +2,8 @@
 
 ## [Next version](https://github.com/sdss/sdsstools/compare/0.2.0...HEAD)
 
+- Store configuration file loaded in `Configuration` as `Configuration.CONFIG_FILE`.
+
 
 ## [0.2.0](https://github.com/sdss/sdsstools/compare/0.1.12...0.2.0) - 2020-07-29
 
