@@ -134,6 +134,7 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
 
     if user_path is not None:
         user_path = os.path.expanduser(os.path.expandvars(user_path))
+        assert os.path.exists(user_path), f'User path {user_path!r} not found.'
     else:
         # Test a few default paths and exit when finds one.
         extensions = ['.yaml', '.yml']
