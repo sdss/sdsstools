@@ -266,8 +266,11 @@ def get_logger(name, **kwargs):
 
     logging.setLoggerClass(SDSSLogger)
 
-    log = logging.getLogger(name)
-    log.init(**kwargs)
+    if name in logging.Logger.manager.loggerDict:
+        log = logging.getLogger(name)
+    else:
+        log = logging.getLogger(name)
+        log.init(**kwargs)
 
     logging.setLoggerClass(orig_logger)
 
