@@ -26,6 +26,10 @@ from .color_print import color_text
 __all__ = ['get_logger']
 
 
+# Base formatter for SH
+formatter = logging.Formatter()
+
+
 def get_exception_formatted(tp, value, tb):
     """Adds colours to tracebacks."""
 
@@ -53,7 +57,7 @@ def colored_formatter(record):
     else:
         header = f'[{levelname}]'
 
-    message = record.getMessage()
+    message = formatter.format(record)
 
     if levelname == 'warning':
         warning_category_groups = re.match(r'^.*?\s*?(\w*?Warning): (.*)', message)
