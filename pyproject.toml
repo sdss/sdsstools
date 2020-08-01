@@ -67,7 +67,9 @@ include = ["python/sdsstools/*"]
 omit = [
     "*/__main__.py",
     "*/__init__.py",
-    "*/_vendor/*"
+    "*/_vendor/*",
+    "*/cli.py",
+    "*/_tasks.py"
 ]
 
 [tool.coverage.report]
