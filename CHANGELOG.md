@@ -3,6 +3,7 @@
 ## [Next version](https://github.com/sdss/sdsstools/compare/0.2.1...HEAD)
 
 - Bug [#8](https://github.com/sdss/sdsstools/issues/8): log `StreamHandler` to `stderr` when the record level is `ERROR` or greater.
+- Support [#12](https://github.com/sdss/sdsstools/issues/12): move `color_print` to `sdsstools._vendor`.
 
 
 ## [0.2.1](https://github.com/sdss/sdsstools/compare/0.2.0...0.2.1) - 2020-07-30
