@@ -2,6 +2,8 @@
 
 ## [Next version](https://github.com/sdss/sdsstools/compare/0.2.1...HEAD)
 
+- Log `StreamHandler` to `stderr` when the record level is `ERROR` or greater.
+
 
 ## [0.2.1](https://github.com/sdss/sdsstools/compare/0.2.0...0.2.1) - 2020-07-30
 

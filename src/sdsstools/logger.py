@@ -72,8 +72,13 @@ def colored_formatter(record):
             warning_category_colour = color_text('({})'.format(warning_category), 'cyan')
             message = '{} {}'.format(color_text(warning_text, ''), warning_category_colour)
 
-    sys.__stdout__.write('{}{}\n'.format(header, message))
-    sys.__stdout__.flush()
+    if record.levelno >= logging.ERROR:
+        std = sys.__stderr__
+    else:
+        std = sys.__stdout__
+
+    std.write('{}{}\n'.format(header, message))
+    std.flush()
 
     return
 
