@@ -26,8 +26,7 @@ from .color_print import color_text
 __all__ = ['get_logger']
 
 
-# Base formatter for SH
-formatter = logging.Formatter()
+WARNING_RE = re.compile(r'^.*?\s*?(\w*?Warning): (.*)')
 
 
 def get_exception_formatted(tp, value, tb):
@@ -39,52 +38,48 @@ def get_exception_formatted(tp, value, tb):
     return highlight(tbtext, lexer, formatter)
 
 
-def colored_formatter(record):
-    """Prints log messages with colours."""
+class StreamFormatter(logging.Formatter):
+    """Custom `Formatter <logging.Formatter>` for the stream handler."""
 
-    colours = {'info': 'blue',
-               'debug': 'magenta',
-               'warning': 'yellow',
-               'critical': 'red',
-               'error': 'red'}
+    base_fmt = '%(message)s'
 
-    levelname = record.levelname.lower()
+    def __init__(self, fmt=base_fmt):
+        logging.Formatter.__init__(self, fmt)
 
-    if levelname.lower() in colours:
-        levelname_color = colours[levelname]
-        header = color_text('[{}]: '.format(levelname.upper()),
-                            levelname_color)
-    else:
-        header = f'[{levelname}]'
+    def format(self, record):
 
-    message = formatter.format(record)
+        colours = {'info': 'blue',
+                   'debug': 'magenta',
+                   'warning': 'yellow',
+                   'critical': 'red',
+                   'error': 'red'}
 
-    if levelname == 'warning':
-        warning_category_groups = re.match(r'^.*?\s*?(\w*?Warning): (.*)', message)
-        if warning_category_groups is not None:
-            warning_category, warning_text = warning_category_groups.groups()
+        record_cp = copy.copy(record)
 
-            # Temporary ignore warnings from pymodbus. The normal warnings.simplefilter
-            # does not work because pymodbus forces them to show.
-            if re.match('"@coroutine" decorator is deprecated.+', warning_text):
-                return
+        levelname = record_cp.levelname.lower()
+        message = record_cp.msg
 
-            warning_category_colour = color_text('({})'.format(warning_category), 'cyan')
-            message = '{} {}'.format(color_text(warning_text, ''), warning_category_colour)
+        if levelname.lower() in colours:
+            level_colour = colours[levelname]
+            header = color_text('[{}]: '.format(levelname.upper()), level_colour)
+        else:
+            return logging.Formatter.format(self, record)
 
-    if record.levelno >= logging.ERROR:
-        std = sys.__stderr__
-    else:
-        std = sys.__stdout__
+        record_cp.msg = '{}{}'.format(header, message)
 
-    std.write('{}{}\n'.format(header, message))
-    std.flush()
+        if levelname == 'warning' and len(record_cp.args) > 0:
+            warning_category_groups = WARNING_RE.match(record_cp.args[0])
+            if warning_category_groups is not None:
+                wcategory, wtext = warning_category_groups.groups()
+                wcategory_colour = color_text('({})'.format(wcategory), 'cyan')
+                message = '{} {}'.format(color_text(wtext, ''), wcategory_colour)
+                record_cp.args = tuple([message] + list(record_cp.args[1:]))
 
-    return
+        return logging.Formatter.format(self, record_cp)
 
 
-class SDSSFormatter(logging.Formatter):
-    """Custom `Formatter <logging.Formatter>`."""
+class FileFormatter(logging.Formatter):
+    """Custom `Formatter <logging.Formatter>` for the file handler."""
 
     base_fmt = '%(asctime)s - %(levelname)s - %(message)s'
     ansi_escape = re.compile(r'\x1b[^m]*m')
@@ -141,7 +136,7 @@ class SDSSLogger(logging.Logger):
 
         # Sets the console handler
         self.sh = logging.StreamHandler()
-        self.sh.emit = colored_formatter
+        self.sh.setFormatter(StreamFormatter())
         self.addHandler(self.sh)
         self.sh.setLevel(log_level)
 
@@ -203,7 +198,8 @@ class SDSSLogger(logging.Logger):
     def save_log(self, path):
         shutil.copyfile(self.log_filename, os.path.expanduser(path))
 
-    def start_file_logger(self, path, log_level=logging.DEBUG, mode='a', rotating=True):
+    def start_file_logger(self, path, log_level=logging.DEBUG,
+                          mode='a', rotating=True):
         """Start file logging."""
 
         log_file_path = os.path.expanduser(path)
@@ -230,7 +226,7 @@ class SDSSLogger(logging.Logger):
 
         else:
 
-            self.fh.setFormatter(SDSSFormatter())
+            self.fh.setFormatter(FileFormatter())
             self.addHandler(self.fh)
             self.fh.setLevel(log_level)
 
@@ -243,7 +239,8 @@ class SDSSLogger(logging.Logger):
         """Handles a record but first stores it."""
 
         if hasattr(self, 'header') and self.header is not None:
-            record.msg = self.header + record.msg
+            if not isinstance(record.msg, Exception):
+                record.msg = self.header + record.msg
 
         if record.levelno == logging.ERROR:
             self._last_error = record.getMessage()
