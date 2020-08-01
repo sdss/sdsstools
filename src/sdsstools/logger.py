@@ -20,7 +20,7 @@ from pygments import highlight
 from pygments.formatters import TerminalFormatter
 from pygments.lexers import get_lexer_by_name
 
-from .color_print import color_text
+from ._vendor.color_print import color_text
 
 
 __all__ = ['get_logger']
