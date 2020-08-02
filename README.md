@@ -72,7 +72,7 @@ In addition to the (recommended) location `~/.config/sdss/<NAME>.yaml`, `get_con
 
 ### Extending a YAML file
 
-`read_yaml_file` provides a non-standard feature that allows to extend one YAML file with another. To achieve that you need to add the tag `!extends <base-file>` at the top of the file that you want to extend. For example, if you have a file `base.yaml`
+`read_yaml_file` provides a non-standard feature that allows you to extend one YAML file with another. To achieve this you need to add the tag `!extends <base-file>` at the top of the file that you want to extend. For example, if you have a file `base.yaml`
 
 ```yaml
 cat1:
@@ -82,24 +82,23 @@ cat2:
     key2: 1
 ```
 
-and a new file `extendable.yaml`
+that you want to use as a template for `extendable.yaml`
 
 ```yaml
 #!extends base.yaml
 
 cat1:
-    # test
     key1: value1
 ```
 
-then you can do
+you can use `read_yaml_file` to parse the result
 
 ```python
 >>> read_yaml_file('extendable.yaml')
 {'cat1': {'key1': 'value2'}, 'cat2': {'key2': 1}}
 ```
 
-The path to the base file must be an absolute path or relative to the location of the file to be extended.
+The path to the base file must be absolute, or relative to the location of the file to be extended.
 
 ## Metadata
 
