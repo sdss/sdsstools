@@ -1,5 +1,8 @@
 # Changelog
 
+## [Next version](https://github.com/sdss/sdsstools/compare/0.3.0...HEAD)
+
+
 ## [0.3.0](https://github.com/sdss/sdsstools/compare/0.2.1...0.3.0)
 
 - Support [#4](https://github.com/sdss/sdsstools/issues/4): include `dev` extras in default installation.
