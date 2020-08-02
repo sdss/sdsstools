@@ -57,6 +57,7 @@ class StreamFormatter(logging.Formatter):
         record_cp = copy.copy(record)
 
         levelname = record_cp.levelname.lower()
+        print(levelname)
         message = record_cp.msg
 
         if levelname.lower() in colours:

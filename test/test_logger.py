@@ -93,7 +93,7 @@ def test_warning(logger, caplog):
     assert len(open(str(logger.log_filename), 'r').read().splitlines()) == 1
 
 
-def test_exception_formatting(logger, caplog):
+def test_exception_formatting(logger):
 
     with pytest.raises(ValueError) as excinfo:
         raise ValueError('An error')
@@ -103,6 +103,16 @@ def test_exception_formatting(logger, caplog):
     assert exc_text is not None
     assert 'An error' in exc_text
     assert '\x1b[91mValueError\x1b[39;49;00m' in exc_text
+
+
+def test_catch_exception(logger, caplog):
+
+    with pytest.raises(ValueError) as excinfo:
+        raise ValueError('An error')
+
+    logger._catch_exceptions(excinfo.type, excinfo.value, excinfo.tb)
+
+    assert caplog.record_tuples[0][1] == logging.ERROR
 
 
 def test_save_log(logger):
@@ -136,3 +146,10 @@ def test_fh_no_rotating(logger_no_fh, tmp_path):
 
     logger_no_fh.start_file_logger(tmp_path / 'no_rotating.log', rotating=False)
     assert isinstance(logger_no_fh.fh, logging.FileHandler)
+
+
+def test_log_non_standard_level(logger, caplog):
+
+    logger.log(170, 'A log message')
+
+    assert caplog.record_tuples == [(logger.name, 170, 'A log message')]
