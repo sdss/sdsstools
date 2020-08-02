@@ -114,18 +114,18 @@ This will try to find and parse the version from the metadata file (we pass `__f
 
 ## Command Line Interface
 
-`sdsstools` provides the command line tool `sdss`, which is just a thin wrapper around some commonly used [Invoke](https://www.pyinvoke.org/) tasks. Because `sdsstools` tries very hard not to install unnecessary dependencies, and the CLI should only be useful for development, you'll need to run `pip install sdsscore[dev]` to be able to use `sdss`.
+`sdsstools` provides the command line tool `sdss`, which is just a thin wrapper around some commonly used [Invoke](https://www.pyinvoke.org/) tasks. `sdsstools` does not automatically install all the dependencies for the tasks, which need to be added manually.
 
 `sdss` provides the following tasks
 
 | Task | Options | Description |
 | --- | --- | --- |
-| clean | | Removes files produces during build and packaging |
-| deploy | --test | Builds and deploys to PyPI (or the test server) |
+| clean | | Removes files produces during build and packaging. |
+| deploy | --test | Builds and deploys to PyPI (or the test server). Requires `twine` and `wheel`. |
 | install-deps | --extras | Installs dependencies from a `setup.cfg` file |
-| docs.build | --target | Builds the Sphinx documentation |
-| docs.show | --target | Shows the documentation in the browser |
-| docs.clean | --target | Cleans the documentation build |
+| docs.build | --target | Builds the Sphinx documentation. Requires `Sphinx`. |
+| docs.show | --target | Shows the documentation in the browser. Requires `Sphinx`. |
+| docs.clean | --target | Cleans the documentation build. Requires `Sphinx`. |
 
 `sdss` assumes that the documentation lives in `docs/sphinx` relative to the root of the repository. This can be changed by setting the `sphinx.target` configuration in an `invoke.yaml` file, for example
 

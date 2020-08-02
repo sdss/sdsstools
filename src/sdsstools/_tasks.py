@@ -9,6 +9,7 @@
 # @Copyright: Brian Cherinka
 
 import os
+import shutil
 
 from invoke import Collection, task
 
@@ -70,6 +71,9 @@ def clean(ctx):
 @task(clean)
 def deploy(ctx, test=False):
     """Deploy the project to PyPI"""
+
+    assert shutil.which('twine') is not None, 'twine is not installed'
+    assert shutil.which('wheel') is not None, 'wheel is not installed'
 
     if test is False:
         print('Deploying to PyPI!')
