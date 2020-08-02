@@ -43,15 +43,34 @@ yaml.add_implicit_resolver('!env', env_matcher)
 yaml.add_constructor('!env', env_constructor)
 
 
-def read_yaml_file(path):
+def read_yaml_file(path, use_extends=True, loader=yaml.FullLoader):
     """Read a YAML file and returns a dictionary."""
 
     if isinstance(path, (str, pathlib.Path)):
-        with open(path, 'r') as fp:
-            config = yaml.load(fp, Loader=yaml.FullLoader)
+        fp = open(path, 'r')
     else:
-        # Assume it's an stream
-        config = yaml.load(path, Loader=yaml.FullLoader)
+        fp = path
+
+    fp.seek(0)
+    config = yaml.load(fp, Loader=loader)
+
+    if use_extends:
+        fp.seek(0)
+        while True:
+            line = fp.readline()
+            if line.strip().startswith('#!extends'):
+                base_file = line.strip().split()[1]
+                if not os.path.isabs(base_file) and hasattr(fp, 'buffer'):
+                    base_file = os.path.join(os.path.dirname(path), base_file)
+                if not os.path.exists(base_file):
+                    raise FileExistsError(f'cannot find !extends file {base_file}.')
+                return merge_config(read_yaml_file(base_file),
+                                    read_yaml_file(path, use_extends=False))
+            elif line.strip().startswith('#') or line.strip() == '':
+                continue
+            else:
+                fp.seek(0)
+                break
 
     return config
 

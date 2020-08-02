@@ -2,6 +2,7 @@
 
 ## [Next version](https://github.com/sdss/sdsstools/compare/0.2.1...HEAD)
 
+- Feature [#7](https://github.com/sdss/sdsstools/issues/7): add support for a tag `!extends` in YAML files when read with `read_yaml_file`.
 - Bug [#8](https://github.com/sdss/sdsstools/issues/8): log `StreamHandler` to `stderr` when the record level is `ERROR` or greater.
 - Support [#11](https://github.com/sdss/sdsstools/issues/11): replaced `colored_formatter` with a propper `Formatter` and added tests for logging.
 - Support [#12](https://github.com/sdss/sdsstools/issues/12): move `color_print` to `sdsstools._vendor`.

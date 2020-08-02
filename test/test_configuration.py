@@ -7,16 +7,36 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 import inspect
+import io
 import os
 import unittest.mock
 
 import pytest
 
 from sdsstools import Configuration, get_config
-from sdsstools.configuration import DEFAULT_PATHS
+from sdsstools.configuration import DEFAULT_PATHS, read_yaml_file
 
 
 BASE_CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'etc/test.yml')
+
+
+BASE = """
+cat1:
+    key1: base_value
+
+cat2:
+    key2: 1
+"""
+
+EXTENDABLE = """
+#
+
+#!extends {base_path}
+
+cat1:
+    # test
+    key1: value1
+"""
 
 
 @pytest.fixture(autouse=True)
@@ -62,6 +82,15 @@ def set_envvar():
     os.environ['A_TEST_VARIABLE'] = 'blah'
     yield
     del os.environ['A_TEST_VARIABLE']
+
+
+@pytest.fixture
+def extendable(tmp_path):
+
+    base_path = tmp_path / 'base.yaml'
+    base_path.write_text(BASE)
+
+    yield io.StringIO(EXTENDABLE.format(base_path=str(base_path))), base_path
 
 
 def test_configuration(config_file):
@@ -155,3 +184,47 @@ def test_get_config_bad_module(mock_func):
 
     config = get_config('test')
     assert config == {}
+
+
+def test_extends(extendable):
+
+    stream, __ = extendable
+    data = read_yaml_file(stream)
+
+    assert data['cat1']['key1'] == 'base_value'
+    assert 'cat2' in data
+
+
+def test_extends_file_not_found(extendable):
+
+    stream, base_path = extendable
+    base_path.unlink()
+
+    with pytest.raises(FileExistsError):
+        read_yaml_file(stream)
+
+
+def test_dont_extend(extendable):
+
+    stream, __ = extendable
+    data = read_yaml_file(stream, use_extends=False)
+
+    assert data['cat1']['key1'] == 'value1'
+    assert 'cat2' not in data
+
+
+def test_extends_from_file(tmp_path):
+
+    base_path = tmp_path / 'subdir' / 'base.yaml'
+    (tmp_path / 'subdir').mkdir()
+    base_path.touch()
+    base_path.write_text(BASE)
+
+    extendable_path = tmp_path / 'extendable.yaml'
+    extendable_relative = EXTENDABLE.format(base_path='subdir/base.yaml')
+    extendable_path.write_text(extendable_relative)
+
+    data = read_yaml_file(extendable_path)
+
+    assert data['cat1']['key1'] == 'base_value'
+    assert 'cat2' in data

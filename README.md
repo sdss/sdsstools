@@ -70,6 +70,36 @@ In addition to the (recommended) location `~/.config/sdss/<NAME>.yaml`, `get_con
 
 `sdsstools.configuration` includes two other tools, `merge_config`, that allows to merge dictionaries recursively, and `read_yaml_file`, to read a YAML file.
 
+### Extending a YAML file
+
+`read_yaml_file` provides a non-standard feature that allows you to extend one YAML file with another. To achieve this you need to add the tag `!extends <base-file>` at the top of the file that you want to extend. For example, if you have a file `base.yaml`
+
+```yaml
+cat1:
+    key1: value2
+
+cat2:
+    key2: 1
+```
+
+that you want to use as a template for `extendable.yaml`
+
+```yaml
+#!extends base.yaml
+
+cat1:
+    key1: value1
+```
+
+you can use `read_yaml_file` to parse the result
+
+```python
+>>> read_yaml_file('extendable.yaml')
+{'cat1': {'key1': 'value2'}, 'cat2': {'key2': 1}}
+```
+
+The path to the base file must be absolute, or relative to the location of the file to be extended.
+
 ## Metadata
 
 sdsscore provides tools to locate and parse metadata files (`pyproject.toml`, `setup.cfg`, `setup.py`). `get_metadata_files` locates the path of the metadata file relative to a given `path`. `get_package_version` tries to find the version of the package by looking for a version string in the metadata file or in the egg/wheel metadata file, if the package has been installed. To use it
