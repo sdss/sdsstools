@@ -1,5 +1,7 @@
 # Changelog
 
+## [Next version](https://github.com/sdss/sdsstools/compare/0.3.1...HEAD)
+
 
 ## [0.3.1](https://github.com/sdss/sdsstools/compare/0.3.0...0.3.1) - 2020-08-01
 
