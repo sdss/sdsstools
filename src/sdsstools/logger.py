@@ -185,15 +185,18 @@ class SDSSLogger(logging.Logger):
         """Handle an uncaught asyncio exception and reports it."""
 
         exception = context.get('exception', None)
+
         if exception:
             try:
                 raise exception
             except Exception:
-                self.exception(context['message'])
+                message = context.pop('message')
+                rest = context.get('task', context)
+                self.error(f'{message}\n{rest!r}')
         else:
-            message = context['message'].splitlines()
-            for line in message:
-                self.error(f'{line}')
+            message = context.pop('message')
+            rest = context.get('task', context)
+            self.error(f'{message}\n{rest!r}')
 
     def save_log(self, path):
         shutil.copyfile(self.log_filename, os.path.expanduser(path))
