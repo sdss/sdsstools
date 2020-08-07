@@ -155,6 +155,9 @@ def daemon(name):
             unit.write(f'Hi {name}!\n')
             unit.flush()
             time.sleep(1)
+
+if __name__ == '__main__':
+    daemon()
 ```
 
 This will create a new group `hello` with four subcommands
