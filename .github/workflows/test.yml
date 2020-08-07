@@ -58,7 +58,11 @@ jobs:
 
     - name: Test with pytest
       run: |
+<<<<<<< HEAD
         pip install pytest pytest-cov pytest-mock pytest-asyncio
+=======
+        pip install pytest pytest-cov pyest-mock pytest-asyncio
+>>>>>>> 1c19d36... Add dev packages to test workflow
         pip install daemonocle click pytest-click
         pip install coverage[toml]
         pytest
