@@ -134,6 +134,65 @@ sphinx:
     target: docs
 ```
 
+## Click daemon command
+
+The [daemonizer](src/sdsstools/daemonizer.py) module  a [Click](https://palletsprojects.com/p/click/) command group that allows to spawn a daemon, stop, and restart it. Internally the module uses [daemonocle](https://github.com/jnrbsn/daemonocle) (the package is not included with `sdsstools` and needs to be installed manually).
+
+A simple example of how to use `daemonizer` is
+
+```python
+import time
+import click
+from sdsstools.daemonizer import DaemonGroup
+
+@click.group(cls=DaemonGroup, prog='hello', pidfile='/var/tmp/hello.pid')
+@click.argument('NAME', type=str)
+@click.option('--file', type=str, default='hello.dat')
+def daemon(name):
+
+    with open(file, 'w') as unit:
+        while True:
+            unit.write(f'Hi {name}!\n')
+            unit.flush()
+            time.sleep(1)
+```
+
+This will create a new group `hello` with four subcommands
+
+```console
+Usage: daemon [OPTIONS] NAME COMMAND [ARGS]...
+
+Options:
+  --file
+  --help  Show this message and exit.
+
+Commands:
+  restart  Restart the daemon.
+  start    Start the daemon.
+  status   Report if the daemon is running.
+  stop     Stop the daemon.
+```
+
+Now we can run `daemon --file ~/hello.dat John start` and a new background process will start, writing to the file every second. We can stop it with `daemon stop`. In general the behaviour is identical to the [daemonocle Click implementation](https://github.com/jnrbsn/daemonocle#integration-with-mitsuhiko-s-click) but the internal are slightly different to allow the group callback to accept arguments. If the callback is a coroutine, it can be wrapped with the `cli_coro` decorator
+
+```python
+import asyncio
+import click
+from sdsstools.daemonizer import DaemonGroup, cli_coro
+
+@click.group(cls=DaemonGroup, prog='hello', pidfile='/var/tmp/hello.pid')
+@click.argument('NAME', type=str)
+@click.option('--file', type=str, default='hello.dat')
+async def daemon(name):
+
+    with open(file, 'w') as unit:
+        while True:
+            unit.write(f'Hi {name}!\n')
+            unit.flush()
+            await asyncio.sleep(1)
+```
+
+
 ## Bundled packages
 
 For convenience, `sdsstools` bundles the following products:
