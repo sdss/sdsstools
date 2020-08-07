@@ -2,6 +2,8 @@
 
 ## [Next version](https://github.com/sdss/sdsstools/compare/0.3.1...HEAD)
 
+- Feature [#15](https://github.com/sdss/sdsstools/issues/15): add a CLI wrapper to create Unix daemons.
+
 
 ## [0.3.1](https://github.com/sdss/sdsstools/compare/0.3.0...0.3.1) - 2020-08-01
 
