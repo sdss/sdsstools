@@ -2,6 +2,8 @@
 
 ## [Next version](https://github.com/sdss/sdsstools/compare/0.4.0...HEAD)
 
+- Add signal handler for CLI coroutines.
+
 
 ## [0.4.0](https://github.com/sdss/sdsstools/compare/0.3.1...0.4.0)
 

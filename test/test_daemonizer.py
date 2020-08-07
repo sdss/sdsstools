@@ -82,7 +82,25 @@ def test_daemon_coro(cli_runner):
 
     @click.group(cls=DaemonGroup, prog='test_async', pidfile='./test.pid')
     @click.argument('name')
-    @cli_coro
+    @cli_coro()
+    async def daemon_grp_async(name):
+        print(f'Hello {name}!\n')
+
+    result = cli_runner.invoke(daemon_grp_async, ['Jose', 'start', '--debug'])
+
+    # print(result.)
+    assert result.exit_code == 0
+    assert 'Hello Jose' in result.output
+
+
+def test_coro_signal_handling(cli_runner):
+
+    def dummy_handler(signal):
+        pass
+
+    @click.group(cls=DaemonGroup, prog='test_async')
+    @click.argument('name')
+    @cli_coro(shutdown_func=dummy_handler)
     async def daemon_grp_async(name):
         print(f'Hello {name}!\n')
 

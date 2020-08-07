@@ -180,12 +180,18 @@ Now we can run `daemon --file ~/hello.dat John start` and a new background proce
 
 ```python
 import asyncio
+import signal
 import click
 from sdsstools.daemonizer import DaemonGroup, cli_coro
+
+def shutdown(signal):
+    if signal == signal.SIGTERM:
+        cancel_something()
 
 @click.group(cls=DaemonGroup, prog='hello', pidfile='/var/tmp/hello.pid')
 @click.argument('NAME', type=str)
 @click.option('--file', type=str, default='hello.dat')
+@cli_coro(shutdown_func=shutdown, signals=(signal.SIGTERM, signal.SIGINT))
 async def daemon(name):
 
     with open(file, 'w') as unit:
@@ -194,6 +200,8 @@ async def daemon(name):
             unit.flush()
             await asyncio.sleep(1)
 ```
+
+`cli_coro` can accept a `shutdown_func` function that is called when the coroutine receives a signal. The default signals handled are `(SIGHUP, SIGTERM, SIGINT)`.
 
 
 ## Bundled packages

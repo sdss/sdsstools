@@ -8,6 +8,7 @@
 
 import asyncio
 import inspect
+import signal
 from functools import partial, wraps
 
 import click
@@ -15,15 +16,20 @@ from click.decorators import pass_context
 from daemonocle import Daemon
 
 
-def cli_coro(f):
+def cli_coro(shutdown_func=None,
+             signals=(signal.SIGHUP, signal.SIGTERM, signal.SIGINT)):
     """Decorator function that allows defining coroutines with click."""
 
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(f(*args, **kwargs))
-
-    return wrapper
+    def decorator_cli_coro(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            loop = asyncio.get_event_loop()
+            if shutdown_func:
+                for ss in signals:
+                    loop.add_signal_handler(ss, shutdown_func, ss)
+            return loop.run_until_complete(f(*args, **kwargs))
+        return wrapper
+    return decorator_cli_coro
 
 
 @click.command()
