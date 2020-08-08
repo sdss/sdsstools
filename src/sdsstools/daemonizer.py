@@ -17,7 +17,8 @@ from daemonocle import Daemon
 
 
 def cli_coro(shutdown_func=None,
-             signals=(signal.SIGHUP, signal.SIGTERM, signal.SIGINT)):
+             signals=(signal.SIGHUP, signal.SIGTERM, signal.SIGINT),
+             debug=False):
     """Decorator function that allows defining coroutines with click."""
 
     def decorator_cli_coro(f):
@@ -27,7 +28,7 @@ def cli_coro(shutdown_func=None,
             if shutdown_func:
                 for ss in signals:
                     loop.add_signal_handler(ss, shutdown_func, ss)
-            return loop.run_until_complete(f(*args, **kwargs))
+            return asyncio.run(f(*args, **kwargs), debug=debug)
         return wrapper
     return decorator_cli_coro
 
