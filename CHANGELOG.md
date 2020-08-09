@@ -1,6 +1,9 @@
 # Changelog
 
-## [Next version](https://github.com/sdss/sdsstools/compare/0.4.0...0.4.1)
+## [Next version](https://github.com/sdss/sdsstools/compare/0.4.1...HEAD)
+
+
+## [0.4.1](https://github.com/sdss/sdsstools/compare/0.4.0...0.4.1) - 2020-08-09
 
 - Add signal handler for CLI coroutines.
 - Allow to run coroutines in debug mode with the ``cli_coro`` decorator.
