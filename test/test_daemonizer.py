@@ -78,7 +78,7 @@ def test_no_prog():
             pass
 
 
-def test_daemon_coro(cli_runner):
+def test_daemon_coro(cli_runner, event_loop):
 
     @click.group(cls=DaemonGroup, prog='test_async', pidfile='./test.pid')
     @click.argument('name')
@@ -93,9 +93,9 @@ def test_daemon_coro(cli_runner):
     assert 'Hello Jose' in result.output
 
 
-def test_coro_signal_handling(cli_runner):
+def test_coro_signal_handling(cli_runner, event_loop):
 
-    def dummy_handler(signal):
+    def dummy_handler(signal, loop):
         pass
 
     @click.group(cls=DaemonGroup, prog='test_async')
