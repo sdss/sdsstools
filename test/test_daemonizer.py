@@ -80,7 +80,7 @@ def test_no_prog():
             pass
 
 
-@pytest.mark.skipif(sys.version_info <= (3, 6),
+@pytest.mark.skipif(sys.version_info < (3, 7),
                     reason='Requires Python 3.7 or higher.')
 def test_daemon_coro(cli_runner, event_loop):
 
@@ -97,7 +97,7 @@ def test_daemon_coro(cli_runner, event_loop):
     assert 'Hello Jose' in result.output
 
 
-@pytest.mark.skipif(sys.version_info <= (3, 6),
+@pytest.mark.skipif(sys.version_info < (3, 7),
                     reason='Requires Python 3.7 or higher.')
 def test_coro_signal_handling(cli_runner, event_loop):
 
