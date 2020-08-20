@@ -1,6 +1,6 @@
 # sdsstools
 
-![Versions](https://img.shields.io/badge/python->3.7-blue)
+[![Versions](https://img.shields.io/badge/python->3.7-blue)](https://docs.python.org/3/)
 [![PyPI version](https://badge.fury.io/py/sdsstools.svg)](https://badge.fury.io/py/sdsstools)
 [![Build](https://img.shields.io/github/workflow/status/sdss/sdsstools/Test)](https://github.com/sdss/sdsstools/actions)
 [![codecov](https://codecov.io/gh/sdss/sdsstools/branch/master/graph/badge.svg)](https://codecov.io/gh/sdss/sdsstools)
