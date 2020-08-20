@@ -78,7 +78,6 @@ omit = [
 
 [tool.coverage.report]
 exclude_lines = [
-    "def asyncio_exception_handler"
 ]
 
 [build-system]

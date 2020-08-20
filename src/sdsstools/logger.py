@@ -190,13 +190,10 @@ class SDSSLogger(logging.Logger):
             try:
                 raise exception
             except Exception:
-                message = context.pop('message')
-                rest = context.get('task', context)
-                self.error(f'{message}\n{rest!r}')
+                exc_type, exc_value, exc_tb = sys.exc_info()
+                self.error(get_exception_formatted(exc_type, exc_value, exc_tb))
         else:
-            message = context.pop('message')
-            rest = context.get('task', context)
-            self.error(f'{message}\n{rest!r}')
+            loop.default_exception_handler(context)
 
     def save_log(self, path):
         shutil.copyfile(self.log_filename, os.path.expanduser(path))

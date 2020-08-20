@@ -6,6 +6,7 @@
 # @Filename: test_logger.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+import asyncio
 import logging
 import logging.handlers
 import os
@@ -153,3 +154,19 @@ def test_log_non_standard_level(logger, caplog):
     logger.log(170, 'A log message')
 
     assert caplog.record_tuples == [(logger.name, 170, 'A log message')]
+
+
+@pytest.mark.asyncio
+async def test_asyncio_exception_handler(logger, caplog, event_loop):
+
+    async def coro_raise():
+        raise ValueError('An error in a task.')
+
+    event_loop.set_exception_handler(logger.asyncio_exception_handler)
+
+    event_loop.create_task(coro_raise())
+
+    await asyncio.sleep(0.01)
+
+    assert caplog.record_tuples[0][1] == logging.ERROR
+    assert 'An error in a task.' in caplog.record_tuples[0][2]
