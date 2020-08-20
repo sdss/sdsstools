@@ -2,6 +2,8 @@
 
 ## [Next version](https://github.com/sdss/sdsstools/compare/0.4.1...HEAD)
 
+- Better support for asyncio exception handling.
+
 
 ## [0.4.1](https://github.com/sdss/sdsstools/compare/0.4.0...0.4.1) - 2020-08-09
 
