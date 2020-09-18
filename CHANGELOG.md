@@ -2,6 +2,8 @@
 
 ## [Next version](https://github.com/sdss/sdsstools/compare/0.4.2...HEAD)
 
+- Added `Timer` context manager utility.
+
 
 ## [0.4.2](https://github.com/sdss/sdsstools/compare/0.4.1...0.4.2) - 2020-08-19
 
@@ -12,6 +14,7 @@
 
 - Add signal handler for CLI coroutines.
 - Allow to run coroutines in debug mode with the ``cli_coro`` decorator.
+
 
 ## [0.4.0](https://github.com/sdss/sdsstools/compare/0.3.1...0.4.0)
 
