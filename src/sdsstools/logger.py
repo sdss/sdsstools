@@ -260,6 +260,10 @@ class SDSSLogger(logging.Logger):
         if self.fh:
             self.fh.setLevel(level)
 
+        if self.warnings_logger:
+            for handler in self.warnings_logger.handlers:
+                handler.setLevel(level)
+
 
 def get_logger(name, **kwargs):
     """Gets a new logger."""
