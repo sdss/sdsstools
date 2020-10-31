@@ -73,7 +73,8 @@ omit = [
     "*/__init__.py",
     "*/_vendor/*",
     "*/cli.py",
-    "*/_tasks.py"
+    "*/_tasks.py",
+    "*/utils.py"
 ]
 
 [tool.coverage.report]
