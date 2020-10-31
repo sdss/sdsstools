@@ -77,10 +77,6 @@ omit = [
     "*/utils.py"
 ]
 
-[tool.coverage.report]
-exclude_lines = [
-]
-
 [build-system]
 requires = ["poetry-core>=1.0.0a5"]
 build-backend = "poetry.core.masonry.api"

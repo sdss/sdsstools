@@ -50,7 +50,7 @@ def start(ctx, debug, log):
     # create the log and redirect stdout and stderr there. Then call the
     # original worker.
 
-    if log:
+    if log:  # pragma: no cover
         orig_worker = ctx.parent.command.daemon.worker
 
         def new_worker():
