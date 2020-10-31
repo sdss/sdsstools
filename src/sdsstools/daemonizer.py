@@ -7,9 +7,11 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 import asyncio
+import contextlib
 import inspect
 import signal
 from functools import partial, wraps
+import sys
 
 import click
 from click.decorators import pass_context
@@ -38,9 +40,27 @@ def cli_coro(signals=(signal.SIGHUP, signal.SIGTERM, signal.SIGINT),
 @click.command()
 @click.option('--debug', is_flag=True,
               help='Do NOT detach and run in the background.')
+@click.option('--log', type=str,
+              help='Redirects stdout and stderr to a file (append mode).')
 @pass_context
-def start(ctx, debug):
+def start(ctx, debug, log):
     """Start the daemon."""
+
+    # We want to make sure that the Starting <name> ... OK is still output
+    # to stdout. We override the worker so that the first thing it does is to
+    # create the log and redirect stdout and stderr there. Then call the
+    # original worker.
+
+    if log:
+        orig_worker = ctx.parent.command.daemon.worker
+
+        def new_worker():
+            f = open(log, 'a')
+            sys.stdout = f
+            sys.stderr = f
+            orig_worker()
+
+        ctx.parent.command.daemon.worker = new_worker
 
     if debug:
         ctx.parent.command.daemon.worker()

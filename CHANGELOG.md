@@ -5,6 +5,7 @@
 - Added `Timer` context manager utility.
 - Calling `SDSSLogger.set_level` now also sets the level of any warnings handler already present.
 - Do not create a logger at the top level of the package.
+- New option `--log` when starting a daemon, that will redirect stdout and stderr to a log file.
 
 
 ## [0.4.2](https://github.com/sdss/sdsstools/compare/0.4.1...0.4.2) - 2020-08-19
