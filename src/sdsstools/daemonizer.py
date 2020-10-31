@@ -9,8 +9,8 @@
 import asyncio
 import inspect
 import signal
-from functools import partial, wraps
 import sys
+from functools import partial, wraps
 
 import click
 from click.decorators import pass_context
