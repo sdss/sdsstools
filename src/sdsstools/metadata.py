@@ -9,7 +9,11 @@
 import configparser
 import pathlib
 
-import pkg_resources
+import packaging.version
+try:
+    import importlib.metadata as importlib_metadata
+except ImportError:
+    import importlib_metadata
 
 from ._vendor import toml
 
@@ -95,11 +99,10 @@ def get_package_version(path=None, package_name=None, pep_440=False):
 
     if package_name and not version:
         try:
-            version = pkg_resources.get_distribution(package_name).version
-        except pkg_resources.DistributionNotFound:
+            version = importlib_metadata.version(package_name)
+        except importlib_metadata.PackageNotFoundError:
             pass
 
     if version and pep_440:
-        version = str(pkg_resources.packaging.version.Version(version))
-
+        version = str(packaging.version.parse(version))
     return version
