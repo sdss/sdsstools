@@ -2,6 +2,9 @@
 
 ## [Next version](https://github.com/sdss/sdsstools/compare/0.4.3...HEAD)
 
+- Support [#20]: discontinue use of `pkg_resources` due to its long import time.
+
+
 ## [0.4.3](https://github.com/sdss/sdsstools/compare/0.4.2...0.4.3)
 
 - Added `Timer` context manager utility.
