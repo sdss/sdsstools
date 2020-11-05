@@ -16,6 +16,7 @@ classifiers = [
     "Topic :: Documentation :: Sphinx",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
+include = ["LICENSE.md"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
@@ -25,6 +26,8 @@ invoke = "^1.3.0"
 semantic-version = "^2.8.4"  # For sdsstools.releases
 docutils = "^0.16"
 six = "^1.14.0"
+packaging = "^20.4"
+importlib_metadata = {version="^1.6.0",  python="<3.7"}
 
 [tool.poetry.dev-dependencies]
 ipython = "*"
@@ -59,7 +62,7 @@ balanced_wrapping = true
 include_trailing_comma = false
 lines_after_imports = 2
 use_parentheses = true
-skip_glob = ["*/_vendor"]
+skip_glob = ["*/_vendor", "*/releases/*"]
 
 [tool.pytest.ini_options]
 # Disable warnings system because it interferes with the logger warning capture.
@@ -72,11 +75,12 @@ omit = [
     "*/__main__.py",
     "*/__init__.py",
     "*/_vendor/*",
+    "*/releases/*",
     "*/cli.py",
     "*/_tasks.py",
     "*/utils.py"
 ]
 
 [build-system]
-requires = ["poetry-core>=1.0.0a5"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

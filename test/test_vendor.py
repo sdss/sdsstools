@@ -12,3 +12,10 @@ def test_color_print():
     from sdsstools.color_print import color_text
 
     assert callable(color_text)
+
+
+def test_releases():
+
+    import sdsstools.releases
+
+    assert sdsstools.releases is not None
