@@ -1,6 +1,6 @@
 # Changelog
 
-## [Next version](https://github.com/sdss/sdsstools/compare/0.4.3...HEAD)
+## [0.4.4](https://github.com/sdss/sdsstools/compare/0.4.3...0.4.4)
 
 - Support [#20]: discontinue use of `pkg_resources` due to its long import time. Move `sdsstools._vendor.releases` to `sdsstools.releases` to avoid having to load it on import.
 
