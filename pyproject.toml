@@ -16,6 +16,7 @@ classifiers = [
     "Topic :: Documentation :: Sphinx",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
+include = ["LICENSE.md", "src/sdsstools/releases"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
@@ -80,5 +81,5 @@ omit = [
 ]
 
 [build-system]
-requires = ["poetry-core>=1.0.0a5"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
