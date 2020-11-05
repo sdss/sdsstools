@@ -16,7 +16,7 @@ classifiers = [
     "Topic :: Documentation :: Sphinx",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
-include = ["LICENSE.md", "src/sdsstools/releases"]
+include = ["LICENSE.md"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
