@@ -60,7 +60,7 @@ balanced_wrapping = true
 include_trailing_comma = false
 lines_after_imports = 2
 use_parentheses = true
-skip_glob = ["*/_vendor"]
+skip_glob = ["*/_vendor", "*/releases/*"]
 
 [tool.pytest.ini_options]
 # Disable warnings system because it interferes with the logger warning capture.
@@ -73,6 +73,7 @@ omit = [
     "*/__main__.py",
     "*/__init__.py",
     "*/_vendor/*",
+    "*/releases/*",
     "*/cli.py",
     "*/_tasks.py",
     "*/utils.py"
