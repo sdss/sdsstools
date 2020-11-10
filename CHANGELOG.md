@@ -1,15 +1,19 @@
 # Changelog
 
-## [0.4.5](https://github.com/sdss/sdsstools/compare/0.4.4...0.4.5)
+## [Next version](https://github.com/sdss/sdsstools/compare/0.4.5...HEAD)
+
+
+## [0.4.5](https://github.com/sdss/sdsstools/compare/0.4.4...0.4.5) - 2020-11-10
 
 - Bug [#22]: fix `read_yaml` for empty YAML files.
 
-## [0.4.4](https://github.com/sdss/sdsstools/compare/0.4.3...0.4.4)
+
+## [0.4.4](https://github.com/sdss/sdsstools/compare/0.4.3...0.4.4) - 2020-11-05
 
 - Support [#20]: discontinue use of `pkg_resources` due to its long import time. Move `sdsstools._vendor.releases` to `sdsstools.releases` to avoid having to load it on import.
 
 
-## [0.4.3](https://github.com/sdss/sdsstools/compare/0.4.2...0.4.3)
+## [0.4.3](https://github.com/sdss/sdsstools/compare/0.4.2...0.4.3) - 2020-10-31
 
 - Added `Timer` context manager utility.
 - Calling `SDSSLogger.set_level` now also sets the level of any warnings handler already present.
@@ -28,7 +32,7 @@
 - Allow to run coroutines in debug mode with the ``cli_coro`` decorator.
 
 
-## [0.4.0](https://github.com/sdss/sdsstools/compare/0.3.1...0.4.0)
+## [0.4.0](https://github.com/sdss/sdsstools/compare/0.3.1...0.4.0) - 2020-08-07
 
 - Feature [#15](https://github.com/sdss/sdsstools/issues/15): add a CLI wrapper to create Unix daemons.
 
