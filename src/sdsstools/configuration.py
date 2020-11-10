@@ -54,23 +54,22 @@ def read_yaml_file(path, use_extends=True, loader=yaml.FullLoader):
     fp.seek(0)
     config = yaml.load(fp, Loader=loader)
 
+    if config is None or config == {}:
+        return {}
+
     if use_extends:
         fp.seek(0)
-        while True:
-            line = fp.readline()
+        for line in fp.readlines():
             if line.strip().startswith('#!extends'):
                 base_file = line.strip().split()[1]
                 if not os.path.isabs(base_file) and hasattr(fp, 'buffer'):
                     base_file = os.path.join(os.path.dirname(path), base_file)
                 if not os.path.exists(base_file):
                     raise FileExistsError(f'cannot find !extends file {base_file}.')
-                return merge_config(read_yaml_file(base_file),
-                                    read_yaml_file(path, use_extends=False))
+                return merge_config(read_yaml_file(base_file, use_extends=False),
+                                    config)
             elif line.strip().startswith('#') or line.strip() == '':
                 continue
-            else:
-                fp.seek(0)
-                break
 
     return config
 
