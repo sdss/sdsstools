@@ -228,3 +228,13 @@ def test_extends_from_file(tmp_path):
 
     assert data['cat1']['key1'] == 'base_value'
     assert 'cat2' in data
+
+
+def test_read_empty_yaml(tmp_path):
+
+    path = tmp_path / 'base.yaml'
+    path.touch()
+
+    data = read_yaml_file(path)
+
+    assert data == {}

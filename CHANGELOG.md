@@ -2,6 +2,7 @@
 
 ## [Next version](https://github.com/sdss/sdsstools/compare/0.4.4...HEAD)
 
+- Bug [#22]: fix `read_yaml` for empty YAML files.
 
 ## [0.4.4](https://github.com/sdss/sdsstools/compare/0.4.3...0.4.4)
 
