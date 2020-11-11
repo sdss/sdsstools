@@ -70,7 +70,7 @@ In addition to the (recommended) location `~/.config/sdss/<NAME>.yaml`, `get_con
 
 `get_config` returns an instance of [Configuration](https://github.com/sdss/sdsstools/blob/5af8339d2696d92e122b4195272130101b54daa7/src/sdsstools/configuration.py#L162), which behaves as a dictionary but allows to dynamically reload the configuration from a new user file by calling `load()`.
 
-`sdsstools.configuration` includes two other tools, `merge_config`, that allows to merge dictionaries recursively, and `read_yaml_file`, to read a YAML file.
+`sdsstools.configuration` includes two other tools, `merge_config`, that allows to merge dictionaries recursively, and `read_yaml_file` to read a YAML file.
 
 ### Extending a YAML file
 
@@ -100,7 +100,7 @@ you can use `read_yaml_file` to parse the result
 {'cat1': {'key1': 'value2'}, 'cat2': {'key2': 1}}
 ```
 
-The path to the base file must be absolute, or relative to the location of the file to be extended.
+The path to the base file must be absolute or relative to the location of the file to be extended.
 
 ## Metadata
 
@@ -138,7 +138,7 @@ sphinx:
 
 ## Click daemon command
 
-The [daemonizer](src/sdsstools/daemonizer.py) module  a [Click](https://palletsprojects.com/p/click/) command group that allows to spawn a daemon, stop, and restart it. Internally the module uses [daemonocle](https://github.com/jnrbsn/daemonocle) (the package is not included with `sdsstools` and needs to be installed manually).
+The [daemonizer](src/sdsstools/daemonizer.py) module implements a [Click](https://palletsprojects.com/p/click/) command group that allows to spawn a daemon, and to stop and restart it. Internally the module uses [daemonocle](https://github.com/jnrbsn/daemonocle) (the package is not installed with `sdsstools` and needs to be pip-installed manually).
 
 A simple example of how to use `daemonizer` is
 
