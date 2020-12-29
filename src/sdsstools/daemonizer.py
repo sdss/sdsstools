@@ -112,7 +112,7 @@ class DaemonGroup(click.Group):
         daemon_params = {}
         signature = inspect.signature(Daemon).parameters
         for param in kwargs.copy():
-            if param in signature:
+            if param in signature and param != 'name':
                 daemon_params.update({param: kwargs.pop(param)})
 
         self.daemon = Daemon(pidfile=pidfile, **daemon_params)
