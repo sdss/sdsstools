@@ -1,6 +1,6 @@
 # Changelog
 
-## [Next version](https://github.com/sdss/sdsstools/compare/0.4.5...HEAD)
+## [0.4.6](https://github.com/sdss/sdsstools/compare/0.4.5...0.4.6)
 
 - Do not remove `name` from the parameters in `DaemonGroup` that are passed to `click.Group`. This made `DaemonGroup` fail with `daemonocle>=1.1.0` in which the signature of `Daemon` includes a new parameter `name`.
 
