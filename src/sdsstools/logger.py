@@ -6,6 +6,8 @@
 # @Filename: logger.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+from __future__ import annotations
+
 import copy
 import logging
 import os
@@ -265,7 +267,7 @@ class SDSSLogger(logging.Logger):
                 handler.setLevel(level)
 
 
-def get_logger(name, **kwargs):
+def get_logger(name, **kwargs) -> SDSSLogger:
     """Gets a new logger."""
 
     orig_logger = logging.getLoggerClass()
