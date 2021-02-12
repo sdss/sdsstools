@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.4.7](https://github.com/sdss/sdsstools/compare/0.4.6...HEAD)
+## [0.4.7](https://github.com/sdss/sdsstools/compare/0.4.6...0.4.7) - 2021-02-12
 
 - Bug [#24]: update dependencies so that `importlib_metadata` is installed for Python<=3.7 (it was Python<3.7).
 
