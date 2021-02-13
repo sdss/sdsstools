@@ -17,11 +17,12 @@ from click.decorators import pass_context
 from daemonocle import Daemon
 
 
-__all__ = ['cli_coro', 'DaemonGroup']
+__all__ = ["cli_coro", "DaemonGroup"]
 
 
-def cli_coro(signals=(signal.SIGHUP, signal.SIGTERM, signal.SIGINT),
-             shutdown_func=None):
+def cli_coro(
+    signals=(signal.SIGHUP, signal.SIGTERM, signal.SIGINT), shutdown_func=None
+):
     """Decorator function that allows defining coroutines with click."""
 
     def decorator_cli_coro(f):
@@ -32,15 +33,17 @@ def cli_coro(signals=(signal.SIGHUP, signal.SIGTERM, signal.SIGINT),
                 for ss in signals:
                     loop.add_signal_handler(ss, shutdown_func, ss, loop)
             return loop.run_until_complete(f(*args, **kwargs))
+
         return wrapper
+
     return decorator_cli_coro
 
 
 @click.command()
-@click.option('--debug', is_flag=True,
-              help='Do NOT detach and run in the background.')
-@click.option('--log', type=str,
-              help='Redirects stdout and stderr to a file (append mode).')
+@click.option("--debug", is_flag=True, help="Do NOT detach and run in the background.")
+@click.option(
+    "--log", type=str, help="Redirects stdout and stderr to a file (append mode)."
+)
 @pass_context
 def start(ctx, debug, log):
     """Start the daemon."""
@@ -54,7 +57,7 @@ def start(ctx, debug, log):
         orig_worker = ctx.parent.command.daemon.worker
 
         def new_worker():
-            f = open(log, 'a')
+            f = open(log, "a")
             sys.stdout = f
             sys.stderr = f
             orig_worker()
@@ -64,7 +67,7 @@ def start(ctx, debug, log):
     if debug:
         ctx.parent.command.daemon.worker()
     else:
-        ctx.parent.command.daemon.do_action('start')
+        ctx.parent.command.daemon.do_action("start")
 
 
 @click.command()
@@ -72,7 +75,7 @@ def start(ctx, debug, log):
 def stop(ctx):
     """Stop the daemon."""
 
-    ctx.parent.command.daemon.do_action('stop')
+    ctx.parent.command.daemon.do_action("stop")
 
 
 @click.command()
@@ -80,7 +83,7 @@ def stop(ctx):
 def restart(ctx):
     """Restart the daemon."""
 
-    ctx.parent.command.daemon.do_action('restart')
+    ctx.parent.command.daemon.do_action("restart")
 
 
 @click.command()
@@ -88,7 +91,7 @@ def restart(ctx):
 def status(ctx):
     """Report if the daemon is running."""
 
-    ctx.parent.command.daemon.do_action('status')
+    ctx.parent.command.daemon.do_action("status")
 
 
 class DaemonGroup(click.Group):
@@ -101,18 +104,18 @@ class DaemonGroup(click.Group):
 
     def __init__(self, *args, callback=None, **kwargs):
 
-        if 'prog' not in kwargs:
-            raise RuntimeError('Daemon prog not defined.')
+        if "prog" not in kwargs:
+            raise RuntimeError("Daemon prog not defined.")
 
-        prog = kwargs.pop('prog')
+        prog = kwargs.pop("prog")
 
         # Here kwargs are the parameters in the @click.group decorator.
-        pidfile = kwargs.pop('pidfile', f'/var/tmp/{prog}.pid')
+        pidfile = kwargs.pop("pidfile", f"/var/tmp/{prog}.pid")
 
         daemon_params = {}
         signature = inspect.signature(Daemon).parameters
         for param in kwargs.copy():
-            if param in signature and param != 'name':
+            if param in signature and param != "name":
                 daemon_params.update({param: kwargs.pop(param)})
 
         self.daemon = Daemon(pidfile=pidfile, **daemon_params)
@@ -134,7 +137,7 @@ class DaemonGroup(click.Group):
 
     def list_commands(self, ctx):
         """Get a list of subcommands."""
-        return ['start', 'stop', 'restart', 'status']
+        return ["start", "stop", "restart", "status"]
 
     def get_command(self, ctx, name):
         """Get a callable command object."""

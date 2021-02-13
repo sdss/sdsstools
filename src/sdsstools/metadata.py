@@ -20,7 +20,7 @@ except ImportError:
     import importlib_metadata
 
 
-METADATA_FILES = ['pyproject.toml', 'setup.cfg', 'setup.py']
+METADATA_FILES = ["pyproject.toml", "setup.cfg", "setup.py"]
 
 
 def get_metadata_files(path):
@@ -81,23 +81,24 @@ def get_package_version(path=None, package_name=None, pep_440=False):
 
     """
 
-    assert path or package_name, 'either path or package_name are needed.'
+    assert path or package_name, "either path or package_name are needed."
 
     version = None
 
     if path:
         metadata_file = get_metadata_files(path)
         if metadata_file:
-            if 'pyproject.toml' in str(metadata_file):
+            if "pyproject.toml" in str(metadata_file):
                 pyproject = toml.load(open(metadata_file))
-                if 'tool' in pyproject and 'poetry' in pyproject['tool']:
-                    version = pyproject['tool']['poetry']['version']
-            elif 'setup.cfg' in str(metadata_file):
+                if "tool" in pyproject and "poetry" in pyproject["tool"]:
+                    version = pyproject["tool"]["poetry"]["version"]
+            elif "setup.cfg" in str(metadata_file):
                 setupcfg = configparser.ConfigParser()
                 setupcfg.read(metadata_file)
-                if (setupcfg.has_section('metadata') and
-                        setupcfg.has_option('metadata', 'version')):
-                    version = setupcfg.get('metadata', 'version')
+                if setupcfg.has_section("metadata") and setupcfg.has_option(
+                    "metadata", "version"
+                ):
+                    version = setupcfg.get("metadata", "version")
 
     if package_name and not version:
         try:

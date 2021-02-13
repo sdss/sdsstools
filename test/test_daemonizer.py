@@ -21,97 +21,94 @@ from sdsstools.daemonizer import DaemonGroup, cli_coro
 # that daemonocle works well.
 
 
-@click.group(cls=DaemonGroup, prog='test', workdir='./', pidfile='./test.pid')
-@click.argument('name')
-@click.option('--option', type=str)
+@click.group(cls=DaemonGroup, prog="test", workdir="./", pidfile="./test.pid")
+@click.argument("name")
+@click.option("--option", type=str)
 def daemon_grp(name, option):
 
-    print(f'Hello {name}!\n')
-    print(f'Option: {option}\n')
+    print(f"Hello {name}!\n")
+    print(f"Option: {option}\n")
 
 
 def test_debug(cli_runner):
 
-    result = cli_runner.invoke(daemon_grp, ['--option', 'AnOption',
-                                            'Jose', 'start', '--debug'])
+    result = cli_runner.invoke(
+        daemon_grp, ["--option", "AnOption", "Jose", "start", "--debug"]
+    )
 
     assert result.exit_code == 0
-    assert 'Hello Jose' in result.output
-    assert 'Option: AnOption' in result.output
+    assert "Hello Jose" in result.output
+    assert "Option: AnOption" in result.output
 
-    ctx = daemon_grp.make_context('test', ['Jose', 'start', '--debug'])
-    assert daemon_grp.list_commands(ctx) == ['start', 'stop',
-                                             'restart', 'status']
+    ctx = daemon_grp.make_context("test", ["Jose", "start", "--debug"])
+    assert daemon_grp.list_commands(ctx) == ["start", "stop", "restart", "status"]
 
 
 def test_bad_command(cli_runner):
 
-    result = cli_runner.invoke(daemon_grp, ['Jose', 'bad_command'])
+    result = cli_runner.invoke(daemon_grp, ["Jose", "bad_command"])
     assert result.exit_code != 0
 
 
 def test_start_stop_restart_status(mocker, cli_runner):
 
-    mocker.patch.object(Daemon, 'do_action')
+    mocker.patch.object(Daemon, "do_action")
 
-    cli_runner.invoke(daemon_grp, ['--option', 'AnOption', 'Jose', 'start'])
-    Daemon.do_action.assert_called_once_with('start')
+    cli_runner.invoke(daemon_grp, ["--option", "AnOption", "Jose", "start"])
+    Daemon.do_action.assert_called_once_with("start")
     Daemon.do_action.reset_mock()
 
-    cli_runner.invoke(daemon_grp, ['--option', 'AnOption', 'Jose', 'stop'])
-    Daemon.do_action.assert_called_once_with('stop')
+    cli_runner.invoke(daemon_grp, ["--option", "AnOption", "Jose", "stop"])
+    Daemon.do_action.assert_called_once_with("stop")
     Daemon.do_action.reset_mock()
 
-    cli_runner.invoke(daemon_grp, ['--option', 'AnOption', 'Jose', 'restart'])
-    Daemon.do_action.assert_called_once_with('restart')
+    cli_runner.invoke(daemon_grp, ["--option", "AnOption", "Jose", "restart"])
+    Daemon.do_action.assert_called_once_with("restart")
     Daemon.do_action.reset_mock()
 
-    cli_runner.invoke(daemon_grp, ['--option', 'AnOption', 'Jose', 'status'])
-    Daemon.do_action.assert_called_once_with('status')
+    cli_runner.invoke(daemon_grp, ["--option", "AnOption", "Jose", "status"])
+    Daemon.do_action.assert_called_once_with("status")
 
 
 def test_no_prog():
 
     with pytest.raises(RuntimeError):
-        @click.group(cls=DaemonGroup, pidfile='./test.pid')
-        @click.argument('name')
-        @click.option('--option', type=str)
+
+        @click.group(cls=DaemonGroup, pidfile="./test.pid")
+        @click.argument("name")
+        @click.option("--option", type=str)
         def daemon_grp(name, option):
             pass
 
 
-@pytest.mark.skipif(sys.version_info < (3, 7),
-                    reason='Requires Python 3.7 or higher.')
+@pytest.mark.skipif(sys.version_info < (3, 7), reason="Requires Python 3.7 or higher.")
 def test_daemon_coro(cli_runner, event_loop):
-
-    @click.group(cls=DaemonGroup, prog='test_async', pidfile='./test.pid')
-    @click.argument('name')
+    @click.group(cls=DaemonGroup, prog="test_async", pidfile="./test.pid")
+    @click.argument("name")
     @cli_coro()
     async def daemon_grp_async(name):
-        print(f'Hello {name}!\n')
+        print(f"Hello {name}!\n")
 
-    result = cli_runner.invoke(daemon_grp_async, ['Jose', 'start', '--debug'])
+    result = cli_runner.invoke(daemon_grp_async, ["Jose", "start", "--debug"])
 
     # print(result.)
     assert result.exit_code == 0
-    assert 'Hello Jose' in result.output
+    assert "Hello Jose" in result.output
 
 
-@pytest.mark.skipif(sys.version_info < (3, 7),
-                    reason='Requires Python 3.7 or higher.')
+@pytest.mark.skipif(sys.version_info < (3, 7), reason="Requires Python 3.7 or higher.")
 def test_coro_signal_handling(cli_runner, event_loop):
-
     def dummy_handler(signal, loop):
         pass
 
-    @click.group(cls=DaemonGroup, prog='test_async')
-    @click.argument('name')
+    @click.group(cls=DaemonGroup, prog="test_async")
+    @click.argument("name")
     @cli_coro(shutdown_func=dummy_handler)
     async def daemon_grp_async(name):
-        print(f'Hello {name}!\n')
+        print(f"Hello {name}!\n")
 
-    result = cli_runner.invoke(daemon_grp_async, ['Jose', 'start', '--debug'])
+    result = cli_runner.invoke(daemon_grp_async, ["Jose", "start", "--debug"])
 
     # print(result.)
     assert result.exit_code == 0
-    assert 'Hello Jose' in result.output
+    assert "Hello Jose" in result.output

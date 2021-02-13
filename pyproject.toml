@@ -46,22 +46,25 @@ daemonocle = "^1.0.2"
 pytest-click = "^0.3"
 pytest-mock = "^3.2.0"
 pytest-asyncio = "^0.14.0"
+black = {version = "^20.8b1", allow-prereleases = true}
 
 [tool.poetry.extras]
 
 [tool.poetry.scripts]
 sdss = 'sdsstools.cli:main'
 
+[tool.black]
+line-length = 88
+target-version = ['py38']
+fast = true
+
 [tool.isort]
-line_length = 79
-sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+profile = "black"
+sections = ["FUTURE", "STDLIB", "TYPING", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 default_section = "THIRDPARTY"
-known_first_party = "sdsstool"
-# multi_line_output = false
-balanced_wrapping = true
-include_trailing_comma = false
+known_first_party = "sdsstools"
+known_typing = ["typing"]
 lines_after_imports = 2
-use_parentheses = true
 skip_glob = ["*/_vendor", "*/releases/*"]
 
 [tool.pytest.ini_options]

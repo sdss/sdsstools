@@ -24,17 +24,17 @@ from pygments.lexers import get_lexer_by_name
 from ._vendor.color_print import color_text
 
 
-__all__ = ['get_logger']
+__all__ = ["get_logger"]
 
 
-WARNING_RE = re.compile(r'^.*?\s*?(\w*?Warning): (.*)')
+WARNING_RE = re.compile(r"^.*?\s*?(\w*?Warning): (.*)")
 
 
 def get_exception_formatted(tp, value, tb):
     """Adds colours to tracebacks."""
 
-    tbtext = ''.join(traceback.format_exception(tp, value, tb))
-    lexer = get_lexer_by_name('pytb', stripall=True)
+    tbtext = "".join(traceback.format_exception(tp, value, tb))
+    lexer = get_lexer_by_name("pytb", stripall=True)
     formatter = TerminalFormatter()
     return highlight(tbtext, lexer, formatter)
 
@@ -42,18 +42,20 @@ def get_exception_formatted(tp, value, tb):
 class StreamFormatter(logging.Formatter):
     """Custom `Formatter <logging.Formatter>` for the stream handler."""
 
-    base_fmt = '%(message)s'
+    base_fmt = "%(message)s"
 
     def __init__(self, fmt=base_fmt):
         logging.Formatter.__init__(self, fmt)
 
     def format(self, record):
 
-        colours = {'info': 'blue',
-                   'debug': 'magenta',
-                   'warning': 'yellow',
-                   'critical': 'red',
-                   'error': 'red'}
+        colours = {
+            "info": "blue",
+            "debug": "magenta",
+            "warning": "yellow",
+            "critical": "red",
+            "error": "red",
+        }
 
         record_cp = copy.copy(record)
 
@@ -62,18 +64,18 @@ class StreamFormatter(logging.Formatter):
 
         if levelname.lower() in colours:
             level_colour = colours[levelname]
-            header = color_text('[{}]: '.format(levelname.upper()), level_colour)
+            header = color_text("[{}]: ".format(levelname.upper()), level_colour)
         else:
             return logging.Formatter.format(self, record)
 
-        record_cp.msg = '{}{}'.format(header, message)
+        record_cp.msg = "{}{}".format(header, message)
 
-        if levelname == 'warning' and len(record_cp.args) > 0:
+        if levelname == "warning" and len(record_cp.args) > 0:
             warning_category_groups = WARNING_RE.match(record_cp.args[0])
             if warning_category_groups is not None:
                 wcategory, wtext = warning_category_groups.groups()
-                wcategory_colour = color_text('({})'.format(wcategory), 'cyan')
-                message = '{} {}'.format(color_text(wtext, ''), wcategory_colour)
+                wcategory_colour = color_text("({})".format(wcategory), "cyan")
+                message = "{} {}".format(color_text(wtext, ""), wcategory_colour)
                 record_cp.args = tuple([message] + list(record_cp.args[1:]))
 
         return logging.Formatter.format(self, record_cp)
@@ -82,8 +84,8 @@ class StreamFormatter(logging.Formatter):
 class FileFormatter(logging.Formatter):
     """Custom `Formatter <logging.Formatter>` for the file handler."""
 
-    base_fmt = '%(asctime)s - %(levelname)s - %(message)s'
-    ansi_escape = re.compile(r'\x1b[^m]*m')
+    base_fmt = "%(asctime)s - %(levelname)s - %(message)s"
+    ansi_escape = re.compile(r"\x1b[^m]*m")
 
     def __init__(self, fmt=base_fmt):
         logging.Formatter.__init__(self, fmt)
@@ -94,16 +96,16 @@ class FileFormatter(logging.Formatter):
         # affect how the record is displayed in other handlers.
         record_cp = copy.copy(record)
 
-        record_cp.msg = self.ansi_escape.sub('', record_cp.msg)
+        record_cp.msg = self.ansi_escape.sub("", record_cp.msg)
 
         # The format of a warnings redirected with warnings.captureWarnings
         # has the format <path>: <category>: message\n  <some-other-stuff>.
         # We reorganise that into a cleaner message. For some reason in this
         # case the message is in record.args instead of in record.msg.
         if record_cp.levelno == logging.WARNING and len(record_cp.args) > 0:
-            match = re.match(r'^(.*?):\s*?(\w*?Warning): (.*)', record_cp.args[0])
+            match = re.match(r"^(.*?):\s*?(\w*?Warning): (.*)", record_cp.args[0])
             if match:
-                message = '{1} - {2} [{0}]'.format(*match.groups())
+                message = "{1} - {2} [{0}]".format(*match.groups())
                 record_cp.args = tuple([message] + list(record_cp.args[1:]))
 
         return logging.Formatter.format(self, record_cp)
@@ -146,7 +148,7 @@ class SDSSLogger(logging.Logger):
         self.log_filename = None
 
         # A header that precedes every message.
-        self.header = ''
+        self.header = ""
 
         # Catches exceptions
         sys.excepthook = self._catch_exceptions
@@ -172,7 +174,7 @@ class SDSSLogger(logging.Logger):
 
         logging.captureWarnings(True)
 
-        self.warnings_logger = logging.getLogger('py.warnings')
+        self.warnings_logger = logging.getLogger("py.warnings")
 
         # Only enable the sh handler if none is attached to the warnings
         # logger yet. Prevents duplicated prints of the warnings.
@@ -185,7 +187,7 @@ class SDSSLogger(logging.Logger):
     def asyncio_exception_handler(self, loop, context):
         """Handle an uncaught asyncio exception and reports it."""
 
-        exception = context.get('exception', None)
+        exception = context.get("exception", None)
 
         if exception:
             try:
@@ -199,14 +201,15 @@ class SDSSLogger(logging.Logger):
     def save_log(self, path):
         shutil.copyfile(self.log_filename, os.path.expanduser(path))
 
-    def start_file_logger(self, path, log_level=logging.DEBUG,
-                          mode='a', rotating=True, rollover=False):
+    def start_file_logger(
+        self, path, log_level=logging.DEBUG, mode="a", rotating=True, rollover=False
+    ):
         """Start file logging."""
 
         log_file_path = os.path.expanduser(path)
         logdir = os.path.dirname(log_file_path)
 
-        SUFFIX = '%Y-%m-%d_%H:%M:%S'
+        SUFFIX = "%Y-%m-%d_%H:%M:%S"
 
         try:
 
@@ -215,22 +218,24 @@ class SDSSLogger(logging.Logger):
 
             if os.path.exists(log_file_path) and rotating and rollover:
                 now = datetime.datetime.utcnow()
-                dst = str(log_file_path) + '.' + now.strftime(SUFFIX)
+                dst = str(log_file_path) + "." + now.strftime(SUFFIX)
                 shutil.move(str(log_file_path), dst)
 
             if rotating:
-                self.fh = TimedRotatingFileHandler(str(log_file_path),
-                                                   when='midnight',
-                                                   utc=True)
+                self.fh = TimedRotatingFileHandler(
+                    str(log_file_path), when="midnight", utc=True
+                )
                 self.fh.suffix = SUFFIX
             else:
                 self.fh = logging.FileHandler(str(log_file_path), mode=mode)
 
         except (IOError, OSError) as ee:
 
-            warnings.warn('log file {0!r} could not be opened for '
-                          'writing: {1}'.format(log_file_path, ee),
-                          RuntimeWarning)
+            warnings.warn(
+                "log file {0!r} could not be opened for "
+                "writing: {1}".format(log_file_path, ee),
+                RuntimeWarning,
+            )
 
         else:
 
@@ -246,7 +251,7 @@ class SDSSLogger(logging.Logger):
     def handle(self, record):
         """Handles a record but first stores it."""
 
-        if hasattr(self, 'header') and self.header is not None:
+        if hasattr(self, "header") and self.header is not None:
             if not isinstance(record.msg, Exception):
                 record.msg = self.header + record.msg
 

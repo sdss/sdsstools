@@ -4,6 +4,7 @@ class LineManager(dict):
     """
     Manages multiple release lines/families as well as related config state.
     """
+
     def __init__(self, app):
         """
         Initialize new line manager dict.
@@ -28,11 +29,11 @@ class LineManager(dict):
         other necessary bookkeeping.
         """
         # Normally, we have separate buckets for bugfixes vs features
-        keys = ['unreleased_bugfix', 'unreleased_feature']
+        keys = ["unreleased_bugfix", "unreleased_feature"]
         # But unstable prehistorical releases roll all up into just
         # 'unreleased'
         if major_number == 0 and self.config.releases_unstable_prehistory:
-            keys = ['unreleased']
+            keys = ["unreleased"]
         # Either way, the buckets default to an empty list
         self[major_number] = {key: [] for key in keys}
 
@@ -43,10 +44,7 @@ class LineManager(dict):
 
         Specifically, checks config & whether any non-0.x releases exist.
         """
-        return (
-            self.config.releases_unstable_prehistory and
-            not self.has_stable_releases
-        )
+        return self.config.releases_unstable_prehistory and not self.has_stable_releases
 
     @property
     def stable_families(self):
@@ -70,6 +68,4 @@ class LineManager(dict):
             return True
         # If there's only one, we may still be in the space before its N.0.0 as
         # well; we can check by testing for existence of bugfix buckets
-        return any(
-            x for x in self[nonzeroes[0]] if not x.startswith('unreleased')
-        )
+        return any(x for x in self[nonzeroes[0]] if not x.startswith("unreleased"))

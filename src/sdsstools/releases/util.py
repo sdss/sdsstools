@@ -10,15 +10,20 @@ import sphinx
 from docutils.core import Publisher
 from docutils.io import NullOutput
 from docutils.nodes import bullet_list
-from sphinx.application import Sphinx # not exposed at top level
+from sphinx.application import Sphinx  # not exposed at top level
+
 try:
     from sphinx.io import (
-        SphinxStandaloneReader, SphinxFileInput, SphinxDummyWriter,
+        SphinxStandaloneReader,
+        SphinxFileInput,
+        SphinxDummyWriter,
     )
 except ImportError:
     # NOTE: backwards compat with Sphinx 1.3
     from sphinx.environment import (
-        SphinxStandaloneReader, SphinxFileInput, SphinxDummyWriter,
+        SphinxStandaloneReader,
+        SphinxFileInput,
+        SphinxDummyWriter,
     )
 # sphinx_domains is only in Sphinx 1.5+, but is presumably necessary from then
 # onwards.
@@ -27,9 +32,11 @@ try:
 except ImportError:
     # Just dummy it up.
     from contextlib import contextmanager
+
     @contextmanager
     def sphinx_domains(env):
         yield
+
 
 from . import construct_releases, setup
 
@@ -88,17 +95,17 @@ def parse_changelog(path, **kwargs):
     # - nuke unreleased_N.N_Y as their contents will be represented in the
     # per-line buckets
     for key in ret.copy():
-        if key.startswith('unreleased'):
+        if key.startswith("unreleased"):
             del ret[key]
     for family in manager:
         # - remove unreleased_bugfix, as they are accounted for in the per-line
         # buckets too. No need to store anywhere.
-        manager[family].pop('unreleased_bugfix', None)
+        manager[family].pop("unreleased_bugfix", None)
         # - bring over each major family's unreleased_feature as
         # unreleased_N_feature
-        unreleased = manager[family].pop('unreleased_feature', None)
+        unreleased = manager[family].pop("unreleased_feature", None)
         if unreleased is not None:
-            ret['unreleased_{}_feature'.format(family)] = unreleased
+            ret["unreleased_{}_feature".format(family)] = unreleased
         # - bring over all per-line buckets from manager (flattening)
         # Here, all that's left in the per-family bucket should be lines, not
         # unreleased_*
@@ -148,21 +155,21 @@ def get_doctree(path, **kwargs):
         env.update(**kwargs)
     except TypeError:
         # Assume newer Sphinx w/o an app= kwarg
-        del kwargs['app']
+        del kwargs["app"]
         env.update(**kwargs)
     # Code taken from sphinx.environment.read_doc; easier to manually call
     # it with a working Environment object, instead of doing more random crap
     # to trick the higher up build system into thinking our single changelog
     # document was "updated".
-    env.temp_data['docname'] = docname
+    env.temp_data["docname"] = docname
     env.app = app
     # NOTE: SphinxStandaloneReader API changed in 1.4 :(
     reader_kwargs = {
-        'app': app,
-        'parsers': env.config.source_parsers,
+        "app": app,
+        "parsers": env.config.source_parsers,
     }
     if sphinx.version_info[:2] < (1, 4):
-        del reader_kwargs['app']
+        del reader_kwargs["app"]
     # This monkeypatches (!!!) docutils to 'inject' all registered Sphinx
     # domains' roles & so forth. Without this, rendering the doctree lacks
     # almost all Sphinx magic, including things like :ref: and :doc:!
@@ -171,12 +178,12 @@ def get_doctree(path, **kwargs):
             reader = SphinxStandaloneReader(**reader_kwargs)
         except TypeError:
             # If we import from io, this happens automagically, not in API
-            del reader_kwargs['parsers']
+            del reader_kwargs["parsers"]
             reader = SphinxStandaloneReader(**reader_kwargs)
-        pub = Publisher(reader=reader,
-                        writer=SphinxDummyWriter(),
-                        destination_class=NullOutput)
-        pub.set_components(None, 'restructuredtext', None)
+        pub = Publisher(
+            reader=reader, writer=SphinxDummyWriter(), destination_class=NullOutput
+        )
+        pub.set_components(None, "restructuredtext", None)
         pub.process_programmatic_settings(None, env.settings, None)
         # NOTE: docname derived higher up, from our given path
         src_path = env.doc2path(docname)
@@ -200,8 +207,8 @@ def load_conf(srcdir):
 
     :returns: Dictionary derived from the conf module.
     """
-    path = os.path.join(srcdir, 'conf.py')
-    mylocals = {'__file__': path}
+    path = os.path.join(srcdir, "conf.py")
+    mylocals = {"__file__": path}
     with open(path) as fd:
         exec(fd.read(), mylocals)
     return mylocals
@@ -248,10 +255,10 @@ def make_app(**kwargs):
     .. versionchanged:: 1.6
         Added the ``load_extensions`` kwarg.
     """
-    srcdir = kwargs.pop('srcdir', mkdtemp())
-    dstdir = kwargs.pop('dstdir', mkdtemp())
-    doctreedir = kwargs.pop('doctreedir', mkdtemp())
-    load_extensions = kwargs.pop('load_extensions', False)
+    srcdir = kwargs.pop("srcdir", mkdtemp())
+    dstdir = kwargs.pop("dstdir", mkdtemp())
+    doctreedir = kwargs.pop("doctreedir", mkdtemp())
+    load_extensions = kwargs.pop("load_extensions", False)
     real_conf = None
     try:
         # Sphinx <1.6ish
@@ -260,7 +267,7 @@ def make_app(**kwargs):
         # unlike the total muting above, but probably OK.
         # NOTE: used to just do 'sphinx' but that stopped working, even on
         # sphinx 1.6.x. Weird. Unsure why hierarchy not functioning.
-        for name in ('sphinx', 'sphinx.sphinx.application'):
+        for name in ("sphinx", "sphinx.sphinx.application"):
             logging.getLogger(name).setLevel(logging.ERROR)
         # App API seems to work on all versions so far.
         app = Sphinx(
@@ -268,7 +275,7 @@ def make_app(**kwargs):
             confdir=None,
             outdir=dstdir,
             doctreedir=doctreedir,
-            buildername='html',
+            buildername="html",
         )
         # Might as well load the conf file here too.
         if load_extensions:
@@ -287,17 +294,17 @@ def make_app(**kwargs):
     # feasible given the rest of the weird ordering we have to do? If it is,
     # maybe just literally slap this over the return value of load_conf()...
     config = {
-        'releases_release_uri': 'foo_%s',
-        'releases_issue_uri': 'bar_%s',
-        'releases_debug': False,
-        'master_doc': 'index',
+        "releases_release_uri": "foo_%s",
+        "releases_issue_uri": "bar_%s",
+        "releases_debug": False,
+        "master_doc": "index",
     }
     # Allow tinkering with document filename
-    if 'docname' in kwargs:
-        app.env.temp_data['docname'] = kwargs.pop('docname')
+    if "docname" in kwargs:
+        app.env.temp_data["docname"] = kwargs.pop("docname")
     # Allow config overrides via kwargs
     for name in kwargs:
-        config['releases_{}'.format(name)] = kwargs[name]
+        config["releases_{}".format(name)] = kwargs[name]
     # Stitch together as the sphinx app init() usually does w/ real conf files
     app.config._raw_config = config
     # init_values() requires a 'warn' runner on Sphinx 1.3-1.6, so if we seem
@@ -305,14 +312,14 @@ def make_app(**kwargs):
     # calling twice doesn't introduce any wacko state issues :(
     try:
         app.config.init_values()
-    except TypeError: # boy I wish Python had an ArityError or w/e
+    except TypeError:  # boy I wish Python had an ArityError or w/e
         app.config.init_values(lambda x: x)
     # Initialize extensions (the internal call to this happens at init time,
     # which of course had no valid config yet here...)
     if load_extensions:
-        for extension in real_conf.get('extensions', []):
+        for extension in real_conf.get("extensions", []):
             # But don't set up ourselves again, that causes errors
-            if extension == 'releases':
+            if extension == "releases":
                 continue
             app.setup_extension(extension)
     return app
@@ -324,4 +331,4 @@ def changelog2dict(changelog):
 
     See `parse_changelog` docstring for return value details.
     """
-    return {r['obj'].number: r['entries'] for r in changelog}
+    return {r["obj"].number: r["entries"] for r in changelog}

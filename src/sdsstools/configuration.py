@@ -15,18 +15,20 @@ import re
 import yaml
 
 
-__all__ = ['read_yaml_file', 'merge_config', 'get_config', 'Configuration']
+__all__ = ["read_yaml_file", "merge_config", "get_config", "Configuration"]
 
 
 __ENVVARS__ = {}
 
 # Potential paths where the user configuration file could be. Must not include
 # the yml or yaml extension.
-DEFAULT_PATHS = ['~/.config/sdss/{name}',
-                 '~/.config/sdss/{name}/{name}',
-                 '~/.{name}/{name}']
+DEFAULT_PATHS = [
+    "~/.config/sdss/{name}",
+    "~/.config/sdss/{name}/{name}",
+    "~/.{name}/{name}",
+]
 
-env_matcher = re.compile(r'\$\{([^}^{]+)\}')
+env_matcher = re.compile(r"\$\{([^}^{]+)\}")
 
 
 def env_constructor(loader, node):
@@ -36,18 +38,20 @@ def env_constructor(loader, node):
     match = env_matcher.match(value)
     env_var = match.group()[2:-1]
 
-    return os.environ.get(env_var, __ENVVARS__.get(env_var, value)) + value[match.end():]
+    return (
+        os.environ.get(env_var, __ENVVARS__.get(env_var, value)) + value[match.end() :]
+    )
 
 
-yaml.add_implicit_resolver('!env', env_matcher)
-yaml.add_constructor('!env', env_constructor)
+yaml.add_implicit_resolver("!env", env_matcher)
+yaml.add_constructor("!env", env_constructor)
 
 
 def read_yaml_file(path, use_extends=True, loader=yaml.FullLoader):
     """Read a YAML file and returns a dictionary."""
 
     if isinstance(path, (str, pathlib.Path)):
-        fp = open(path, 'r')
+        fp = open(path, "r")
     else:
         fp = path
 
@@ -60,15 +64,16 @@ def read_yaml_file(path, use_extends=True, loader=yaml.FullLoader):
     if use_extends:
         fp.seek(0)
         for line in fp.readlines():
-            if line.strip().startswith('#!extends'):
+            if line.strip().startswith("#!extends"):
                 base_file = line.strip().split()[1]
-                if not os.path.isabs(base_file) and hasattr(fp, 'buffer'):
+                if not os.path.isabs(base_file) and hasattr(fp, "buffer"):
                     base_file = os.path.join(os.path.dirname(path), base_file)
                 if not os.path.exists(base_file):
-                    raise FileExistsError(f'cannot find !extends file {base_file}.')
-                return merge_config(read_yaml_file(base_file, use_extends=False),
-                                    config)
-            elif line.strip().startswith('#') or line.strip() == '':
+                    raise FileExistsError(f"cannot find !extends file {base_file}.")
+                return merge_config(
+                    read_yaml_file(base_file, use_extends=False), config
+                )
+            elif line.strip().startswith("#") or line.strip() == "":
                 continue
 
     return config
@@ -87,8 +92,15 @@ def merge_config(user, default):
     return user
 
 
-def get_config(name, config_file=None, allow_user=True, user_path=None,
-               config_envvar=None, merge_mode='update', default_envvars={}):
+def get_config(
+    name,
+    config_file=None,
+    allow_user=True,
+    user_path=None,
+    config_envvar=None,
+    merge_mode="update",
+    default_envvars={},
+):
     """Returns a configuration dictionary.
 
     The configuration dictionary is created by merging the default
@@ -133,29 +145,28 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
 
     """
 
-    assert merge_mode in ['update', 'replace'], 'invalid merge mode.'
+    assert merge_mode in ["update", "replace"], "invalid merge mode."
 
     if not config_file:
         try:
             frame = inspect.stack()[1]
             module = inspect.getmodule(frame[0])
             dirname = os.path.dirname(module.__file__)
-            config_file = os.path.join(dirname, f'etc/{name}.yml')
+            config_file = os.path.join(dirname, f"etc/{name}.yml")
         except AttributeError:
             config_file = None
 
     if allow_user is False:
-        return Configuration(base_config=config_file,
-                             default_envvars=default_envvars)
+        return Configuration(base_config=config_file, default_envvars=default_envvars)
 
-    config_envvar = config_envvar or '{}_CONFIG_PATH'.format(name.upper())
+    config_envvar = config_envvar or "{}_CONFIG_PATH".format(name.upper())
 
     if user_path is not None:
         user_path = os.path.expanduser(os.path.expandvars(user_path))
-        assert os.path.exists(user_path), f'User path {user_path!r} not found.'
+        assert os.path.exists(user_path), f"User path {user_path!r} not found."
     else:
         # Test a few default paths and exit when finds one.
-        extensions = ['.yaml', '.yml']
+        extensions = [".yaml", ".yml"]
         for path, extension in itertools.product(DEFAULT_PATHS, extensions):
             path = str(path).format(name=name)
             test_path = os.path.expanduser(path + extension)
@@ -170,12 +181,14 @@ def get_config(name, config_file=None, allow_user=True, user_path=None,
     else:
         custom_config_fn = None
 
-    if merge_mode == 'update':
-        return Configuration(custom_config_fn, base_config=config_file,
-                             default_envvars=default_envvars)
+    if merge_mode == "update":
+        return Configuration(
+            custom_config_fn, base_config=config_file, default_envvars=default_envvars
+        )
     else:
-        return Configuration(custom_config_fn, base_config=None,
-                             default_envvars=default_envvars)
+        return Configuration(
+            custom_config_fn, base_config=None, default_envvars=default_envvars
+        )
 
 
 class Configuration(dict):
@@ -221,7 +234,7 @@ class Configuration(dict):
             elif isinstance(config, (str, pathlib.Path)):
                 return read_yaml_file(config)
             else:
-                raise ValueError('Invalid config of type {}'.format(type(config)))
+                raise ValueError("Invalid config of type {}".format(type(config)))
 
         return merge_config(self._parse_config(config, use_base=False), self._BASE)
 
