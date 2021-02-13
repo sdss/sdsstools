@@ -6,11 +6,15 @@
 # @Filename: configuration.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+from __future__ import annotations
+
 import inspect
 import itertools
 import os
 import pathlib
 import re
+
+from typing import Any, Mapping, Optional, Union
 
 import yaml
 
@@ -38,16 +42,24 @@ def env_constructor(loader, node):
     match = env_matcher.match(value)
     env_var = match.group()[2:-1]
 
-    return (
-        os.environ.get(env_var, __ENVVARS__.get(env_var, value)) + value[match.end() :]
-    )
+    def_env_var = __ENVVARS__.get(env_var, value)
+
+    return os.environ.get(env_var, def_env_var) + value[match.end() :]
 
 
 yaml.add_implicit_resolver("!env", env_matcher)
 yaml.add_constructor("!env", env_constructor)
 
 
-def read_yaml_file(path, use_extends=True, loader=yaml.FullLoader):
+ConfigType = Mapping[str, Any]
+AnyPath = Union[str, pathlib.Path]
+
+
+def read_yaml_file(
+    path: AnyPath,
+    use_extends: bool = True,
+    loader: Any = yaml.FullLoader,
+) -> ConfigType:
     """Read a YAML file and returns a dictionary."""
 
     if isinstance(path, (str, pathlib.Path)):
@@ -56,7 +68,7 @@ def read_yaml_file(path, use_extends=True, loader=yaml.FullLoader):
         fp = path
 
     fp.seek(0)
-    config = yaml.load(fp, Loader=loader)
+    config: ConfigType | None = yaml.load(fp, Loader=loader)
 
     if config is None or config == {}:
         return {}
@@ -79,7 +91,7 @@ def read_yaml_file(path, use_extends=True, loader=yaml.FullLoader):
     return config
 
 
-def merge_config(user, default):
+def merge_config(user: ConfigType, default: ConfigType) -> ConfigType:
     """Merges a user configuration with the default one."""
 
     if isinstance(user, dict) and isinstance(default, dict):
@@ -93,14 +105,14 @@ def merge_config(user, default):
 
 
 def get_config(
-    name,
-    config_file=None,
-    allow_user=True,
-    user_path=None,
-    config_envvar=None,
-    merge_mode="update",
-    default_envvars={},
-):
+    name: str,
+    config_file: Optional[AnyPath] = None,
+    allow_user: bool = True,
+    user_path: Optional[AnyPath] = None,
+    config_envvar: Optional[str] = None,
+    merge_mode: str = "update",
+    default_envvars: dict[str, Any] = {},
+) -> Configuration:
     """Returns a configuration dictionary.
 
     The configuration dictionary is created by merging the default
@@ -112,37 +124,36 @@ def get_config(
 
     Parameters
     ----------
-    name : str
+    name
         The name of the package.
-    config_file : str
+    config_file
         The path to the configuration file. If `None`, defaults to
         ``etc/<name>.yml`` relative to the file that called `.get_config`.
-    allow_user : bool
+    allow_user
         If `True`, looks for an user configuration file and merges is to the
         default configuration. Otherwise it returns just the default
         configuration.
-    user_path : str
+    user_path
         The path to the user configuration file. Defaults to
         ``~/.config/sdss/<name>/<name>.yml``. Ignored if the file does not
         exist.
-    config_envvar : str
+    config_envvar
         The environment variable that contains the path to the user
         configuration file. Defaults to ``<name>_CONFIG_PATH``. If the
         environment variable exists, the ``user_path`` is ignored.
-    merge_mode : str
+    merge_mode
         Defines how the default and user dictionaries will be merged. If
         ``update``, the user dictionary will be used to update the default
         configuration. If ``replace``, only the user configuration will be
         returned.
-    default_envvars : dict
+    default_envvars
         Default values for environment variables used in the configuration
         file.
 
     Returns
     -------
-    .Configuration
+    Configuration
         A `.Configuration` instance.
-
     """
 
     assert merge_mode in ["update", "replace"], "invalid merge mode."
@@ -196,18 +207,22 @@ class Configuration(dict):
 
     Parameters
     ----------
-    config : str or dict
+    config
         The path to the configuration file or the already parsed configuration
         as a dictionary.
-    base_config : str or dict
+    base_config
         A base configuration or file that the input configuration will update.
-    default_envvars : dict
+    default_envvars
         Default values for environment variables used in the configuration
         file.
-
     """
 
-    def __init__(self, config=None, base_config=None, default_envvars={}):
+    def __init__(
+        self,
+        config: Optional[AnyPath | ConfigType] = None,
+        base_config: Optional[AnyPath | ConfigType] = None,
+        default_envvars: dict[str, Any] = {},
+    ):
 
         global __ENVVARS__
 
@@ -238,17 +253,16 @@ class Configuration(dict):
 
         return merge_config(self._parse_config(config, use_base=False), self._BASE)
 
-    def load(self, config=None):
+    def load(self, config: Optional[AnyPath | ConfigType] = None):
         """Loads a configuration file.
 
         Parameters
         ----------
-        config : str or dict
+        config
             The configuration file or dictionary to load. If a base
             configuration was defined when the object was instantiated, it
             will be merged. If ``config=None``, the object will revert to the
             base configuration.
-
         """
 
         if config is None:

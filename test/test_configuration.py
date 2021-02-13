@@ -127,7 +127,7 @@ def test_configuration_envvar_defaults():
 def test_configurations_bad_value():
 
     with pytest.raises(ValueError):
-        Configuration(1)
+        Configuration(1)  # type: ignore
 
 
 def test_get_config_etc():

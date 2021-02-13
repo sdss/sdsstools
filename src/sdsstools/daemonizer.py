@@ -6,11 +6,15 @@
 # @Filename: daemonizer.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+from __future__ import annotations
+
 import asyncio
 import inspect
 import signal
 import sys
 from functools import partial, wraps
+
+from typing import Any, Callable
 
 import click
 from click.decorators import pass_context
@@ -21,7 +25,8 @@ __all__ = ["cli_coro", "DaemonGroup"]
 
 
 def cli_coro(
-    signals=(signal.SIGHUP, signal.SIGTERM, signal.SIGINT), shutdown_func=None
+    signals=(signal.SIGHUP, signal.SIGTERM, signal.SIGINT),
+    shutdown_func=None,
 ):
     """Decorator function that allows defining coroutines with click."""
 
@@ -40,9 +45,15 @@ def cli_coro(
 
 
 @click.command()
-@click.option("--debug", is_flag=True, help="Do NOT detach and run in the background.")
 @click.option(
-    "--log", type=str, help="Redirects stdout and stderr to a file (append mode)."
+    "--debug",
+    is_flag=True,
+    help="Do NOT detach and run in the background.",
+)
+@click.option(
+    "--log",
+    type=str,
+    help="Redirects stdout and stderr to a file (append mode).",
 )
 @pass_context
 def start(ctx, debug, log):
@@ -99,10 +110,14 @@ class DaemonGroup(click.Group):
 
     When used with ``@click.group`` it provides a Click group with commands
     ``start``, ``stop``, ``restart``, and ``status``
-
     """
 
-    def __init__(self, *args, callback=None, **kwargs):
+    def __init__(
+        self,
+        *args,
+        callback: Callable[[Any], Any] | None = None,
+        **kwargs,
+    ):
 
         if "prog" not in kwargs:
             raise RuntimeError("Daemon prog not defined.")
@@ -148,6 +163,7 @@ class DaemonGroup(click.Group):
         # Assign the daemon worker as the partial of the group callback
         # with the parameters received (these are the parameters of the
         # group, not of the command).
+        assert self.group_cb
         self.daemon.worker = partial(self.group_cb, **ctx.params)
 
         return self.commands[name]

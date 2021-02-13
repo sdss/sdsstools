@@ -6,6 +6,8 @@
 # @Filename: logger.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+from __future__ import annotations
+
 import copy
 import datetime
 import logging
@@ -17,8 +19,10 @@ import traceback
 import warnings
 from logging.handlers import TimedRotatingFileHandler
 
+from typing import Optional, cast
+
 from pygments import highlight
-from pygments.formatters import TerminalFormatter
+from pygments.formatters import TerminalFormatter  # type: ignore
 from pygments.lexers import get_lexer_by_name
 
 from ._vendor.color_print import color_text
@@ -118,21 +122,25 @@ class SDSSLogger(logging.Logger):
     ----------
     name : str
         The name of the logger.
-    log_level : int
-        The initial logging level for the console handler.
-    capture_warnings : bool
-        Whether to capture warnings and redirect them to the log.
-
     """
 
-    def __init__(self, name):
+    def __init__(self, name: str):
 
         # Placeholder for the last error-level message emitted.
         self._last_error = None
 
         super(SDSSLogger, self).__init__(name)
 
-    def init(self, log_level=logging.INFO, capture_warnings=True):
+    def init(self, log_level: int = logging.INFO, capture_warnings: bool = True):
+        """Initialise the logger.
+
+        Parameters
+        ----------
+        log_level
+            The initial logging level for the console handler.
+        capture_warnings
+            Whether to capture warnings and redirect them to the log.
+        """
 
         # Set levels
         self.setLevel(logging.DEBUG)
@@ -144,8 +152,8 @@ class SDSSLogger(logging.Logger):
         self.sh.setLevel(log_level)
 
         # Placeholders for the file handler.
-        self.fh = None
-        self.log_filename = None
+        self.fh: logging.FileHandler | None = None
+        self.log_filename: str | None = None
 
         # A header that precedes every message.
         self.header = ""
@@ -153,7 +161,7 @@ class SDSSLogger(logging.Logger):
         # Catches exceptions
         sys.excepthook = self._catch_exceptions
 
-        self.warnings_logger = None
+        self.warnings_logger: Optional[logging.Logger] = None
 
         if capture_warnings:
             self.capture_warnings()
@@ -198,13 +206,35 @@ class SDSSLogger(logging.Logger):
         else:
             loop.default_exception_handler(context)
 
-    def save_log(self, path):
+    def save_log(self, path: str):
+        assert self.log_filename, "File logger not running."
         shutil.copyfile(self.log_filename, os.path.expanduser(path))
 
     def start_file_logger(
-        self, path, log_level=logging.DEBUG, mode="a", rotating=True, rollover=False
+        self,
+        path: str,
+        log_level: int = logging.DEBUG,
+        mode: str = "a",
+        rotating: bool = True,
+        rollover: bool = False,
     ):
-        """Start file logging."""
+        """Start file logging.
+
+        Parameters
+        ----------
+        path
+            Path to which to log.
+        log_level
+            Logging level for the file handler.
+        mode
+            File mode.
+        rotating
+            If `True`, rotates the file logger at midnight UTC. Otherwise uses a
+            standard `~logging.FileHandler`.
+        rollover
+            If `True` and ``rotating=True` and the log file already exists, does a
+            rollover before starting to log.
+        """
 
         log_file_path = os.path.expanduser(path)
         logdir = os.path.dirname(log_file_path)
@@ -225,7 +255,7 @@ class SDSSLogger(logging.Logger):
                 self.fh = TimedRotatingFileHandler(
                     str(log_file_path), when="midnight", utc=True
                 )
-                self.fh.suffix = SUFFIX
+                self.fh.suffix = SUFFIX  # type: ignore
             else:
                 self.fh = logging.FileHandler(str(log_file_path), mode=mode)
 
@@ -279,16 +309,16 @@ class SDSSLogger(logging.Logger):
 
 
 def get_logger(name, **kwargs) -> SDSSLogger:
-    """Gets a new logger."""
+    """Gets or creates a new SDSS logger."""
 
     orig_logger = logging.getLoggerClass()
 
     logging.setLoggerClass(SDSSLogger)
 
-    if name in logging.Logger.manager.loggerDict:
-        log = logging.getLogger(name)
+    if name in logging.Logger.manager.loggerDict:  # type: ignore
+        log = cast(SDSSLogger, logging.getLogger(name))
     else:
-        log = logging.getLogger(name)
+        log = cast(SDSSLogger, logging.getLogger(name))
         log.init(**kwargs)
 
     logging.setLoggerClass(orig_logger)

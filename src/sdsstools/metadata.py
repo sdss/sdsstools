@@ -6,8 +6,12 @@
 # @Filename: metadata.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+from __future__ import annotations
+
 import configparser
 import pathlib
+
+from typing import Optional
 
 import packaging.version
 
@@ -17,13 +21,13 @@ from ._vendor import toml
 try:
     import importlib.metadata as importlib_metadata
 except ImportError:
-    import importlib_metadata
+    import importlib_metadata  # type: ignore
 
 
 METADATA_FILES = ["pyproject.toml", "setup.cfg", "setup.py"]
 
 
-def get_metadata_files(path):
+def get_metadata_files(path: str | pathlib.Path) -> str | None:
     """Finds the list of metadata files for a package.
 
     Returns the path of the ``pyproject.toml``, ``setup.cfg``, or ``setup.py``
@@ -31,14 +35,13 @@ def get_metadata_files(path):
 
     Parameters
     ----------
-    path : str
+    path
         The path relative to which to search for metadata files.
 
     Returns
     -------
     path
         The path to the metadata file, or `None` if none was found.
-
     """
 
     path = pathlib.Path(path).absolute()
@@ -58,7 +61,11 @@ def get_metadata_files(path):
     return None
 
 
-def get_package_version(path=None, package_name=None, pep_440=False):
+def get_package_version(
+    path: Optional[str] = None,
+    package_name: Optional[str] = None,
+    pep_440: bool = False,
+) -> str | None:
     """Returns the version of a package.
 
     First tries to determine if a metadata file is available and parses it.
@@ -67,23 +74,22 @@ def get_package_version(path=None, package_name=None, pep_440=False):
 
     Parameters
     ----------
-    path : str
+    path
         The path relative to which to search for metadata files.
-    package_name : str
+    package_name
         The name of the package.
-    pep_440 : bool
+    pep_440
         If `True`, normalises the version string according to PEP 440.
 
     Returns
     -------
-    version : str
+    version
         The version string, or `None` if it cannot be found.
-
     """
 
     assert path or package_name, "either path or package_name are needed."
 
-    version = None
+    version: str | None = None
 
     if path:
         metadata_file = get_metadata_files(path)
@@ -109,4 +115,7 @@ def get_package_version(path=None, package_name=None, pep_440=False):
     if version and pep_440:
         version = str(packaging.version.Version(version))
 
-    return version
+    if isinstance(version, str):
+        return version
+    else:
+        return None

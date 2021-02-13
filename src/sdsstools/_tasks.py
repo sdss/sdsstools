@@ -14,8 +14,8 @@ import shutil
 from invoke import Collection, task
 
 
-# This file contains tasks that can be easily run from the shell terminal using the Invoke
-# python package. If you do not have invoke, install it with pip install
+# This file contains tasks that can be easily run from the shell terminal using the
+# Invoke python package. If you do not have invoke, install it with pip install
 # To list the tasks available, type invoke --list from the top-level repo directory
 
 
@@ -91,7 +91,7 @@ def deploy(ctx, test=False):
 def install_deps(ctx, extras=None):
     """Install only dependencies from setup.cfg."""
 
-    import setuptools
+    import setuptools.config
 
     if not os.path.exists("setup.cfg"):
         raise RuntimeError(

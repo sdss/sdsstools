@@ -1,0 +1,3 @@
+{
+  "ignore": ["src/sdsstools/releases/**", "src/sdsstools/_vendor/**"]
+}

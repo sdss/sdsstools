@@ -13,7 +13,6 @@ class Timer:
     """Convenience context manager to time events.
 
     Modified from https://bit.ly/3ebdp3y.
-
     """
 
     def __enter__(self):
