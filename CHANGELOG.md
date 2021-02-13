@@ -3,6 +3,7 @@
 ## [0.4.8](https://github.com/sdss/sdsstools/compare/0.4.7...HEAD)
 
 - Feature [#26]: allow rollover of file logger on `start_file_logger`.
+- Support: format using `black` and add type hints.
 
 
 ## [0.4.7](https://github.com/sdss/sdsstools/compare/0.4.6...0.4.7) - 2021-02-12
