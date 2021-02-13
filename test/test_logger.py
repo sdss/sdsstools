@@ -170,3 +170,18 @@ async def test_asyncio_exception_handler(logger, caplog, event_loop):
 
     assert caplog.record_tuples[0][1] == logging.ERROR
     assert 'An error in a task.' in caplog.record_tuples[0][2]
+
+
+def test_logger_rotating_rollover(tmp_path):
+
+    log_file = tmp_path / 'logs' / 'test_log.log'
+
+    logger1 = get_logger(str(uuid.uuid4()))
+    logger1.start_file_logger(log_file)
+
+    assert len(list((tmp_path / 'logs').glob('*'))) == 1
+
+    logger2 = get_logger(str(uuid.uuid4()))
+    logger2.start_file_logger(log_file, rollover=True)
+
+    assert len(list((tmp_path / 'logs').glob('*'))) == 2

@@ -7,6 +7,7 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 import copy
+import datetime
 import logging
 import os
 import re
@@ -199,22 +200,29 @@ class SDSSLogger(logging.Logger):
         shutil.copyfile(self.log_filename, os.path.expanduser(path))
 
     def start_file_logger(self, path, log_level=logging.DEBUG,
-                          mode='a', rotating=True):
+                          mode='a', rotating=True, rollover=False):
         """Start file logging."""
 
         log_file_path = os.path.expanduser(path)
         logdir = os.path.dirname(log_file_path)
+
+        SUFFIX = '%Y-%m-%d_%H:%M:%S'
 
         try:
 
             if not os.path.exists(logdir):
                 os.makedirs(logdir)
 
+            if os.path.exists(log_file_path) and rotating and rollover:
+                now = datetime.datetime.utcnow()
+                dst = str(log_file_path) + '.' + now.strftime(SUFFIX)
+                shutil.move(str(log_file_path), dst)
+
             if rotating:
                 self.fh = TimedRotatingFileHandler(str(log_file_path),
                                                    when='midnight',
                                                    utc=True)
-                self.fh.suffix = '%Y-%m-%d_%H:%M:%S'
+                self.fh.suffix = SUFFIX
             else:
                 self.fh = logging.FileHandler(str(log_file_path), mode=mode)
 
