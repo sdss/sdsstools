@@ -12,7 +12,7 @@ import os
 import pathlib
 import re
 
-from typing import Any, Dict, Mapping, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import yaml
 
@@ -49,7 +49,7 @@ yaml.add_implicit_resolver("!env", env_matcher)
 yaml.add_constructor("!env", env_constructor)
 
 
-ConfigType = Mapping[str, Any]
+ConfigType = Dict[str, Any]
 AnyPath = Union[str, pathlib.Path]
 
 
