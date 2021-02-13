@@ -6,8 +6,6 @@
 # @Filename: logger.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
-from __future__ import annotations
-
 import copy
 import datetime
 import logging
@@ -19,7 +17,7 @@ import traceback
 import warnings
 from logging.handlers import TimedRotatingFileHandler
 
-from typing import Optional, cast
+from typing import Optional, Union, cast
 
 from pygments import highlight
 from pygments.formatters import TerminalFormatter  # type: ignore
@@ -152,8 +150,8 @@ class SDSSLogger(logging.Logger):
         self.sh.setLevel(log_level)
 
         # Placeholders for the file handler.
-        self.fh: logging.FileHandler | None = None
-        self.log_filename: str | None = None
+        self.fh: Union[logging.FileHandler, None] = None
+        self.log_filename: Union[str, None] = None
 
         # A header that precedes every message.
         self.header = ""

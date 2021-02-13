@@ -6,15 +6,13 @@
 # @Filename: daemonizer.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
-from __future__ import annotations
-
 import asyncio
 import inspect
 import signal
 import sys
 from functools import partial, wraps
 
-from typing import Any, Callable
+from typing import Any, Callable, Union
 
 import click
 from click.decorators import pass_context
@@ -115,7 +113,7 @@ class DaemonGroup(click.Group):
     def __init__(
         self,
         *args,
-        callback: Callable[[Any], Any] | None = None,
+        callback: Union[Callable[[Any], Any], None] = None,
         **kwargs,
     ):
 

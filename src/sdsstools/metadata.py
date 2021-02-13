@@ -6,12 +6,10 @@
 # @Filename: metadata.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
-from __future__ import annotations
-
 import configparser
 import pathlib
 
-from typing import Optional
+from typing import Optional, Union
 
 import packaging.version
 
@@ -27,7 +25,7 @@ except ImportError:
 METADATA_FILES = ["pyproject.toml", "setup.cfg", "setup.py"]
 
 
-def get_metadata_files(path: str | pathlib.Path) -> str | None:
+def get_metadata_files(path: Union[str, pathlib.Path]) -> Union[str, None]:
     """Finds the list of metadata files for a package.
 
     Returns the path of the ``pyproject.toml``, ``setup.cfg``, or ``setup.py``
@@ -65,7 +63,7 @@ def get_package_version(
     path: Optional[str] = None,
     package_name: Optional[str] = None,
     pep_440: bool = False,
-) -> str | None:
+) -> Union[str, None]:
     """Returns the version of a package.
 
     First tries to determine if a metadata file is available and parses it.
@@ -89,7 +87,7 @@ def get_package_version(
 
     assert path or package_name, "either path or package_name are needed."
 
-    version: str | None = None
+    version: Union[str, None] = None
 
     if path:
         metadata_file = get_metadata_files(path)

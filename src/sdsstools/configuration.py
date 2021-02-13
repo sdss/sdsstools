@@ -6,15 +6,13 @@
 # @Filename: configuration.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
-from __future__ import annotations
-
 import inspect
 import itertools
 import os
 import pathlib
 import re
 
-from typing import Any, Mapping, Optional, Union
+from typing import Any, Dict, Mapping, Optional, Union
 
 import yaml
 
@@ -68,7 +66,7 @@ def read_yaml_file(
         fp = path
 
     fp.seek(0)
-    config: ConfigType | None = yaml.load(fp, Loader=loader)
+    config: Union[ConfigType, None] = yaml.load(fp, Loader=loader)
 
     if config is None or config == {}:
         return {}
@@ -111,8 +109,8 @@ def get_config(
     user_path: Optional[AnyPath] = None,
     config_envvar: Optional[str] = None,
     merge_mode: str = "update",
-    default_envvars: dict[str, Any] = {},
-) -> Configuration:
+    default_envvars: Dict[str, Any] = {},
+) -> "Configuration":
     """Returns a configuration dictionary.
 
     The configuration dictionary is created by merging the default
@@ -219,9 +217,9 @@ class Configuration(dict):
 
     def __init__(
         self,
-        config: Optional[AnyPath | ConfigType] = None,
-        base_config: Optional[AnyPath | ConfigType] = None,
-        default_envvars: dict[str, Any] = {},
+        config: Optional[Union[AnyPath, ConfigType]] = None,
+        base_config: Optional[Union[AnyPath, ConfigType]] = None,
+        default_envvars: Dict[str, Any] = {},
     ):
 
         global __ENVVARS__
@@ -253,7 +251,7 @@ class Configuration(dict):
 
         return merge_config(self._parse_config(config, use_base=False), self._BASE)
 
-    def load(self, config: Optional[AnyPath | ConfigType] = None):
+    def load(self, config: Optional[Union[AnyPath, ConfigType]] = None):
         """Loads a configuration file.
 
         Parameters
