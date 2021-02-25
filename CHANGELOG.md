@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.9](https://github.com/sdss/sdsstools/compare/0.4.8...0.4.9) - 2021-02-24
+
+- Support: relax dependency on `importlib_metadata`.
+
 ## [0.4.8](https://github.com/sdss/sdsstools/compare/0.4.7...0.4.8) - 2021-02-13
 
 - Feature [#26]: allow rollover of file logger on `start_file_logger`.
