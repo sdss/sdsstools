@@ -234,7 +234,7 @@ class SDSSLogger(logging.Logger):
             rollover before starting to log.
         """
 
-        log_file_path = os.path.expanduser(path)
+        log_file_path = os.path.realpath(os.path.expanduser(path))
         logdir = os.path.dirname(log_file_path)
 
         SUFFIX = "%Y-%m-%d_%H:%M:%S"
