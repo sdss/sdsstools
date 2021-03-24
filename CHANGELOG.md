@@ -1,5 +1,7 @@
 # Changelog
 
+- Bug: force use of real path for the logger file handler path.
+
 ## [0.4.9](https://github.com/sdss/sdsstools/compare/0.4.8...0.4.9) - 2021-02-24
 
 - Support: relax dependency on `importlib_metadata`.
