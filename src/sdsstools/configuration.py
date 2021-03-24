@@ -77,7 +77,7 @@ def read_yaml_file(
             if line.strip().startswith("#!extends"):
                 base_file = line.strip().split()[1]
                 if not os.path.isabs(base_file) and hasattr(fp, "buffer"):
-                    base_file = os.path.join(os.path.dirname(path), base_file)
+                    base_file = os.path.join(os.path.dirname(str(path)), base_file)
                 if not os.path.exists(base_file):
                     raise FileExistsError(f"cannot find !extends file {base_file}.")
                 return merge_config(
@@ -171,7 +171,7 @@ def get_config(
     config_envvar = config_envvar or "{}_CONFIG_PATH".format(name.upper())
 
     if user_path is not None:
-        user_path = os.path.expanduser(os.path.expandvars(user_path))
+        user_path = os.path.expanduser(os.path.expandvars(str(user_path)))
         assert os.path.exists(user_path), f"User path {user_path!r} not found."
     else:
         # Test a few default paths and exit when finds one.
