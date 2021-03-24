@@ -224,14 +224,17 @@ class Configuration(dict):
 
         global __ENVVARS__
 
-        super().__init__()
-
         if base_config:
             self._BASE = self._parse_config(base_config, use_base=False)
+            if isinstance(base_config, dict):
+                self.CONFIG_FILE = None
+            else:
+                self.CONFIG_FILE = os.path.realpath(str(base_config))
         else:
             self._BASE = {}
+            self.CONFIG_FILE = None
 
-        self.CONFIG_FILE = None
+        self._BASE_CONFIG_FILE = self.CONFIG_FILE
 
         __ENVVARS__ = default_envvars
 
@@ -251,7 +254,7 @@ class Configuration(dict):
 
         return merge_config(self._parse_config(config, use_base=False), self._BASE)
 
-    def load(self, config: Optional[Union[AnyPath, ConfigType]] = None):
+    def load(self, config: Optional[Union[AnyPath, ConfigType]] = None, use_base=True):
         """Loads a configuration file.
 
         Parameters
@@ -261,14 +264,21 @@ class Configuration(dict):
             configuration was defined when the object was instantiated, it
             will be merged. If ``config=None``, the object will revert to the
             base configuration.
+        use_base
+            Merge the new configuration with the base config.
         """
 
-        if config is None:
-            config = {}
-            self.CONFIG_FILE = None
+        self.clear()
 
-        super().__init__(self._parse_config(config))
+        if config is None:
+            dict.__init__(self, self._BASE)
+            self.CONFIG_FILE = self._BASE_CONFIG_FILE
+            return
+
+        dict.__init__(self, self._parse_config(config, use_base=use_base))
 
         # Save name of the configuration file (if the input is a file).
         if isinstance(config, (str, pathlib.Path)):
             self.CONFIG_FILE = str(config)
+        else:
+            self.CONFIG_FILE = None
