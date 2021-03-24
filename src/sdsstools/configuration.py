@@ -77,7 +77,7 @@ def read_yaml_file(
             if line.strip().startswith("#!extends"):
                 base_file = line.strip().split()[1]
                 if not os.path.isabs(base_file) and hasattr(fp, "buffer"):
-                    base_file = os.path.join(os.path.dirname(path), base_file)
+                    base_file = os.path.join(os.path.dirname(str(path)), base_file)
                 if not os.path.exists(base_file):
                     raise FileExistsError(f"cannot find !extends file {base_file}.")
                 return merge_config(
@@ -171,7 +171,7 @@ def get_config(
     config_envvar = config_envvar or "{}_CONFIG_PATH".format(name.upper())
 
     if user_path is not None:
-        user_path = os.path.expanduser(os.path.expandvars(user_path))
+        user_path = os.path.expanduser(os.path.expandvars(str(user_path)))
         assert os.path.exists(user_path), f"User path {user_path!r} not found."
     else:
         # Test a few default paths and exit when finds one.
@@ -224,14 +224,17 @@ class Configuration(dict):
 
         global __ENVVARS__
 
-        super().__init__()
-
         if base_config:
             self._BASE = self._parse_config(base_config, use_base=False)
+            if isinstance(base_config, dict):
+                self.CONFIG_FILE = None
+            else:
+                self.CONFIG_FILE = os.path.realpath(str(base_config))
         else:
             self._BASE = {}
+            self.CONFIG_FILE = None
 
-        self.CONFIG_FILE = None
+        self._BASE_CONFIG_FILE = self.CONFIG_FILE
 
         __ENVVARS__ = default_envvars
 
@@ -251,7 +254,7 @@ class Configuration(dict):
 
         return merge_config(self._parse_config(config, use_base=False), self._BASE)
 
-    def load(self, config: Optional[Union[AnyPath, ConfigType]] = None):
+    def load(self, config: Optional[Union[AnyPath, ConfigType]] = None, use_base=True):
         """Loads a configuration file.
 
         Parameters
@@ -261,14 +264,21 @@ class Configuration(dict):
             configuration was defined when the object was instantiated, it
             will be merged. If ``config=None``, the object will revert to the
             base configuration.
+        use_base
+            Merge the new configuration with the base config.
         """
 
-        if config is None:
-            config = {}
-            self.CONFIG_FILE = None
+        self.clear()
 
-        super().__init__(self._parse_config(config))
+        if config is None:
+            dict.__init__(self, self._BASE)
+            self.CONFIG_FILE = self._BASE_CONFIG_FILE
+            return
+
+        dict.__init__(self, self._parse_config(config, use_base=use_base))
 
         # Save name of the configuration file (if the input is a file).
         if isinstance(config, (str, pathlib.Path)):
             self.CONFIG_FILE = str(config)
+        else:
+            self.CONFIG_FILE = None
