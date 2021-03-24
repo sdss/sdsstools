@@ -1,6 +1,7 @@
 # Changelog
 
 - Bug: force use of real path for the logger file handler path.
+- Feature [#28]: report base config file in `Configuration`. Clear the `Configuration` internal dictionary when `load` is called.
 
 ## [0.4.9](https://github.com/sdss/sdsstools/compare/0.4.8...0.4.9) - 2021-02-24
 
