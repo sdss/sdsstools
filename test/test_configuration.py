@@ -130,6 +130,27 @@ def test_configurations_bad_value():
         Configuration(1)  # type: ignore
 
 
+def test_configuration_dict():
+
+    config = {"cat1": {"key1": 1}}
+    conf = Configuration(base_config=config)
+
+    assert conf._BASE == config
+    assert conf._BASE_CONFIG_FILE is None
+    assert conf.CONFIG_FILE is None
+
+
+def test_configuration_user_dict():
+
+    config = Configuration(base_config=BASE_CONFIG_FILE)
+    assert config._BASE_CONFIG_FILE == BASE_CONFIG_FILE
+    assert config.CONFIG_FILE == BASE_CONFIG_FILE
+    assert config.keys() != {}
+
+    config.load({}, use_base=False)
+    assert list(config.keys()) == []
+
+
 def test_get_config_etc():
 
     config = get_config("test", allow_user=False)
