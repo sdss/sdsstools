@@ -1,21 +1,23 @@
 # Changelog
 
 - Bug: force use of real path for the logger file handler path.
-- Feature (#28): report base config file in `Configuration`. Clear the `Configuration` internal dictionary when `load` is called.
+- Feature [#28](https://github.com/sdss/sdsstools/issues/28): report base config file in `Configuration`. Clear the `Configuration` internal dictionary when `load` is called.
+
 
 ## [0.4.9](https://github.com/sdss/sdsstools/compare/0.4.8...0.4.9) - 2021-02-24
 
 - Support: relax dependency on `importlib_metadata`.
 
+
 ## [0.4.8](https://github.com/sdss/sdsstools/compare/0.4.7...0.4.8) - 2021-02-13
 
-- Feature (#26): allow rollover of file logger on `start_file_logger`.
+- Feature [#26](https://github.com/sdss/sdsstools/issues/26): allow rollover of file logger on `start_file_logger`.
 - Support: format using `black` and add type hints.
 
 
 ## [0.4.7](https://github.com/sdss/sdsstools/compare/0.4.6...0.4.7) - 2021-02-12
 
-- Bug (#24): update dependencies so that `importlib_metadata` is installed for Python<=3.7 (it was Python<3.7).
+- Bug [#24](https://github.com/sdss/sdsstools/issues/24): update dependencies so that `importlib_metadata` is installed for Python<=3.7 (it was Python<3.7).
 
 
 ## [0.4.6](https://github.com/sdss/sdsstools/compare/0.4.5...0.4.6) - 2021-01-21
@@ -25,12 +27,12 @@
 
 ## [0.4.5](https://github.com/sdss/sdsstools/compare/0.4.4...0.4.5) - 2020-11-10
 
-- Bug (#22): fix `read_yaml` for empty YAML files.
+- Bug [#22](https://github.com/sdss/sdsstools/issues/22): fix `read_yaml` for empty YAML files.
 
 
 ## [0.4.4](https://github.com/sdss/sdsstools/compare/0.4.3...0.4.4) - 2020-11-05
 
-- Support (#20): discontinue use of `pkg_resources` due to its long import time. Move `sdsstools._vendor.releases` to `sdsstools.releases` to avoid having to load it on import.
+- Support [#20](https://github.com/sdss/sdsstools/issues/20): discontinue use of `pkg_resources` due to its long import time. Move `sdsstools._vendor.releases` to `sdsstools.releases` to avoid having to load it on import.
 
 
 ## [0.4.3](https://github.com/sdss/sdsstools/compare/0.4.2...0.4.3) - 2020-10-31
@@ -75,6 +77,7 @@
 
 - Store configuration file loaded in `Configuration` as `Configuration.CONFIG_FILE`.
 - Improve logging of exceptions to the stream logger.
+
 
 ## [0.2.0](https://github.com/sdss/sdsstools/compare/0.1.12...0.2.0) - 2020-07-29
 
