@@ -123,7 +123,18 @@ class DaemonGroup(click.Group):
         prog = kwargs.pop("prog")
 
         # Here kwargs are the parameters in the @click.group decorator.
-        pidfile = kwargs.pop("pidfile", f"/var/tmp/{prog}.pid")
+        # pidfile is deprecated in Daemon and instead we should use pid_file, but some
+        # code already use pidfile so let's support both but not at the same time.
+        if "pidfile" in kwargs and "pid_file" in kwargs:
+            raise RuntimeError("pid_file and pidfile are mutually exclusive.")
+
+        base_pidfile = f"/var/tmp/{prog}.pid"
+        if "pid_file" in kwargs:
+            pid_file = kwargs.pop("pid_file", base_pidfile)
+        elif "pidfile" in kwargs:
+            pid_file = kwargs.pop("pidfile", base_pidfile)
+        else:
+            pid_file = base_pidfile
 
         daemon_params = {}
         signature = inspect.signature(Daemon).parameters
@@ -131,7 +142,7 @@ class DaemonGroup(click.Group):
             if param in signature and param != "name":
                 daemon_params.update({param: kwargs.pop(param)})
 
-        self.daemon = Daemon(pidfile=pidfile, **daemon_params)
+        self.daemon = Daemon(pid_file=pid_file, **daemon_params)
 
         # Callback is the function that @click.group decorates. What we
         # do is store it because it will become the worker for the daemon,

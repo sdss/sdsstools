@@ -1,5 +1,10 @@
 # Changelog
 
+## [main](https://github.com/sdss/sdsstools/compare/0.4.10...HEAD)
+
+- Support: allow `pid_file` or `pidfile` in `DeamonGroup` (`pid_file` is recommended since it's the one supported by `daemonocle`).
+
+
 ## [0.4.10](https://github.com/sdss/sdsstools/compare/0.4.9...0.4.10) - 2021-03-24
 
 - Bug: force use of real path for the logger file handler path.

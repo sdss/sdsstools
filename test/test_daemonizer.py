@@ -6,6 +6,7 @@
 # @Filename: test_daemonizer.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+import os
 import sys
 
 import click
@@ -112,3 +113,32 @@ def test_coro_signal_handling(cli_runner, event_loop):
     # print(result.)
     assert result.exit_code == 0
     assert "Hello Jose" in result.output
+
+
+def test_both_pidfile_pid_file_fails():
+
+    with pytest.raises(RuntimeError) as err:
+
+        @click.group(
+            cls=DaemonGroup,
+            prog="daemon",
+            pid_file="/var/test.pid",
+            pidfile="/var/test2.pid",
+        )
+        @click.argument("name")
+        @click.option("--option", type=str)
+        def daemon_grp(name, option):
+            pass
+
+    assert "mutually exclusive" in str(err)
+
+
+def test_pid_file():
+    @click.group(cls=DaemonGroup, prog="daemon", pid_file="/var/test.pid")
+    @click.argument("name")
+    @click.option("--option", type=str)
+    def daemon_grp(name, option):
+        pass
+
+    real_path = os.path.realpath("/var/test.pid")
+    assert daemon_grp.daemon.pid_file == real_path  # type: ignore
