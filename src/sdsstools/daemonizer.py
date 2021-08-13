@@ -8,11 +8,14 @@
 
 import asyncio
 import inspect
+import os
 import signal
 import sys
+from datetime import datetime
 from functools import partial, wraps
+from shutil import move
 
-from typing import Any, Callable, Union
+from typing import Any, Callable, Optional, Union
 
 import click
 from click.decorators import pass_context
@@ -49,12 +52,12 @@ def cli_coro(
     help="Do NOT detach and run in the background.",
 )
 @click.option(
-    "--log",
+    "--log-file",
     type=str,
-    help="Redirects stdout and stderr to a file (append mode).",
+    help="Redirects stdout and stderr to a file (rotates logs).",
 )
 @pass_context
-def start(ctx, debug, log):
+def start(ctx, debug, log_file):
     """Start the daemon."""
 
     # We want to make sure that the Starting <name> ... OK is still output
@@ -62,11 +65,21 @@ def start(ctx, debug, log):
     # create the log and redirect stdout and stderr there. Then call the
     # original worker.
 
-    if log:  # pragma: no cover
+    log_file = log_file or ctx.parent.command.log_file
+
+    if log_file:  # pragma: no cover
         orig_worker = ctx.parent.command.daemon.worker
 
+        log_file = os.path.realpath(os.path.expanduser(os.path.expandvars(log_file)))
+        if os.path.exists(log_file):
+            date = datetime.now()
+            suffix = date.strftime(".%Y-%m-%d_%H:%M:%S")
+            move(log_file, log_file + suffix)
+
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
+
         def new_worker():
-            f = open(log, "a")
+            f = open(log_file, "w")
             sys.stdout = f
             sys.stderr = f
             orig_worker()
@@ -114,6 +127,7 @@ class DaemonGroup(click.Group):
         self,
         *args,
         callback: Union[Callable[[Any], Any], None] = None,
+        log_file: Optional[str] = None,
         **kwargs,
     ):
 
@@ -141,6 +155,8 @@ class DaemonGroup(click.Group):
         for param in kwargs.copy():
             if param in signature and param != "name":
                 daemon_params.update({param: kwargs.pop(param)})
+
+        self.log_file = log_file
 
         self.daemon = Daemon(pid_file=pid_file, **daemon_params)
 
