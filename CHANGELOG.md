@@ -1,6 +1,6 @@
 # Changelog
 
-## [main](https://github.com/sdss/sdsstools/compare/0.4.10...HEAD)
+## [0.4.11](https://github.com/sdss/sdsstools/compare/0.4.10...0.4.11) - 2021-08-12
 
 - Support: allow `pid_file` or `pidfile` in `DeamonGroup` (`pid_file` is recommended since it's the one supported by `daemonocle`).
 - Allow to set a global log file in `DaemonGroup` and implement log rotation.
