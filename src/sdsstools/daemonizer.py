@@ -54,7 +54,7 @@ def cli_coro(
 @click.option(
     "--log-file",
     type=str,
-    help="Redirects stdout and stderr to a file (rotates logs).",
+    help="Redirects stdout and stderr to a file (rotates logs). Ignored if --debug.",
 )
 @pass_context
 def start(ctx, debug, log_file):
@@ -67,7 +67,7 @@ def start(ctx, debug, log_file):
 
     log_file = log_file or ctx.parent.command.log_file
 
-    if log_file:  # pragma: no cover
+    if log_file and debug is False:  # pragma: no cover
         orig_worker = ctx.parent.command.daemon.worker
 
         log_file = os.path.realpath(os.path.expanduser(os.path.expandvars(log_file)))
