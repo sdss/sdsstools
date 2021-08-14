@@ -206,6 +206,15 @@ async def daemon(name):
 
 `cli_coro` can accept a `shutdown_func` function that is called when the coroutine receives a signal. The default signals handled are `(SIGHUP, SIGTERM, SIGINT)`.
 
+### Daemonizing a command
+
+To execute any command as a daemon you can use the `daemonize` script that is installed with `sdsstools`. To start the process as a daemon do `daemonize start NAME COMMAND` when `NAME` is the name associated to the daemon (so that it can be stopped later) and `COMMAND` is the command to run, for example:
+
+```console
+daemonize start apoActor python ./apoActor_main.py
+```
+
+To stop the daemon do `daemonize stop NAME`. See `daemonize --help` for more options.
 
 ## Bundled packages
 

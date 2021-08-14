@@ -6,20 +6,25 @@
 # @Filename: daemonizer.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+from __future__ import annotations
+
 import asyncio
 import inspect
 import os
 import signal
+import subprocess
 import sys
 from datetime import datetime
 from functools import partial, wraps
 from shutil import move
+from time import sleep
 
 from typing import Any, Callable, Optional, Union
 
 import click
 from click.decorators import pass_context
 from daemonocle import Daemon
+from daemonocle.helpers import ExecWorker
 
 
 __all__ = ["cli_coro", "DaemonGroup"]
@@ -56,14 +61,20 @@ def cli_coro(
     type=str,
     help="Redirects stdout and stderr to a file (rotates logs). Ignored if --debug.",
 )
+@click.option(
+    "--pid_file", type=str, help="PID file to keep track of the daemon execution."
+)
 @pass_context
-def start(ctx, debug, log_file):
+def start(ctx, debug, log_file, pid_file):
     """Start the daemon."""
 
     # We want to make sure that the Starting <name> ... OK is still output
     # to stdout. We override the worker so that the first thing it does is to
     # create the log and redirect stdout and stderr there. Then call the
     # original worker.
+
+    if pid_file:
+        ctx.parent.command.pid_file = pid_file
 
     log_file = log_file or ctx.parent.command.log_file
 
@@ -192,3 +203,81 @@ class DaemonGroup(click.Group):
         self.daemon.worker = partial(self.group_cb, **ctx.params)
 
         return self.commands[name]
+
+
+@click.command()
+@click.argument(
+    "ACTION",
+    type=click.Choice(
+        [
+            "start",
+            "stop",
+            "restart",
+            "status",
+            "debug",
+        ]
+    ),
+)
+@click.argument("NAME", type=str)
+@click.argument("COMMAND", type=str, nargs=-1, required=False)
+@click.option(
+    "--log-file",
+    type=click.Path(dir_okay=False),
+    help="Redirects stdout and stderr to a file (rotates logs). Ignored if --debug.",
+)
+def daemonize(
+    action: str,
+    name: str,
+    command: str | None = None,
+    log_file: str | None = None,
+):
+    """Executes a command as a daemon.
+
+    Runs a COMMAND as a detached daemon assigning it a given NAME. The daemon can
+    be stopped by calling daemonize stop NAME or its status checked with
+    daemonize status NAME.
+
+    If --log-file is used, a rotating log file with the STDOUT and STDERR of the
+    worker subprocess will be generated. If STATUS is "debug", runs the worker
+    subprocess without detaching.
+
+    """
+
+    def worker():
+
+        if command is None:
+            return
+
+        if log_file:
+
+            path = os.path.realpath(os.path.expanduser(os.path.expandvars(log_file)))
+            if os.path.exists(path):
+                date = datetime.now()
+                suffix = date.strftime(".%Y-%m-%d_%H:%M:%S")
+                move(path, path + suffix)
+
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+
+            f = open(log_file, "w")
+            sys.stdout = f
+            sys.stderr = f
+
+        subprocess.run(
+            " ".join(command),
+            shell=True,
+            capture_output=False,
+            cwd=os.getcwd(),
+        )
+
+    pid_file = f"/var/tmp/{name}.pid"
+
+    if action == "debug":
+        log_file = None
+        worker()
+    else:
+        daemon = Daemon(
+            worker=worker,
+            pid_file=pid_file,
+            work_dir=os.getcwd(),
+        )
+        daemon.do_action(action)
