@@ -17,14 +17,12 @@ import sys
 from datetime import datetime
 from functools import partial, wraps
 from shutil import move
-from time import sleep
 
 from typing import Any, Callable, Optional, Union
 
 import click
 from click.decorators import pass_context
 from daemonocle import Daemon
-from daemonocle.helpers import ExecWorker
 
 
 __all__ = ["cli_coro", "DaemonGroup"]
