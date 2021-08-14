@@ -230,7 +230,7 @@ def daemonize(
     name: str,
     command: str | None = None,
     log_file: str | None = None,
-):
+):  # pragma: no cover
     """Executes a command as a daemon.
 
     Runs a COMMAND as a detached daemon assigning it a given NAME. The daemon can
