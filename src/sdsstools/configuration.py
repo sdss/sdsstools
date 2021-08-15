@@ -38,6 +38,8 @@ def env_constructor(loader, node):
 
     value = node.value
     match = env_matcher.match(value)
+    assert match
+
     env_var = match.group()[2:-1]
 
     def_env_var = __ENVVARS__.get(env_var, value)
@@ -160,6 +162,7 @@ def get_config(
         try:
             frame = inspect.stack()[1]
             module = inspect.getmodule(frame[0])
+            assert module
             dirname = os.path.dirname(module.__file__)
             config_file = os.path.join(dirname, f"etc/{name}.yml")
         except AttributeError:
