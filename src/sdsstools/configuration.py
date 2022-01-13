@@ -162,7 +162,7 @@ def get_config(
         try:
             frame = inspect.stack()[1]
             module = inspect.getmodule(frame[0])
-            assert module
+            assert module is not None and module.__file__ is not None
             dirname = os.path.dirname(module.__file__)
             config_file = os.path.join(dirname, f"etc/{name}.yml")
         except AttributeError:
