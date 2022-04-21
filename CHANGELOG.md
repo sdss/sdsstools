@@ -2,7 +2,7 @@
 
 ## [0.4.15](https://github.com/sdss/sdsstools/compare/0.4.14...0.4.15) - 2022-04-21
 
-- Feature [#30] Pass optional `fmt` on to stream formatter.
+- Feature [#30](https://github.com/sdss/sdsstools/issues/30): Pass optional `fmt` on to stream formatter.
 - Remove use of future typing annotations to continue supporting Python 3.6.
 - Add GitHub Actions testing for Python 3.9 and 3.10.
 
