@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.15](https://github.com/sdss/sdsstools/compare/0.4.14...0.4.15) - 2022-04-21
+
+- Feature [#30] Pass optional `fmt` on to stream formatter.
+
+
 ## [0.4.14](https://github.com/sdss/sdsstools/compare/0.4.13...0.4.14) - 2022-02-22
 
 - Relaxed `packaging` to prevent issues with other packages.
