@@ -6,8 +6,6 @@
 # @Filename: daemonizer.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
-from __future__ import annotations
-
 import asyncio
 import inspect
 import os
@@ -226,8 +224,8 @@ class DaemonGroup(click.Group):
 def daemonize(
     action: str,
     name: str,
-    command: str | None = None,
-    log_file: str | None = None,
+    command: Union[str, None] = None,
+    log_file: Union[str, None] = None,
 ):  # pragma: no cover
     """Executes a command as a daemon.
 
