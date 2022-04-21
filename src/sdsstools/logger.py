@@ -129,7 +129,12 @@ class SDSSLogger(logging.Logger):
 
         super(SDSSLogger, self).__init__(name)
 
-    def init(self, log_level: int = logging.INFO, capture_warnings: bool = True):
+    def init(
+        self, 
+        log_level: int = logging.INFO, 
+        capture_warnings: bool = True, 
+        fmt: Optional = None
+    ):
         """Initialise the logger.
 
         Parameters
@@ -138,6 +143,8 @@ class SDSSLogger(logging.Logger):
             The initial logging level for the console handler.
         capture_warnings
             Whether to capture warnings and redirect them to the log.
+        fmt
+            The message format to supply to the stream formatter.
         """
 
         # Set levels
@@ -145,7 +152,11 @@ class SDSSLogger(logging.Logger):
 
         # Sets the console handler
         self.sh = logging.StreamHandler()
-        self.sh.setFormatter(StreamFormatter())
+        if fmt is not None:
+            formatter = StreamFormatter(fmt)
+        else:
+            formatter = StreamFormatter()
+        self.sh.setFormatter(formatter)
         self.addHandler(self.sh)
         self.sh.setLevel(log_level)
 
