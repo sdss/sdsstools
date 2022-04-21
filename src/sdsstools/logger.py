@@ -130,10 +130,10 @@ class SDSSLogger(logging.Logger):
         super(SDSSLogger, self).__init__(name)
 
     def init(
-        self, 
-        log_level: int = logging.INFO, 
-        capture_warnings: bool = True, 
-        fmt: Optional = None
+        self,
+        log_level: int = logging.INFO,
+        capture_warnings: bool = True,
+        fmt: Optional = None,
     ):
         """Initialise the logger.
 
