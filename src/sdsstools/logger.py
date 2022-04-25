@@ -17,7 +17,7 @@ import traceback
 import warnings
 from logging.handlers import TimedRotatingFileHandler
 
-from typing import Optional, Union, cast
+from typing import List, Optional, Union, cast
 
 from pygments import highlight
 from pygments.formatters import TerminalFormatter  # type: ignore
@@ -73,7 +73,7 @@ class StreamFormatter(logging.Formatter):
         record_cp.msg = "{}{}".format(header, message)
 
         if levelname == "warning" and record_cp.args and len(record_cp.args) > 0:
-            args = cast(list[str], record_cp.args)
+            args = cast(List[str], record_cp.args)
             warning_category_groups = WARNING_RE.match(args[0])
             if warning_category_groups is not None:
                 wcategory, wtext = warning_category_groups.groups()
@@ -100,7 +100,7 @@ class FileFormatter(logging.Formatter):
         record_cp = copy.copy(record)
 
         record_cp.msg = self.ansi_escape.sub("", record_cp.msg)
-        args = cast(list[str], record_cp.args)
+        args = cast(List[str], record_cp.args)
 
         # The format of a warnings redirected with warnings.captureWarnings
         # has the format <path>: <category>: message\n  <some-other-stuff>.
