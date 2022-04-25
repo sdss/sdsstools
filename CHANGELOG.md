@@ -1,6 +1,6 @@
 # Changelog
 
-## [Next version](https://github.com/sdss/sdsstools/compare/0.4.15...HEAD)
+## [0.5.0](https://github.com/sdss/sdsstools/compare/0.4.15...0.5.0) - 2022-04-25
 
 - Added a `time` module with a `get_sjd()` function that returns the SDSS-style Modified Julian Day for an observatory.
 
