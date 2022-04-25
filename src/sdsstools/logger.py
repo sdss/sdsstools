@@ -72,13 +72,14 @@ class StreamFormatter(logging.Formatter):
 
         record_cp.msg = "{}{}".format(header, message)
 
-        if levelname == "warning" and len(record_cp.args) > 0:
-            warning_category_groups = WARNING_RE.match(record_cp.args[0])
+        if levelname == "warning" and record_cp.args and len(record_cp.args) > 0:
+            args = cast(list[str], record_cp.args)
+            warning_category_groups = WARNING_RE.match(args[0])
             if warning_category_groups is not None:
                 wcategory, wtext = warning_category_groups.groups()
                 wcategory_colour = color_text("({})".format(wcategory), "cyan")
                 message = "{} {}".format(color_text(wtext, ""), wcategory_colour)
-                record_cp.args = tuple([message] + list(record_cp.args[1:]))
+                record_cp.args = tuple([message] + list(args[1:]))
 
         return logging.Formatter.format(self, record_cp)
 
@@ -99,16 +100,21 @@ class FileFormatter(logging.Formatter):
         record_cp = copy.copy(record)
 
         record_cp.msg = self.ansi_escape.sub("", record_cp.msg)
+        args = cast(list[str], record_cp.args)
 
         # The format of a warnings redirected with warnings.captureWarnings
         # has the format <path>: <category>: message\n  <some-other-stuff>.
         # We reorganise that into a cleaner message. For some reason in this
         # case the message is in record.args instead of in record.msg.
-        if record_cp.levelno == logging.WARNING and len(record_cp.args) > 0:
-            match = re.match(r"^(.*?):\s*?(\w*?Warning): (.*)", record_cp.args[0])
+        if (
+            record_cp.levelno == logging.WARNING
+            and record_cp.args
+            and len(record_cp.args) > 0
+        ):
+            match = re.match(r"^(.*?):\s*?(\w*?Warning): (.*)", args[0])
             if match:
                 message = "{1} - {2} [{0}]".format(*match.groups())
-                record_cp.args = tuple([message] + list(record_cp.args[1:]))
+                record_cp.args = tuple([message] + list(args[1:]))
 
         return logging.Formatter.format(self, record_cp)
 
