@@ -216,6 +216,10 @@ daemonize start apoActor python ./apoActor_main.py
 
 To stop the daemon do `daemonize stop NAME`. See `daemonize --help` for more options.
 
+## Date functions
+
+The function `sdsstools.time.get_sjd()` returns the integer with the SDSS-style Modified Julian Day. The function accepts an observatory (`'APO'` or `'LCO'`) but otherwise will try to determine the current location from environment variables or the fully qualified domain name.
+
 ## Bundled packages
 
 For convenience, `sdsstools` bundles the following products:
