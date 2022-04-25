@@ -133,7 +133,7 @@ class SDSSLogger(logging.Logger):
         self,
         log_level: int = logging.INFO,
         capture_warnings: bool = True,
-        fmt: Optional = None,
+        fmt: Optional[logging.Formatter] = None,
     ):
         """Initialise the logger.
 
