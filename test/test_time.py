@@ -7,6 +7,7 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 import datetime
+import os
 import socket
 
 import pytest
@@ -41,7 +42,9 @@ def test_get_sjd_envvar(monkeypatch):
 @pytest.mark.parametrize("fqdn", ["sdss5-hub.apo.nmsu.edu", "sdss5-hub.lco.cl"])
 def test_get_sjd_fqdn(mocker, monkeypatch, fqdn):
 
-    monkeypatch.delenv("OBSERVATORY")
+    if "OBSERVATORY" in os.environ:
+        monkeypatch.delenv("OBSERVATORY")
+
     mocker.patch.object(socket, "getfqdn", return_value=fqdn)
 
     dt = datetime.datetime(2022, 4, 25, 11, 27, 51, 30690)
@@ -50,7 +53,9 @@ def test_get_sjd_fqdn(mocker, monkeypatch, fqdn):
 
 def test_get_sjd_fqdn_fails(mocker, monkeypatch):
 
-    monkeypatch.delenv("OBSERVATORY")
+    if "OBSERVATORY" in os.environ:
+        monkeypatch.delenv("OBSERVATORY")
+
     mocker.patch.object(socket, "getfqdn", return_value="somewhere.at.edu")
 
     with pytest.raises(ValueError):
