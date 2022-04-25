@@ -26,6 +26,8 @@ def logger_no_fh():
 
     yield _logger
 
+    assert _logger.warnings_logger
+
     handlers = _logger.warnings_logger.handlers
     for handler in handlers:
         _logger.warnings_logger.removeHandler(handler)
