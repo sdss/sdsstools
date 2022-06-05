@@ -30,21 +30,22 @@ DEFAULT_PATHS = [
     "~/.{name}/{name}",
 ]
 
-env_matcher = re.compile(r"\$\{([^}^{]+)\}")
+env_matcher = re.compile(r"\$\{(.+?)\}")
 
 
 def env_constructor(loader, node):
     """Extract the matched value, expand env variable, and replace the match."""
 
     value = node.value
-    match = env_matcher.match(value)
+    match = env_matcher.findall(value)
     assert match
 
-    env_var = match.group()[2:-1]
+    for matched_value in match:
+        default_env_var = __ENVVARS__.get(matched_value, "${" + matched_value + "}")
+        env_var = os.environ.get(matched_value, default_env_var)
+        value = value.replace("${" + matched_value + "}", env_var)
 
-    def_env_var = __ENVVARS__.get(env_var, value)
-
-    return os.environ.get(env_var, def_env_var) + value[match.end() :]
+    return value
 
 
 yaml.add_implicit_resolver("!env", env_matcher)

@@ -80,8 +80,10 @@ def update_default_paths(config_file):
 def set_envvar():
 
     os.environ["A_TEST_VARIABLE"] = "blah"
+    os.environ["ANOTHER_VARIABLE"] = "foo"
     yield
     del os.environ["A_TEST_VARIABLE"]
+    del os.environ["ANOTHER_VARIABLE"]
 
 
 @pytest.fixture
@@ -116,6 +118,7 @@ def test_configuration_envvar(set_envvar):
 
     config = Configuration(BASE_CONFIG_FILE)
     assert config["cat2"]["key4"] == "blah"
+    assert config["cat2"]["key5"] == "blah/Downloads/foo"
 
 
 def test_configuration_envvar_defaults():

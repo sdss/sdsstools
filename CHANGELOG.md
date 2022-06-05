@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.1](https://github.com/sdss/sdsstools/compare/0.5.0...0.5.1) - 2022-06-04
+
+- Fix the case of YAML files with multiple environment variable substitution or in which the environment variable was not at the beginning of the string.
+
+
 ## [0.5.0](https://github.com/sdss/sdsstools/compare/0.4.15...0.5.0) - 2022-04-25
 
 - Added a `time` module with a `get_sjd()` function that returns the SDSS-style Modified Julian Day for an observatory.

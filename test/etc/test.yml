@@ -1,6 +1,7 @@
 cat1:
-    key1: value
-    key2: 1
+  key1: value
+  key2: 1
 cat2:
-    key3: true
-    key4: ${A_TEST_VARIABLE}
+  key3: true
+  key4: ${A_TEST_VARIABLE}
+  key5: ${A_TEST_VARIABLE}/Downloads/${ANOTHER_VARIABLE}
