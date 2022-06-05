@@ -171,5 +171,5 @@ def get_sjd(
         raise ValueError(f"Invalid observatory {observatory!r}.")
 
     mjd = jd - 2400000.5
-    print(mjd)
+
     return int(mjd + SJD_OFFSET[observatory])
