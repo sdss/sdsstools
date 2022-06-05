@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.2](https://github.com/sdss/sdsstools/compare/0.5.1...0.5.2) - 2022-06-05
+
+- Fix `get_sjd()` which used the current time instead of UTC time, and had an additional `int()` which screwed up the calculation.
+
+
 ## [0.5.1](https://github.com/sdss/sdsstools/compare/0.5.0...0.5.1) - 2022-06-04
 
 - Fix the case of YAML files with multiple environment variable substitution or in which the environment variable was not at the beginning of the string.

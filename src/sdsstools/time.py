@@ -142,7 +142,7 @@ def get_sjd(
     """
 
     if date is None:
-        date = datetime.datetime.now()
+        date = datetime.datetime.utcnow()
 
     jd = datetime2jd(date)
 
@@ -170,5 +170,6 @@ def get_sjd(
     if observatory not in ["APO", "LCO"]:
         raise ValueError(f"Invalid observatory {observatory!r}.")
 
-    mjd = int(jd - 2400000.5)
+    mjd = jd - 2400000.5
+    print(mjd)
     return int(mjd + SJD_OFFSET[observatory])
