@@ -5,65 +5,63 @@ name: Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
       - '*.md'
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
       - '*.md'
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
 
     steps:
+      - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
-
-    - name: Cache Setup
-      uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
+      - name: Cache Setup
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
             ${{ runner.os }}-pip-
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install .
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install .
 
-    - name: Lint with flake8
-      run: |
-        pip install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --show-source --statistics
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --show-source --statistics
 
-    - name: Lint with isort
-      run: |
-        pip install isort
-        isort -c src/
+      - name: Lint with isort
+        run: |
+          pip install isort
+          isort -c src/
 
-    - name: Test with pytest
-      run: |
-        pip install pytest pytest-cov pytest-mock pytest-asyncio
-        pip install daemonocle click pytest-click
-        pip install coverage[toml]
-        pytest
+      - name: Test with pytest
+        run: |
+          pip install pytest pytest-cov pytest-mock pytest-asyncio
+          pip install daemonocle click pytest-click
+          pip install coverage[toml]
+          pytest
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        file: ./coverage.xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
