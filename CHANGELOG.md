@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.3](https://github.com/sdss/sdsstools/compare/0.5.2...0.5.3) - 2022-09-08
+
+- Fix annoying extra printout in `get_sjd()`.
+
+
 ## [0.5.2](https://github.com/sdss/sdsstools/compare/0.5.1...0.5.2) - 2022-06-05
 
 - Fix `get_sjd()` which used the current time instead of UTC time, and had an additional `int()` which screwed up the calculation.
