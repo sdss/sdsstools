@@ -63,10 +63,11 @@ def clean(ctx):
     """Cleans up build files and test files."""
 
     print("Cleaning")
-    ctx.run("rm -rf htmlcov **/htmlcov .coverage* **/.coverage*")
+    ctx.run("rm -rf htmlcov **/htmlcov .coverage* **/.coverage* coverage.xml")
     ctx.run("rm -rf build")
     ctx.run("rm -rf dist")
     ctx.run("rm -rf **/*.egg-info *.egg-info")
+    ctx.run("rm -rf .pytest_cache .nox")
 
 
 @task(clean)

@@ -1,5 +1,10 @@
 # Changelog
 
+## [main](https://github.com/sdss/sdsstools/compare/0.5.3...HEAD)
+
+- Add `.pytest_cache` and `.nox` to directories removed by `sdss clean`.
+
+
 ## [0.5.3](https://github.com/sdss/sdsstools/compare/0.5.2...0.5.3) - 2022-09-08
 
 - Fix annoying extra printout in `get_sjd()`.
