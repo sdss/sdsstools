@@ -8,10 +8,17 @@
 # @License: BSD 3-Clause
 # @Copyright: Brian Cherinka
 
+import inspect
 import os
 import shutil
 
 from invoke import Collection, task
+
+
+# Monkeypatching needed for invoke to work in Python 3.10 and 3.11 for now.
+# See https://github.com/pyinvoke/invoke/issues/833#issuecomment-1293148106
+if not hasattr(inspect, "getargspec"):
+    inspect.getargspec = inspect.getfullargspec  # type: ignore
 
 
 # This file contains tasks that can be easily run from the shell terminal using the
