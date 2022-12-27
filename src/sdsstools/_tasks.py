@@ -8,11 +8,13 @@
 # @License: BSD 3-Clause
 # @Copyright: Brian Cherinka
 
+# This file contains tasks that can be easily run from the shell terminal using the
+# Invoke python package. If you do not have invoke, install it with pip install
+# To list the tasks available, type invoke --list from the top-level repo directory
+
 import inspect
 import os
 import shutil
-
-from invoke import Collection, task
 
 
 # Monkeypatching needed for invoke to work in Python 3.10 and 3.11 for now.
@@ -21,9 +23,7 @@ if not hasattr(inspect, "getargspec"):
     inspect.getargspec = inspect.getfullargspec  # type: ignore
 
 
-# This file contains tasks that can be easily run from the shell terminal using the
-# Invoke python package. If you do not have invoke, install it with pip install
-# To list the tasks available, type invoke --list from the top-level repo directory
+from invoke import Collection, task  # isort: skip
 
 
 @task
