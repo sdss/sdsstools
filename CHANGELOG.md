@@ -1,8 +1,9 @@
 # Changelog
 
-## [main](https://github.com/sdss/sdsstools/compare/0.5.3...HEAD)
+## [0.5.4](https://github.com/sdss/sdsstools/compare/0.5.3...0.5.4) - 2022-12-27
 
 - Add `.pytest_cache` and `.nox` to directories removed by `sdss clean`.
+- Add a new task `sdss sjd` that returns the current SJD.
 
 
 ## [0.5.3](https://github.com/sdss/sdsstools/compare/0.5.2...0.5.3) - 2022-09-08

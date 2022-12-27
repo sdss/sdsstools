@@ -130,8 +130,17 @@ def install_deps(ctx, extras=None):
             ctx.run(f"pip install --upgrade {extra_deps_str}", pty=True)
 
 
+@task
+def sjd(ctx, observatory=""):
+    """Returns the current SDSS MJD."""
+
+    from sdsstools.time import get_sjd
+
+    print(get_sjd(None if observatory == "" else observatory))
+
+
 # create a collection of tasks
-ns = Collection(clean, deploy, install_deps)
+ns = Collection(clean, deploy, install_deps, sjd)
 
 # create a sub-collection for the doc tasks
 docs = Collection("docs")
