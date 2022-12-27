@@ -10,6 +10,7 @@ import asyncio
 import logging
 import logging.handlers
 import os
+import sys
 import uuid
 import warnings
 
@@ -95,7 +96,9 @@ def test_warning(logger, caplog):
     assert logger.warnings_logger.handlers[0] == logger.handlers[0]
 
     assert "A warning" in caplog.messages[0]
-    assert len(open(str(logger.log_filename), "r").read().splitlines()) == 1
+
+    nlines = 1 if sys.version_info.minor < 11 else 3
+    assert len(open(str(logger.log_filename), "r").read().splitlines()) == nlines
 
 
 def test_exception_formatting(logger):
