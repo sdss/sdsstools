@@ -1,5 +1,12 @@
 # Changelog
 
+## [main](https://github.com/sdss/sdsstools/compare/0.5.4...main)
+
+- **Python 3.6 and 3.7 are not supported anymore.**
+- Removed the vendorised copy of `releases`. `releases` is not maintained anymore and should probably not be used. If you want to continue using it, use `0.5.4` or the normal installation of `releases`.
+- Full support for Python 3.11.
+
+
 ## [0.5.4](https://github.com/sdss/sdsstools/compare/0.5.3...0.5.4) - 2022-12-27
 
 - Add `.pytest_cache` and `.nox` to directories removed by `sdss clean`.
