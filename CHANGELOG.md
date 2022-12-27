@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.2](https://github.com/sdss/sdsstools/compare/1.0.1...1.0.2)
+
+- Do not fail CLI if the root of the package cannot be found.
+
+
 ## [1.0.1](https://github.com/sdss/sdsstools/compare/1.0.0...1.0.1)
 
 - Monkeypatch `invoke` to work with Python 3.10+ (see [this issue](https://github.com/pyinvoke/invoke/issues/833#issuecomment-1293148106)).

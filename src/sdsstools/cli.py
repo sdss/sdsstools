@@ -22,15 +22,13 @@ def main():
         from sdsstools import _tasks  # isort:skip
     except (ImportError, ModuleNotFoundError):
         raise ImportError(
-            "Cannot find invoke. Make sure sdsstools " "is installed for development."
+            "Cannot find invoke. Make sure sdsstools is installed for development."
         )
 
     # Use the metadata file to determine the root of the package.
     metadata_file = get_metadata_files(".")
-    if metadata_file is None:
-        raise RuntimeError("cannot find the root of the package.")
-
-    os.chdir(os.path.dirname(metadata_file))
+    if metadata_file is not None:
+        os.chdir(os.path.dirname(metadata_file))
 
     # Override the configuration if there is an invoke.yaml file next to the
     # metadata file.
