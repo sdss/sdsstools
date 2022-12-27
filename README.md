@@ -3,7 +3,7 @@
 [![Versions](https://img.shields.io/badge/python->3.7-blue)](https://docs.python.org/3/)
 [![PyPI version](https://badge.fury.io/py/sdsstools.svg)](https://badge.fury.io/py/sdsstools)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Build](https://img.shields.io/github/workflow/status/sdss/sdsstools/Test)](https://github.com/sdss/sdsstools/actions)
+[![Tests Status](https://github.com/sdss/sdsstools/workflows/Test/badge.svg)](https://github.com/sdss/sdsstools/actions)
 [![codecov](https://codecov.io/gh/sdss/sdsstools/branch/main/graph/badge.svg)](https://codecov.io/gh/sdss/sdsstools)
 
 `sdsstools` provides several common tools for logging, configuration handling, version parsing, packaging, etc. Its main purpose is to consolidate some of the utilities originally found in the [python_template](https://github.com/sdss/python_template), allowing them to become dependencies that can be updated.
