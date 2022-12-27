@@ -1,6 +1,6 @@
 # Changelog
 
-## [main](https://github.com/sdss/sdsstools/compare/0.5.4...main)
+## [1.0.0](https://github.com/sdss/sdsstools/compare/0.5.4...1.0.0)
 
 - **Python 3.6 and 3.7 are not supported anymore.**
 - Removed the vendorised copy of `releases`. `releases` is not maintained anymore and should probably not be used. If you want to continue using it, use `0.5.4` or the normal installation of `releases`.
