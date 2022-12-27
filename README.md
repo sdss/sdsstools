@@ -224,7 +224,7 @@ The function `sdsstools.time.get_sjd()` returns the integer with the SDSS-style 
 
 For convenience, `sdsstools` bundles the following products:
 
-- A copy of [releases](https://github.com/bitprophet/releases) that fixes some issues with recent versions of `semantic-version`.
+- A copy of [releases](https://github.com/bitprophet/releases) that fixes some issues with recent versions of `semantic-version`. This copy is not available in `sdsstools>=1.0.0`. `releases` is not maintained anymore, so use at your own risk.
 - A copy of [toml](https://github.com/uiri/toml) to read TOML files (used by the metadata submodule).
 
 You can access them directly from the top-level namespace, `sdsstools.toml`, `sdsstools.releases`. To use `releases` with sphinx, simply add the following to your `config.py`
