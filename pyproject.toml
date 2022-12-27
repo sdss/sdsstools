@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.6.2,<3.12"
+python = "^3.8"
 pyyaml = ">=4.0"
 pygments = "^2.5.2"
 invoke = "^1.3.0"
@@ -26,14 +26,14 @@ semantic-version = "^2.8.4"  # For sdsstools.releases
 docutils = "^0.16"
 six = "^1.14.0"
 packaging = ">=20.4"
-importlib_metadata = {version="*",  python="<=3.7"}
 daemonocle = "^1.0.2"
 
 [tool.poetry.dev-dependencies]
-ipython = "*"
-flake8 = "*"
-isort = "*"
-ipdb = "*"
+ipython = ">=8.0.0"
+flake8 = ">=3.7.9"
+doc8 = ">=0.8.0"
+isort = ">=5.0.0"
+ipdb = ">=0.13.3"
 toml = ">=0.10.0"
 pytest = ">=6.0.0"
 pytest-sugar = ">=0.9.4"
