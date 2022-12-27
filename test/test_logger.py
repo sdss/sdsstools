@@ -22,7 +22,6 @@ from sdsstools.logger import get_exception_formatted
 
 @pytest.fixture
 def logger_no_fh():
-
     _logger = get_logger(str(uuid.uuid4()))
 
     yield _logger
@@ -36,7 +35,6 @@ def logger_no_fh():
 
 @pytest.fixture
 def logger(tmp_path, logger_no_fh):
-
     log_file = tmp_path / "logs" / "test_log.log"
     logger_no_fh.start_file_logger(log_file)
 
@@ -48,7 +46,6 @@ def logger(tmp_path, logger_no_fh):
 
 
 def test_logger(logger, caplog):
-
     assert len(logger.handlers) == 2
 
     logger.debug("DEBUG")
@@ -72,7 +69,6 @@ def test_logger(logger, caplog):
 
 
 def test_set_level(caplog, logger):
-
     logger.set_level(logging.ERROR)
 
     with caplog.at_level(logging.ERROR):
@@ -83,13 +79,11 @@ def test_set_level(caplog, logger):
 
 
 def test_warning_raised(logger):
-
     with pytest.warns(UserWarning):
         warnings.warn("A warning", UserWarning)
 
 
 def test_warning(logger, caplog):
-
     warnings.warn("A warning", UserWarning)
 
     assert len(logger.warnings_logger.handlers) == 2
@@ -102,7 +96,6 @@ def test_warning(logger, caplog):
 
 
 def test_exception_formatting(logger):
-
     with pytest.raises(ValueError) as excinfo:
         raise ValueError("An error")
 
@@ -114,7 +107,6 @@ def test_exception_formatting(logger):
 
 
 def test_catch_exception(logger, caplog):
-
     with pytest.raises(ValueError) as excinfo:
         raise ValueError("An error")
 
@@ -124,7 +116,6 @@ def test_catch_exception(logger, caplog):
 
 
 def test_save_log(logger):
-
     logger.info("INFO")
 
     dest = os.path.dirname(logger.log_filename) + "/../copied_log.log"
@@ -134,14 +125,12 @@ def test_save_log(logger):
 
 
 def test_get_logger_twice(logger):
-
     logger2 = get_logger(logger.name)
 
     assert logger == logger2
 
 
 def test_bad_fh_path(logger_no_fh, tmp_path):
-
     bad_path = str(tmp_path)
 
     with pytest.warns(RuntimeWarning):
@@ -151,13 +140,11 @@ def test_bad_fh_path(logger_no_fh, tmp_path):
 
 
 def test_fh_no_rotating(logger_no_fh, tmp_path):
-
     logger_no_fh.start_file_logger(tmp_path / "no_rotating.log", rotating=False)
     assert isinstance(logger_no_fh.fh, logging.FileHandler)
 
 
 def test_log_non_standard_level(logger, caplog):
-
     logger.log(170, "A log message")
 
     assert caplog.record_tuples == [(logger.name, 170, "A log message")]
@@ -179,7 +166,6 @@ async def test_asyncio_exception_handler(logger, caplog, event_loop):
 
 
 def test_logger_rotating_rollover(tmp_path):
-
     log_file = tmp_path / "logs" / "test_log.log"
 
     logger1 = get_logger(str(uuid.uuid4()))

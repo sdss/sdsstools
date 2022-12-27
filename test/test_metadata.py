@@ -10,7 +10,6 @@ from sdsstools import get_metadata_files, get_package_version
 
 
 def test_get_metadata_files(tmp_path):
-
     package_path = tmp_path / "src" / "package"
     package_path.mkdir(parents=True)
 
@@ -31,7 +30,6 @@ def test_get_metadata_files(tmp_path):
 
 
 def test_get_package_version_path(tmp_path):
-
     package_path = tmp_path / "src" / "package"
     package_path.mkdir(parents=True)
 
@@ -68,7 +66,6 @@ version = "0.2.2"
 
 
 def test_get_package_version_name():
-
     assert get_package_version(package_name="pip") is not None
 
     assert get_package_version(package_name="non-existing-package") is None

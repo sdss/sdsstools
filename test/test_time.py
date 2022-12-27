@@ -21,7 +21,6 @@ def test_get_sjd(observatory):
 
 
 def test_get_sjd_fails():
-
     with pytest.raises(ValueError):
         get_sjd("KPNO")
 
@@ -32,7 +31,6 @@ def test_get_sjd_with_date():
 
 
 def test_get_sjd_envvar(monkeypatch):
-
     monkeypatch.setenv("OBSERVATORY", "APO")
 
     dt = datetime.datetime(2022, 4, 25, 11, 27, 51, 30690)
@@ -41,7 +39,6 @@ def test_get_sjd_envvar(monkeypatch):
 
 @pytest.mark.parametrize("fqdn", ["sdss5-hub.apo.nmsu.edu", "sdss5-hub.lco.cl"])
 def test_get_sjd_fqdn(mocker, monkeypatch, fqdn):
-
     if "OBSERVATORY" in os.environ:
         monkeypatch.delenv("OBSERVATORY")
 
@@ -52,7 +49,6 @@ def test_get_sjd_fqdn(mocker, monkeypatch, fqdn):
 
 
 def test_get_sjd_fqdn_fails(mocker, monkeypatch):
-
     if "OBSERVATORY" in os.environ:
         monkeypatch.delenv("OBSERVATORY")
 

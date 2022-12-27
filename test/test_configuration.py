@@ -41,7 +41,6 @@ cat1:
 
 @pytest.fixture(autouse=True)
 def cleanup():
-
     yield
 
     if "TEST_CONFIG_PATH" in os.environ:
@@ -50,7 +49,6 @@ def cleanup():
 
 @pytest.fixture
 def config_file(tmp_path):
-
     content = """
     cat1:
         key1: another_value
@@ -66,7 +64,6 @@ def config_file(tmp_path):
 
 @pytest.fixture
 def update_default_paths(config_file):
-
     orig_paths = DEFAULT_PATHS.copy()
 
     DEFAULT_PATHS[:] = [config_file.parent / "{name}_config"]
@@ -78,7 +75,6 @@ def update_default_paths(config_file):
 
 @pytest.fixture
 def set_envvar():
-
     os.environ["A_TEST_VARIABLE"] = "blah"
     os.environ["ANOTHER_VARIABLE"] = "foo"
     yield
@@ -88,7 +84,6 @@ def set_envvar():
 
 @pytest.fixture
 def extendable(tmp_path):
-
     base_path = tmp_path / "base.yaml"
     base_path.write_text(BASE)
 
@@ -96,7 +91,6 @@ def extendable(tmp_path):
 
 
 def test_configuration(config_file):
-
     config = Configuration()
     assert config == {}
 
@@ -108,33 +102,28 @@ def test_configuration(config_file):
 
 
 def test_configuration_user(config_file):
-
     config = Configuration(config_file, base_config=BASE_CONFIG_FILE)
     assert config["cat1"]["key1"] == "another_value"
     assert config["cat1"]["key2"] == 1
 
 
 def test_configuration_envvar(set_envvar):
-
     config = Configuration(BASE_CONFIG_FILE)
     assert config["cat2"]["key4"] == "blah"
     assert config["cat2"]["key5"] == "blah/Downloads/foo"
 
 
 def test_configuration_envvar_defaults():
-
     config = Configuration(BASE_CONFIG_FILE, default_envvars={"A_TEST_VARIABLE": "foo"})
     assert config["cat2"]["key4"] == "foo"
 
 
 def test_configurations_bad_value():
-
     with pytest.raises(ValueError):
         Configuration(1)  # type: ignore
 
 
 def test_configuration_dict():
-
     config = {"cat1": {"key1": 1}}
     conf = Configuration(base_config=config)
 
@@ -144,7 +133,6 @@ def test_configuration_dict():
 
 
 def test_configuration_user_dict():
-
     config = Configuration(base_config=BASE_CONFIG_FILE)
     assert config._BASE_CONFIG_FILE == BASE_CONFIG_FILE
     assert config.CONFIG_FILE == BASE_CONFIG_FILE
@@ -155,7 +143,6 @@ def test_configuration_user_dict():
 
 
 def test_get_config_etc():
-
     config = get_config("test", allow_user=False)
     assert isinstance(config, Configuration)
     assert config["cat1"]["key1"] == "value"
@@ -166,27 +153,23 @@ def test_get_config_etc():
 
 
 def test_get_config_etc_with_user(config_file):
-
     config = get_config("test", allow_user=True, user_path=config_file)
     assert isinstance(config, Configuration)
     assert config["cat1"]["key1"] == "another_value"
 
 
 def test_get_config_etc_with_user_str(config_file):
-
     config = get_config("test", allow_user=True, user_path=str(config_file))
     assert isinstance(config, Configuration)
     assert config["cat1"]["key1"] == "another_value"
 
 
 def test_get_config_default_path(update_default_paths):
-
     config = get_config("test")
     assert config["cat1"]["key1"] == "another_value"
 
 
 def test_get_config_envvar_path(config_file):
-
     os.environ["TEST_CONFIG_PATH"] = str(config_file)
 
     config = get_config("test")
@@ -194,7 +177,6 @@ def test_get_config_envvar_path(config_file):
 
 
 def test_get_config_no_update(config_file):
-
     config = get_config(
         "test",
         config_file=BASE_CONFIG_FILE,
@@ -208,13 +190,11 @@ def test_get_config_no_update(config_file):
 
 @unittest.mock.patch.object(inspect, "stack", side_effect=AttributeError)
 def test_get_config_bad_module(mock_func):
-
     config = get_config("test")
     assert config == {}
 
 
 def test_extends(extendable):
-
     stream, __ = extendable
     data = read_yaml_file(stream)
 
@@ -223,7 +203,6 @@ def test_extends(extendable):
 
 
 def test_extends_file_not_found(extendable):
-
     stream, base_path = extendable
     base_path.unlink()
 
@@ -232,7 +211,6 @@ def test_extends_file_not_found(extendable):
 
 
 def test_dont_extend(extendable):
-
     stream, __ = extendable
     data = read_yaml_file(stream, use_extends=False)
 
@@ -241,7 +219,6 @@ def test_dont_extend(extendable):
 
 
 def test_extends_from_file(tmp_path):
-
     base_path = tmp_path / "subdir" / "base.yaml"
     (tmp_path / "subdir").mkdir()
     base_path.touch()
@@ -258,7 +235,6 @@ def test_extends_from_file(tmp_path):
 
 
 def test_read_empty_yaml(tmp_path):
-
     path = tmp_path / "base.yaml"
     path.touch()
 

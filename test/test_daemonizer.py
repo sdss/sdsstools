@@ -26,13 +26,11 @@ from sdsstools.daemonizer import DaemonGroup, cli_coro
 @click.argument("name")
 @click.option("--option", type=str)
 def daemon_grp(name, option):
-
     print(f"Hello {name}!\n")
     print(f"Option: {option}\n")
 
 
 def test_debug(cli_runner):
-
     result = cli_runner.invoke(
         daemon_grp, ["--option", "AnOption", "Jose", "start", "--debug"]
     )
@@ -46,13 +44,11 @@ def test_debug(cli_runner):
 
 
 def test_bad_command(cli_runner):
-
     result = cli_runner.invoke(daemon_grp, ["Jose", "bad_command"])
     assert result.exit_code != 0
 
 
 def test_start_stop_restart_status(mocker, cli_runner):
-
     mocker.patch.object(Daemon, "do_action")
 
     cli_runner.invoke(daemon_grp, ["--option", "AnOption", "Jose", "start"])
@@ -72,7 +68,6 @@ def test_start_stop_restart_status(mocker, cli_runner):
 
 
 def test_no_prog():
-
     with pytest.raises(RuntimeError):
 
         @click.group(cls=DaemonGroup, pidfile="./test.pid")
@@ -116,7 +111,6 @@ def test_coro_signal_handling(cli_runner, event_loop):
 
 
 def test_both_pidfile_pid_file_fails():
-
     with pytest.raises(RuntimeError) as err:
 
         @click.group(

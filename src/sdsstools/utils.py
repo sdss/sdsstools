@@ -26,7 +26,6 @@ class Timer:
 
     @property
     def elapsed(self):
-
         if self.end:
             return self.interval
 

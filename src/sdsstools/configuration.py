@@ -225,7 +225,6 @@ class Configuration(dict):
         base_config: Optional[Union[AnyPath, ConfigType]] = None,
         default_envvars: Dict[str, Any] = {},
     ):
-
         global __ENVVARS__
 
         if base_config:
@@ -248,7 +247,6 @@ class Configuration(dict):
         """Parses the configuration and merges it with the base one."""
 
         if use_base is False or self._BASE is None:
-
             if isinstance(config, dict):
                 return config
             elif isinstance(config, (str, pathlib.Path)):

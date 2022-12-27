@@ -8,7 +8,6 @@
 
 
 def test_color_print():
-
     from sdsstools.color_print import color_text  # type: ignore
 
     assert callable(color_text)

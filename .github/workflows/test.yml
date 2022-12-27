@@ -49,6 +49,12 @@ jobs:
           pip install isort
           isort -c src/
 
+      - name: Lint with black
+        run: |
+          pip install black
+          black --check src/
+          black --check test/
+
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov pytest-mock pytest-asyncio

@@ -137,7 +137,6 @@ class DaemonGroup(click.Group):
         log_file: Optional[str] = None,
         **kwargs,
     ):
-
         if "prog" not in kwargs:
             raise RuntimeError("Daemon prog not defined.")
 
@@ -240,12 +239,10 @@ def daemonize(
     """
 
     def worker():
-
         if command is None:
             return
 
         if log_file:
-
             path = os.path.realpath(os.path.expanduser(os.path.expandvars(log_file)))
             if os.path.exists(path):
                 date = datetime.now()

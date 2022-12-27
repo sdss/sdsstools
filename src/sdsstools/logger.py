@@ -50,7 +50,6 @@ class StreamFormatter(logging.Formatter):
         logging.Formatter.__init__(self, fmt)
 
     def format(self, record):
-
         colours = {
             "info": "blue",
             "debug": "magenta",
@@ -94,7 +93,6 @@ class FileFormatter(logging.Formatter):
         logging.Formatter.__init__(self, fmt)
 
     def format(self, record):
-
         # Copy the record so that any modifications we make do not
         # affect how the record is displayed in other handlers.
         record_cp = copy.copy(record)
@@ -129,7 +127,6 @@ class SDSSLogger(logging.Logger):
     """
 
     def __init__(self, name: str):
-
         # Placeholder for the last error-level message emitted.
         self._last_error = None
 
@@ -257,7 +254,6 @@ class SDSSLogger(logging.Logger):
         SUFFIX = "%Y-%m-%d_%H:%M:%S"
 
         try:
-
             if not os.path.exists(logdir):
                 os.makedirs(logdir)
 
@@ -275,7 +271,6 @@ class SDSSLogger(logging.Logger):
                 self.fh = logging.FileHandler(str(log_file_path), mode=mode)
 
         except (IOError, OSError) as ee:
-
             warnings.warn(
                 "log file {0!r} could not be opened for "
                 "writing: {1}".format(log_file_path, ee),
@@ -283,7 +278,6 @@ class SDSSLogger(logging.Logger):
             )
 
         else:
-
             self.fh.setFormatter(FileFormatter())
             self.addHandler(self.fh)
             self.fh.setLevel(log_level)
