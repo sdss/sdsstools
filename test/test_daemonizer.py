@@ -105,7 +105,6 @@ def test_coro_signal_handling(cli_runner, event_loop):
 
     result = cli_runner.invoke(daemon_grp_async, ["Jose", "start", "--debug"])
 
-    # print(result.)
     assert result.exit_code == 0
     assert "Hello Jose" in result.output
 
