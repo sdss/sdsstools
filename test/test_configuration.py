@@ -12,6 +12,7 @@ import os
 import unittest.mock
 
 import pytest
+from yaml import safe_load
 
 from sdsstools import Configuration, get_config
 from sdsstools.configuration import DEFAULT_PATHS, read_yaml_file
@@ -124,22 +125,80 @@ def test_configurations_bad_value():
 
 
 def test_configuration_dict():
+    config = Configuration(
+        {"cat1": {"key2": 4}, "key3": 3},
+        base_config=BASE_CONFIG_FILE,
+    )
+    assert config["cat1"]["key1"] == "value"
+    assert config["cat1"]["key2"] == 4
+    assert config["key3"] == 3
+
+
+def test_configuration_base_dict():
     config = {"cat1": {"key1": 1}}
     conf = Configuration(base_config=config)
 
     assert conf._BASE == config
     assert conf._BASE_CONFIG_FILE is None
-    assert conf.CONFIG_FILE is None
+    assert conf._CONFIG_FILE is None
 
 
 def test_configuration_user_dict():
     config = Configuration(base_config=BASE_CONFIG_FILE)
     assert config._BASE_CONFIG_FILE == BASE_CONFIG_FILE
-    assert config.CONFIG_FILE == BASE_CONFIG_FILE
+    assert config._CONFIG_FILE == BASE_CONFIG_FILE
     assert config.keys() != {}
 
     config.load({}, use_base=False)
     assert list(config.keys()) == []
+
+
+def test_configuration_reload(config_file):
+    config = Configuration(config_file, base_config=BASE_CONFIG_FILE)
+    assert config["cat1"]["key1"] == "another_value"
+    assert config["cat1"]["key2"] == 1
+
+    # Modify config_file
+    with open(config_file, "w") as f:
+        f.write(
+            """
+cat1:
+    key1: new_value
+"""
+        )
+
+    config.reload()
+    assert config["cat1"]["key1"] == "new_value"
+    assert config["cat1"]["key2"] == 1
+
+
+def test_configuration_reload_no_base(config_file):
+    config = Configuration(config_file)
+    assert config["cat1"]["key1"] == "another_value"
+
+    # Modify config_file
+    with open(config_file, "w") as f:
+        f.write(
+            """
+cat1:
+    key1: new_value
+"""
+        )
+
+    config.reload()
+    assert config["cat1"]["key1"] == "new_value"
+
+
+def test_configuration_reload_no_change(config_file):
+    config = Configuration(config_file, base_config=safe_load(BASE))
+    config.reload()
+
+    assert config["cat1"]["key1"] == "another_value"
+    assert config["cat2"]["key2"] == 1
+
+    assert len(config) == 2
+    assert len(config["cat1"]) == 1
+    assert len(config["cat2"]) == 1
 
 
 def test_get_config_etc():
