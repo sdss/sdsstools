@@ -50,6 +50,9 @@ black = {version = ">=20.8b1", allow-prereleases = true}
 sdss = 'sdsstools.cli:main'
 daemonize = 'sdsstools.daemonizer:daemonize'
 
+[tool.poetry.group.dev.dependencies]
+typing-extensions = "^4.6.3"
+
 [tool.black]
 line-length = 88
 target-version = ['py38']

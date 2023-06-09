@@ -15,6 +15,7 @@ import re
 from typing import Any, Dict, Optional, Union
 
 import yaml
+from typing_extensions import Self
 
 
 __all__ = ["read_yaml_file", "merge_config", "get_config", "Configuration"]
@@ -196,11 +197,15 @@ def get_config(
 
     if merge_mode == "update":
         return Configuration(
-            custom_config_fn, base_config=config_file, default_envvars=default_envvars
+            custom_config_fn,
+            base_config=config_file,
+            default_envvars=default_envvars,
         )
     else:
         return Configuration(
-            custom_config_fn, base_config=None, default_envvars=default_envvars
+            custom_config_fn,
+            base_config=None,
+            default_envvars=default_envvars,
         )
 
 
@@ -227,17 +232,26 @@ class Configuration(dict):
     ):
         global __ENVVARS__
 
+        self._BASE: dict | None = None
+        self._CONFIG: dict | None = None
+
+        self._BASE_CONFIG_FILE: AnyPath | None = None
+        self._CONFIG_FILE: AnyPath | None = None
+
         if base_config:
             self._BASE = self._parse_config(base_config, use_base=False)
             if isinstance(base_config, dict):
-                self.CONFIG_FILE = None
+                self._BASE_CONFIG_FILE = None
             else:
-                self.CONFIG_FILE = os.path.realpath(str(base_config))
+                self._BASE_CONFIG_FILE = os.path.realpath(str(base_config))
         else:
             self._BASE = {}
-            self.CONFIG_FILE = None
+            self._BASE_CONFIG_FILE = None
 
-        self._BASE_CONFIG_FILE = self.CONFIG_FILE
+        if isinstance(config, dict):
+            self._CONFIG = config
+        else:
+            self._CONFIG_FILE = config
 
         __ENVVARS__ = default_envvars
 
@@ -268,19 +282,35 @@ class Configuration(dict):
             base configuration.
         use_base
             Merge the new configuration with the base config.
+
         """
 
         self.clear()
 
         if config is None:
             dict.__init__(self, self._BASE)
-            self.CONFIG_FILE = self._BASE_CONFIG_FILE
+            self._CONFIG_FILE = self._BASE_CONFIG_FILE
             return
 
         dict.__init__(self, self._parse_config(config, use_base=use_base))
 
         # Save name of the configuration file (if the input is a file).
         if isinstance(config, (str, pathlib.Path)):
-            self.CONFIG_FILE = str(config)
+            self._CONFIG_FILE = str(config)
         else:
-            self.CONFIG_FILE = None
+            self._CONFIG_FILE = None
+
+    def reload(self) -> Self:
+        """Reloads the configuration.
+
+        This will only have an effect if the configuration has been loaded from
+        files, in which case the files will be read again.
+
+        """
+
+        if self._BASE_CONFIG_FILE is not None:
+            self._BASE = self._parse_config(self._BASE_CONFIG_FILE, use_base=False)
+
+        self.load(self._CONFIG_FILE or dict(self))
+
+        return self
