@@ -1,5 +1,10 @@
 # Changelog
 
+## [Next version](https://github.com/sdss/sdsstools/compare/1.0.2...main)
+
+- [#35](https://github.com/sdss/sdsstools/issues/35) Add support to reload a `Configuration`. If the configuration is based on files on disk and those have changed, the files will be read again.
+
+
 ## [1.0.2](https://github.com/sdss/sdsstools/compare/1.0.1...1.0.2)
 
 - Do not fail CLI if the root of the package cannot be found.
