@@ -49,6 +49,8 @@ class StreamFormatter(logging.Formatter):
     def __init__(self, fmt=base_fmt):
         logging.Formatter.__init__(self, fmt)
 
+        self.print_time = False
+
     def format(self, record):
         colours = {
             "info": "blue",
@@ -66,6 +68,9 @@ class StreamFormatter(logging.Formatter):
         if levelname.lower() in colours:
             level_colour = colours[levelname]
             header = color_text("[{}]: ".format(levelname.upper()), level_colour)
+            if self.print_time:
+                now = datetime.datetime.now()
+                header = color_text(now.strftime("%H:%M:%S "), "lightgrey") + header
         else:
             return logging.Formatter.format(self, record)
 
