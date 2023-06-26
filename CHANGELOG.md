@@ -1,6 +1,11 @@
 # Changelog
 
-## [1.1.0](https://github.com/sdss/sdsstools/compare/1.0.2...1.0.0) - 2023-06-18
+## [main](https://github.com/sdss/sdsstools/compare/1.1.0...HEAD)
+
+- Update `invoke` to 2.1.3.
+
+
+## [1.1.0](https://github.com/sdss/sdsstools/compare/1.0.2...1.1.0) - 2023-06-18
 
 - [#35](https://github.com/sdss/sdsstools/issues/35) Add support to reload a `Configuration`. If the configuration is based on files on disk and those have changed, the files will be read again.
 - Add the option to print the time of a log message in `StreamFormatter` by doing `log.sh.formatter.print_time = True`.
