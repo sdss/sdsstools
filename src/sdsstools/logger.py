@@ -22,6 +22,10 @@ from typing import List, Optional, Union, cast
 from pygments import highlight
 from pygments.formatters import TerminalFormatter  # type: ignore
 from pygments.lexers import get_lexer_by_name
+from rich.console import Console
+from rich.logging import RichHandler
+from rich.text import Text
+from rich.theme import Theme
 
 from ._vendor.color_print import color_text
 
@@ -122,6 +126,20 @@ class FileFormatter(logging.Formatter):
         return logging.Formatter.format(self, record_cp)
 
 
+class CustomRichHandler(RichHandler):
+    """A slightly custom ``RichHandler`` logging handler."""
+
+    def get_level_text(self, record):
+        """Get the level name from the record."""
+
+        level_name = record.levelname
+        level_text = Text.styled(
+            f"[{level_name}]".ljust(9),
+            f"logging.level.{level_name.lower()}",
+        )
+        return level_text
+
+
 class SDSSLogger(logging.Logger):
     """Custom logging system.
 
@@ -139,32 +157,68 @@ class SDSSLogger(logging.Logger):
 
     def init(
         self,
+        use_rich_handler: bool = False,
         log_level: int = logging.INFO,
         capture_warnings: bool = True,
         fmt: Optional[logging.Formatter] = None,
+        rich_handler_kwargs={},
     ):
         """Initialise the logger.
 
         Parameters
         ----------
+        use_rich_handler
+            If `True`, uses the ``rich`` library ``RichHandler`` for
+            console logging.
         log_level
             The initial logging level for the console handler.
         capture_warnings
             Whether to capture warnings and redirect them to the log.
         fmt
             The message format to supply to the stream formatter.
+        rich_handler_kwargs
+            Keyword arguments to pass to the ``RichHandler`` on init.
+
         """
+
+        self.warnings_logger = logging.getLogger("py.warnings")
 
         # Set levels
         self.setLevel(logging.DEBUG)
 
+        # Clear handlers before recreating.
+        for handler in self.handlers.copy():
+            if handler in self.warnings_logger.handlers:
+                self.warnings_logger.removeHandler(handler)
+            self.removeHandler(handler)
+
         # Sets the console handler
-        self.sh = logging.StreamHandler()
-        if fmt is not None:
-            formatter = StreamFormatter(fmt)
+        if use_rich_handler:
+            console = Console(
+                theme=Theme(
+                    {
+                        "logging.level.debug": "magenta",
+                        "logging.level.warning": "yellow",
+                        "logging.level.critical": "red",
+                        "logging.level.error": "red",
+                    }
+                )
+            )
+
+            self.sh = CustomRichHandler(
+                level=log_level,
+                console=console,
+                **rich_handler_kwargs,
+            )
+
         else:
-            formatter = StreamFormatter()
-        self.sh.setFormatter(formatter)
+            self.sh = logging.StreamHandler()
+            if fmt is not None:
+                formatter = StreamFormatter(fmt)  # type: ignore
+            else:
+                formatter = StreamFormatter()
+            self.sh.setFormatter(formatter)
+
         self.addHandler(self.sh)
         self.sh.setLevel(log_level)
 
@@ -177,8 +231,6 @@ class SDSSLogger(logging.Logger):
 
         # Catches exceptions
         sys.excepthook = self._catch_exceptions
-
-        self.warnings_logger: Optional[logging.Logger] = None
 
         if capture_warnings:
             self.capture_warnings()
@@ -198,8 +250,6 @@ class SDSSLogger(logging.Logger):
         """
 
         logging.captureWarnings(True)
-
-        self.warnings_logger = logging.getLogger("py.warnings")
 
         # Only enable the sh handler if none is attached to the warnings
         # logger yet. Prevents duplicated prints of the warnings.
@@ -322,18 +372,47 @@ class SDSSLogger(logging.Logger):
                 handler.setLevel(level)
 
 
-def get_logger(name, **kwargs) -> SDSSLogger:
-    """Gets or creates a new SDSS logger."""
+def get_logger(
+    name,
+    use_rich_handler: bool = False,
+    log_level: int = logging.INFO,
+    capture_warnings: bool = True,
+    fmt: Optional[logging.Formatter] = None,
+    rich_handler_kwargs={
+        "log_time_format": "%X",
+        "show_path": False,
+    },
+) -> SDSSLogger:
+    """Gets or creates a new SDSS logger.
+
+    Parameters
+    ----------
+    use_rich_handler
+        If `True`, uses as slightly customised``RichHandler`` from
+        the ``rich`` library for console logging.
+    log_level
+        The initial logging level for the console handler.
+    capture_warnings
+        Whether to capture warnings and redirect them to the log.
+    fmt
+        The message format to supply to the stream formatter.
+    rich_handler_kwargs
+        Keyword arguments to pass to the ``RichHandler`` on init.
+
+    """
 
     orig_logger = logging.getLoggerClass()
 
     logging.setLoggerClass(SDSSLogger)
 
-    if name in logging.Logger.manager.loggerDict:  # type: ignore
-        log = cast(SDSSLogger, logging.getLogger(name))
-    else:
-        log = cast(SDSSLogger, logging.getLogger(name))
-        log.init(**kwargs)
+    log = cast(SDSSLogger, logging.getLogger(name))
+    log.init(
+        use_rich_handler=use_rich_handler,
+        log_level=log_level,
+        capture_warnings=capture_warnings,
+        fmt=fmt,
+        rich_handler_kwargs=rich_handler_kwargs,
+    )
 
     logging.setLoggerClass(orig_logger)
 
