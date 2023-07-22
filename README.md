@@ -54,6 +54,9 @@ The file logger is disabled by default and can be started by calling `log.start_
 
 The `SDSSLoger` instance also include an `asyncio_exception_handler` method that can be added to the asyncio event loop to handle exceptions; for example `loop.set_exception_handler(log.asyncio_exception_handler)`.
 
+Console logging uses the standard `StreamHandler`. It's possible to use the `rich` library [RichHandler](https://rich.readthedocs.io/en/stable/logging.html) instead by
+passing `use_rich_handler=True` to `get_logger()`. Additional keyword arguments to `RichHandler` can be passed as a `rich_handler_kwargs` dictionary. In the future the `rich` handler may become the default console logger.
+
 ## Configuration
 
 The `sdsstools.configuration` module contains several utilities to deal with configuration files. The most useful one is [get_config](https://github.com/sdss/sdsstools/blob/d3d337953a37aaff9c38fead76b08b414164775a/src/sdsstools/configuration.py#L40), which allows to read a YAML configuration file. For example

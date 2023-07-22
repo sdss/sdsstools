@@ -15,6 +15,7 @@ import uuid
 import warnings
 
 import pytest
+from rich.logging import RichHandler
 
 from sdsstools import get_logger
 from sdsstools.logger import get_exception_formatted
@@ -177,3 +178,14 @@ def test_logger_rotating_rollover(tmp_path):
     logger2.start_file_logger(log_file, rollover=True)
 
     assert len(list((tmp_path / "logs").glob("*"))) == 2
+
+
+def test_rich_handler_logger(caplog):
+    log = get_logger("test", use_rich_handler=True)
+
+    assert isinstance(log.sh, RichHandler)
+    assert len(log.handlers) == 1
+
+    log.info("Testing")
+
+    assert "Testing" in caplog.record_tuples[0][2]
