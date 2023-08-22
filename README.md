@@ -40,6 +40,7 @@ sdsstools includes the [sdsstools.logger.SDSSLogger](https://github.com/sdss/sds
 - A console handler (accessible via the `.sh` attribute) with nice colouring.
 - Automatic capture of warnings and exceptions, which are formatted and redirected to the logger. For the console handler, this means that once the logger has been created, all warnings and exceptions are output normally but are clearer and more aesthetic.
 - A [TimedRotatingFileHandler](https://docs.python.org/3.8/library/logging.handlers.html#logging.handlers.TimedRotatingFileHandler) (accessible via the `.fh` attribute) that rotates at midnight UT, with good formatting.
+- A version of the logger that uses `rich` [log handling](https://rich.readthedocs.io/en/stable/logging.html).
 
 To get a new logger for your application, simply do
 
@@ -49,6 +50,8 @@ from sdsstools.logger import get_logger
 NAME = 'myrepo'
 log = get_logger(NAME)
 ```
+
+You can get a logger using the `rich` `RichHandler` by passing `use_rich_handler=True`.
 
 The file logger is disabled by default and can be started by calling `log.start_file_logger(path)`. By default a `TimedRotatingFileHandler` is created. If you want a normal `FileHandler` use `rotate=False`. The file mode defaults to `mode='a'` (append).
 
