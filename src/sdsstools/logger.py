@@ -17,7 +17,7 @@ import traceback
 import warnings
 from logging.handlers import TimedRotatingFileHandler
 
-from typing import Any, List, Optional, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 from pygments import highlight
 from pygments.formatters import TerminalFormatter  # type: ignore
@@ -378,7 +378,7 @@ def get_logger(
     log_level: int = logging.INFO,
     capture_warnings: bool = True,
     fmt: Optional[logging.Formatter] = None,
-    rich_handler_kwargs: dict[str, Any] = {},
+    rich_handler_kwargs: Dict[str, Any] = {},
 ) -> SDSSLogger:
     """Gets or creates a new SDSS logger.
 
