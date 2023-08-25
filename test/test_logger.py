@@ -111,7 +111,7 @@ def test_catch_exception(logger, caplog):
     with pytest.raises(ValueError) as excinfo:
         raise ValueError("An error")
 
-    logger._catch_exceptions(excinfo.type, excinfo.value, excinfo.tb)
+    logger.handle_exceptions(excinfo.type, excinfo.value, excinfo.tb)
 
     assert caplog.record_tuples[0][1] == logging.ERROR
 
@@ -189,3 +189,21 @@ def test_rich_handler_logger(caplog):
     log.info("Testing")
 
     assert "Testing" in caplog.record_tuples[0][2]
+
+
+def test_catch_exception_rich_logger(tmp_path, mocker):
+    logger = get_logger("test", use_rich_handler=True)
+
+    log_file = tmp_path / "logs" / "test_log.log"
+    logger.start_file_logger(log_file)
+
+    assert logger.fh
+
+    emit_mock = mocker.MagicMock()
+    logger.fh.emit = emit_mock
+
+    with pytest.raises(ValueError) as excinfo:
+        raise ValueError("An error")
+
+    logger.handle_exceptions(excinfo.type, excinfo.value, excinfo.tb)
+    emit_mock.assert_called()

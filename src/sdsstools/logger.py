@@ -181,6 +181,8 @@ class SDSSLogger(logging.Logger):
 
         """
 
+        self.use_rich_handler = use_rich_handler
+
         self.warnings_logger = logging.getLogger("py.warnings")
 
         # Set levels
@@ -219,8 +221,11 @@ class SDSSLogger(logging.Logger):
                 formatter = StreamFormatter()
             self.sh.setFormatter(formatter)
 
-            # Catches exceptions
-            sys.excepthook = self._catch_exceptions
+        # Catches exceptions
+        self.default_excepthook = sys.__excepthook__
+        if sys.excepthook != self.handle_exceptions:
+            self.default_excepthook = sys.excepthook
+        sys.excepthook = self.handle_exceptions
 
         self.addHandler(self.sh)
         self.sh.setLevel(log_level)
@@ -235,10 +240,33 @@ class SDSSLogger(logging.Logger):
         if capture_warnings:
             self.capture_warnings()
 
-    def _catch_exceptions(self, exctype, value, tb):
+    def handle_exceptions(self, exctype, value, tb):
         """Catches all exceptions and logs them."""
 
-        self.error(get_exception_formatted(exctype, value, tb))
+        # With rich we want to emit the exception normally, otherwise
+        # get_exception_formatted screws up the console format. Also
+        # we want to allow rich.traceback.install()
+        if self.use_rich_handler:
+            record = logging.makeLogRecord(
+                {
+                    "name": __name__,
+                    "msg": "Exception was raised: %s",
+                    "levelname": "ERROR",
+                    "args": "".join(traceback.format_exception(tb, value, tb)),
+                }
+            )
+
+            if self.fh:
+                self.fh.emit(record)
+
+            # # Also emit as a normal traceback. Here we handle a case that probably
+            # # only happens in tests in which multiple logs are created and we
+            # # have lost the default excepthook.
+            # if self.default_excepthook != self.handle_exceptions:
+            self.default_excepthook(exctype, value, tb)
+
+        else:
+            self.error(get_exception_formatted(exctype, value, tb))
 
     def capture_warnings(self):
         """Capture warnings.
@@ -269,7 +297,7 @@ class SDSSLogger(logging.Logger):
                 raise exception
             except Exception:
                 exc_type, exc_value, exc_tb = sys.exc_info()
-                self.error(get_exception_formatted(exc_type, exc_value, exc_tb))
+                self.handle_exceptions(exc_type, exc_value, exc_tb)
         else:
             loop.default_exception_handler(context)
 

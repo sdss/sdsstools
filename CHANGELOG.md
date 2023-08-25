@@ -1,5 +1,8 @@
 # Changelog
 
+- Ensure that logging to file happens with rich handler.
+
+
 ## [1.2.1](https://github.com/sdss/sdsstools/compare/1.2.0...1.2.1)
 
 - Improve logging with `rich` and do not use custon exception hook with `RichHandler`.
