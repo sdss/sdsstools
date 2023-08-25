@@ -1,5 +1,6 @@
 # Changelog
 
+- Improve logging with `rich` and do not use custon exception hook with `RichHandler`.
 - Lint using `ruff`.
 
 

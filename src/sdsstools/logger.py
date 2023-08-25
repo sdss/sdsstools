@@ -17,7 +17,7 @@ import traceback
 import warnings
 from logging.handlers import TimedRotatingFileHandler
 
-from typing import List, Optional, Union, cast
+from typing import Any, List, Optional, Union, cast
 
 from pygments import highlight
 from pygments.formatters import TerminalFormatter  # type: ignore
@@ -219,6 +219,9 @@ class SDSSLogger(logging.Logger):
                 formatter = StreamFormatter()
             self.sh.setFormatter(formatter)
 
+            # Catches exceptions
+            sys.excepthook = self._catch_exceptions
+
         self.addHandler(self.sh)
         self.sh.setLevel(log_level)
 
@@ -228,9 +231,6 @@ class SDSSLogger(logging.Logger):
 
         # A header that precedes every message.
         self.header = ""
-
-        # Catches exceptions
-        sys.excepthook = self._catch_exceptions
 
         if capture_warnings:
             self.capture_warnings()
@@ -378,10 +378,7 @@ def get_logger(
     log_level: int = logging.INFO,
     capture_warnings: bool = True,
     fmt: Optional[logging.Formatter] = None,
-    rich_handler_kwargs={
-        "log_time_format": "%X",
-        "show_path": False,
-    },
+    rich_handler_kwargs: dict[str, Any] = {},
 ) -> SDSSLogger:
     """Gets or creates a new SDSS logger.
 
@@ -398,6 +395,8 @@ def get_logger(
         The message format to supply to the stream formatter.
     rich_handler_kwargs
         Keyword arguments to pass to the ``RichHandler`` on init.
+        By default ``{ "log_time_format": "%X", "show_path": False,
+        "rich_tracebacks": True}``.
 
     """
 
@@ -405,13 +404,20 @@ def get_logger(
 
     logging.setLoggerClass(SDSSLogger)
 
+    default_rich_handler_kwargs = {
+        "log_time_format": "%X",
+        "show_path": False,
+        "rich_tracebacks": True,
+    }
+    default_rich_handler_kwargs.update(rich_handler_kwargs)
+
     log = cast(SDSSLogger, logging.getLogger(name))
     log.init(
         use_rich_handler=use_rich_handler,
         log_level=log_level,
         capture_warnings=capture_warnings,
         fmt=fmt,
-        rich_handler_kwargs=rich_handler_kwargs,
+        rich_handler_kwargs=default_rich_handler_kwargs,
     )
 
     logging.setLoggerClass(orig_logger)
