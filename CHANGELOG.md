@@ -1,5 +1,8 @@
 # Changelog
 
+- Lint using `ruff`.
+
+
 ## [1.2.0](https://github.com/sdss/sdsstools/compare/1.1.0...1.2.0)
 
 - [#36](https://github.com/sdss/sdsstools/issues/36) Add the option to use a `RichHandler` handler for console logging instead of the default `StreamHandler`. This can be enabled by passing `use_rich_handler` to `get_logger()`. For now this is not the default but it may become so in a future version.

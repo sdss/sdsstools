@@ -3,8 +3,8 @@
 Released under the MIT license.
 """
 
-from . import encoder
-from . import decoder
+from . import decoder, encoder
+
 
 __version__ = "0.10.1"
 _spec_ = "0.5.0"

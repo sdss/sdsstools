@@ -5,6 +5,7 @@ from decimal import Decimal
 
 from .decoder import InlineTableDict
 
+
 if sys.version_info >= (3,):
     unicode = str
 
