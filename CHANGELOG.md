@@ -1,15 +1,17 @@
 # Changelog
 
+## [1.2.2](https://github.com/sdss/sdsstools/compare/1.2.1...1.2.2) - 2023-08-25
+
 - Ensure that logging to file happens with rich handler.
 
 
-## [1.2.1](https://github.com/sdss/sdsstools/compare/1.2.0...1.2.1)
+## [1.2.1](https://github.com/sdss/sdsstools/compare/1.2.0...1.2.1) - 2023-08-25
 
 - Improve logging with `rich` and do not use custon exception hook with `RichHandler`.
 - Lint using `ruff`.
 
 
-## [1.2.0](https://github.com/sdss/sdsstools/compare/1.1.0...1.2.0)
+## [1.2.0](https://github.com/sdss/sdsstools/compare/1.1.0...1.2.0) - 2023-08-21
 
 - [#36](https://github.com/sdss/sdsstools/issues/36) Add the option to use a `RichHandler` handler for console logging instead of the default `StreamHandler`. This can be enabled by passing `use_rich_handler` to `get_logger()`. For now this is not the default but it may become so in a future version.
 - Update `invoke` to 2.1.3.
@@ -21,17 +23,17 @@
 - Add the option to print the time of a log message in `StreamFormatter` by doing `log.sh.formatter.print_time = True`.
 
 
-## [1.0.2](https://github.com/sdss/sdsstools/compare/1.0.1...1.0.2)
+## [1.0.2](https://github.com/sdss/sdsstools/compare/1.0.1...1.0.2) - 2022-12-27
 
 - Do not fail CLI if the root of the package cannot be found.
 
 
-## [1.0.1](https://github.com/sdss/sdsstools/compare/1.0.0...1.0.1)
+## [1.0.1](https://github.com/sdss/sdsstools/compare/1.0.0...1.0.1) - 2022-12-27
 
 - Monkeypatch `invoke` to work with Python 3.10+ (see [this issue](https://github.com/pyinvoke/invoke/issues/833#issuecomment-1293148106)).
 
 
-## [1.0.0](https://github.com/sdss/sdsstools/compare/0.5.4...1.0.0)
+## [1.0.0](https://github.com/sdss/sdsstools/compare/0.5.4...1.0.0) - 2022-12-27
 
 - **Python 3.6 and 3.7 are not supported anymore.**
 - Removed the vendorised copy of `releases`. `releases` is not maintained anymore and should probably not be used. If you want to continue using it, use `0.5.4` or the normal installation of `releases`.
