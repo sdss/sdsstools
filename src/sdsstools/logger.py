@@ -259,11 +259,11 @@ class SDSSLogger(logging.Logger):
             if self.fh:
                 self.fh.emit(record)
 
-            # # Also emit as a normal traceback. Here we handle a case that probably
-            # # only happens in tests in which multiple logs are created and we
-            # # have lost the default excepthook.
-            # if self.default_excepthook != self.handle_exceptions:
-            self.default_excepthook(exctype, value, tb)
+            # Also emit as a normal traceback. Here we handle a case that probably
+            # only happens in tests in which multiple logs are created and we
+            # have lost the default excepthook.
+            if self.default_excepthook != self.handle_exceptions:
+                self.default_excepthook(exctype, value, tb)
 
         else:
             self.error(get_exception_formatted(exctype, value, tb))
