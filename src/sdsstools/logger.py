@@ -20,7 +20,7 @@ from logging.handlers import TimedRotatingFileHandler
 from typing import Any, Dict, List, Optional, Union, cast
 
 from pygments import highlight
-from pygments.formatters import TerminalFormatter  # type: ignore
+from pygments.formatters import TerminalFormatter
 from pygments.lexers import get_lexer_by_name
 from rich.console import Console
 from rich.logging import RichHandler
@@ -30,10 +30,27 @@ from rich.theme import Theme
 from ._vendor.color_print import color_text
 
 
+try:
+    IPYTHON = get_ipython()  # type: ignore
+except NameError:
+    IPYTHON = None
+
+
 __all__ = ["get_logger"]
 
 
 WARNING_RE = re.compile(r"^.*?\s*?(\w*?Warning): (.*)")
+
+
+def custom__showtraceback_closure(log):
+    def _showtraceback(*args, **kwargs):
+        assert IPYTHON
+
+        exc_tuple = IPYTHON._get_exc_info()
+        log.handle_exceptions(*exc_tuple)
+
+    if IPYTHON:
+        IPYTHON._showtraceback = _showtraceback
 
 
 def get_exception_formatted(tp, value, tb):
@@ -159,6 +176,7 @@ class SDSSLogger(logging.Logger):
         self,
         use_rich_handler: bool = False,
         log_level: int = logging.INFO,
+        capture_exceptions: bool = True,
         capture_warnings: bool = True,
         fmt: Optional[logging.Formatter] = None,
         rich_handler_kwargs={},
@@ -172,6 +190,9 @@ class SDSSLogger(logging.Logger):
             console logging.
         log_level
             The initial logging level for the console handler.
+        capture_exceptions
+            If `True`, overrides the exception hook and redirects all
+            exceptions to the logging system.
         capture_warnings
             Whether to capture warnings and redirect them to the log.
         fmt
@@ -226,6 +247,12 @@ class SDSSLogger(logging.Logger):
         # Catches exceptions
         if capture_exceptions:
             sys.excepthook = self.handle_exceptions
+
+            if IPYTHON:
+                # One more override. We want that any exceptions raised in IPython
+                # also gets logged to file, but IPython overrides excepthook completely
+                # so here we make a custom call to log.handle_exceptions().
+                custom__showtraceback_closure(self)
 
         self.addHandler(self.sh)
         self.sh.setLevel(log_level)
@@ -384,6 +411,7 @@ def get_logger(
     name,
     use_rich_handler: bool = False,
     log_level: int = logging.INFO,
+    capture_exceptions: bool = True,
     capture_warnings: bool = True,
     fmt: Optional[logging.Formatter] = None,
     rich_handler_kwargs: Dict[str, Any] = {},
@@ -397,6 +425,9 @@ def get_logger(
         the ``rich`` library for console logging.
     log_level
         The initial logging level for the console handler.
+    capture_exceptions
+        If `True`, overrides the exception hook and redirects all
+        exceptions to the logging system.
     capture_warnings
         Whether to capture warnings and redirect them to the log.
     fmt
@@ -416,6 +447,7 @@ def get_logger(
         "log_time_format": "%X",
         "show_path": False,
         "rich_tracebacks": True,
+        "tracebacks_show_locals": False,
     }
     default_rich_handler_kwargs.update(rich_handler_kwargs)
 
@@ -423,6 +455,7 @@ def get_logger(
     log.init(
         use_rich_handler=use_rich_handler,
         log_level=log_level,
+        capture_exceptions=capture_exceptions,
         capture_warnings=capture_warnings,
         fmt=fmt,
         rich_handler_kwargs=default_rich_handler_kwargs,
