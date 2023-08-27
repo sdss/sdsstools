@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.3](https://github.com/sdss/sdsstools/compare/1.2.2...1.2.3) - 2023-08-25
+
+- Store `rich` console instance when passing it to handler.
+- Simplify exception handling override code.
+- Handle exceptions and log them even within IPython.
+- Add option to not capture exceptions in logger.
+
+
 ## [1.2.2](https://github.com/sdss/sdsstools/compare/1.2.1...1.2.2) - 2023-08-25
 
 - Ensure that logging to file happens with rich handler.
