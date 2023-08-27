@@ -224,10 +224,8 @@ class SDSSLogger(logging.Logger):
             self.sh.setFormatter(formatter)
 
         # Catches exceptions
-        self.default_excepthook = sys.__excepthook__
-        if sys.excepthook != self.handle_exceptions:
-            self.default_excepthook = sys.excepthook
-        sys.excepthook = self.handle_exceptions
+        if capture_exceptions:
+            sys.excepthook = self.handle_exceptions
 
         self.addHandler(self.sh)
         self.sh.setLevel(log_level)
@@ -245,28 +243,8 @@ class SDSSLogger(logging.Logger):
     def handle_exceptions(self, exctype, value, tb):
         """Catches all exceptions and logs them."""
 
-        # With rich we want to emit the exception normally, otherwise
-        # get_exception_formatted screws up the console format. Also
-        # we want to allow rich.traceback.install()
         if self.use_rich_handler:
-            record = logging.makeLogRecord(
-                {
-                    "name": __name__,
-                    "msg": "Exception was raised: %s",
-                    "levelname": "ERROR",
-                    "args": "".join(traceback.format_exception(tb, value, tb)),
-                }
-            )
-
-            if self.fh:
-                self.fh.emit(record)
-
-            # Also emit as a normal traceback. Here we handle a case that probably
-            # only happens in tests in which multiple logs are created and we
-            # have lost the default excepthook.
-            if self.default_excepthook != self.handle_exceptions:
-                self.default_excepthook(exctype, value, tb)
-
+            self.exception("An exeption was raised.", exc_info=(exctype, value, tb))
         else:
             self.error(get_exception_formatted(exctype, value, tb))
 
