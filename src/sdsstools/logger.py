@@ -195,8 +195,10 @@ class SDSSLogger(logging.Logger):
             self.removeHandler(handler)
 
         # Sets the console handler
+        self.rich_console: Console | None = None
+
         if use_rich_handler:
-            console = Console(
+            self.rich_console = Console(
                 theme=Theme(
                     {
                         "logging.level.debug": "magenta",
@@ -209,7 +211,7 @@ class SDSSLogger(logging.Logger):
 
             self.sh = CustomRichHandler(
                 level=log_level,
-                console=console,
+                console=self.rich_console,
                 **rich_handler_kwargs,
             )
 
