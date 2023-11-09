@@ -174,7 +174,7 @@ def get_config(
         )
 
 
-class RecursiveDict(dict[str, Any]):
+class RecursiveDict(Dict[str, Any]):
     """A dictionary in which ``__getitem__`` and ``get`` behave recursively.
 
     This subclass of ``dict`` behaves like a normal dictionary but ``.get()``
