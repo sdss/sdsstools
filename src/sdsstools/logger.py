@@ -319,7 +319,7 @@ class SDSSLogger(logging.Logger):
         mode: str = "a",
         rotating: bool = True,
         rollover: bool = False,
-        when: str = 'midnight',
+        when: str = "midnight",
         utc: bool = True,
         at_time: Union[str, datetime.time] = None,
     ):
