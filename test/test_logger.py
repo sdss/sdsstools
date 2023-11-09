@@ -180,6 +180,16 @@ def test_logger_rotating_rollover(tmp_path):
     assert len(list((tmp_path / "logs").glob("*"))) == 2
 
 
+def test_logger_when_options(tmp_path):
+    log_file = tmp_path / "logs" / "test_log.log"
+
+    logger1 = get_logger(str(uuid.uuid4()))
+    logger1.start_file_logger(log_file, utc=False, when="M")
+
+    assert logger1.fh.when == "M"
+    assert logger1.fh.utc is False
+
+
 def test_rich_handler_logger(caplog):
     log = get_logger("test", use_rich_handler=True)
 

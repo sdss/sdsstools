@@ -319,6 +319,9 @@ class SDSSLogger(logging.Logger):
         mode: str = "a",
         rotating: bool = True,
         rollover: bool = False,
+        when: str = "midnight",
+        utc: bool = True,
+        at_time: Union[str, datetime.time] = None,
     ):
         """Start file logging.
 
@@ -336,6 +339,14 @@ class SDSSLogger(logging.Logger):
         rollover
             If `True` and ``rotating=True` and the log file already exists, does a
             rollover before starting to log.
+        when
+            The type of time interval.  Allowed values are those from
+            `TimedRotatingFileHandler`.
+        utc
+            If `True`, times in UTC will be used; otherwise local time is used.
+        at_time
+            The time of day when rollover occurs, when rollover is set to occur
+            at “midnight” or “on a particular weekday”.
         """
 
         log_file_path = os.path.realpath(os.path.expanduser(path))
@@ -352,15 +363,19 @@ class SDSSLogger(logging.Logger):
                 dst = str(log_file_path) + "." + now.strftime(SUFFIX)
                 shutil.move(str(log_file_path), dst)
 
+            # convert at_time to a datetime.time
+            if at_time and isinstance(at_time, str):
+                at_time = datetime.time.fromisoformat(at_time)
+
             if rotating:
                 self.fh = TimedRotatingFileHandler(
-                    str(log_file_path), when="midnight", utc=True
+                    str(log_file_path), when=when, utc=utc, atTime=at_time
                 )
                 self.fh.suffix = SUFFIX  # type: ignore
             else:
                 self.fh = logging.FileHandler(str(log_file_path), mode=mode)
 
-        except (IOError, OSError) as ee:
+        except (IOError, OSError, ValueError) as ee:
             warnings.warn(
                 "log file {0!r} could not be opened for "
                 "writing: {1}".format(log_file_path, ee),
