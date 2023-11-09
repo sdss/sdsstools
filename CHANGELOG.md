@@ -1,5 +1,10 @@
 # Changelog
 
+## [Next version](https://github.com/sdss/sdsstools/compare/1.2.3...HEAD)
+
+- [#41](https://github.com/sdss/sdsstools/pr/41) `Configuration` now supports a recursive getter (e.g., `config['a.b.c']`).
+
+
 ## [1.2.3](https://github.com/sdss/sdsstools/compare/1.2.2...1.2.3) - 2023-08-25
 
 - Store `rich` console instance when passing it to handler.
