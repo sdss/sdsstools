@@ -85,10 +85,10 @@ In addition to the (recommended) location `~/.config/sdss/<NAME>.yaml`, `get_con
 
 ```yaml
 cat1:
-    key1: value2
+  key1: value2
 
 cat2:
-    key2: 1
+  key2: 1
 ```
 
 that you want to use as a template for `extendable.yaml`
@@ -97,7 +97,7 @@ that you want to use as a template for `extendable.yaml`
 #!extends base.yaml
 
 cat1:
-    key1: value1
+  key1: value1
 ```
 
 you can use `read_yaml_file` to parse the result
@@ -108,6 +108,13 @@ you can use `read_yaml_file` to parse the result
 ```
 
 The path to the base file must be absolute or relative to the location of the file to be extended.
+
+### The `Configuration` class
+
+By default `get_config()` and `read_yaml_file()` return a `Configuration` instance. For the most part a `Configuration` object is the same as a dictionary, and it can be used as such. It has two main differences:
+
+- When a `Configuration` object is initialised from a file (or a base and custom configuration files) as with `get_config()`, the object keeps the information about the file paths. It's then possible to call `Configuration.reload()` to hot-reload the contents of the file after it has changed.
+- It is possible to recursively get a nested configuration value, for example `config['a.b']`, which is equivalent to `a['a']['b']` but will return `None` if a key does not exist anywhere in the chain. This behaviour can be disabled by setting `config.strict_mode=True`.
 
 ## Metadata
 
@@ -127,20 +134,20 @@ This will try to find and parse the version from the metadata file (we pass `__f
 
 `sdss` provides the following tasks
 
-| Task | Options | Description |
-| --- | --- | --- |
-| clean | | Removes files produces during build and packaging. |
-| deploy | --test | Builds and deploys to PyPI (or the test server). Requires `twine` and `wheel`. |
-| install-deps | --extras | Installs dependencies from a `setup.cfg` file |
-| docs.build | --target | Builds the Sphinx documentation. Requires `Sphinx`. |
-| docs.show | --target | Shows the documentation in the browser. Requires `Sphinx`. |
-| docs.clean | --target | Cleans the documentation build. Requires `Sphinx`. |
+| Task         | Options  | Description                                                                    |
+| ------------ | -------- | ------------------------------------------------------------------------------ |
+| clean        |          | Removes files produces during build and packaging.                             |
+| deploy       | --test   | Builds and deploys to PyPI (or the test server). Requires `twine` and `wheel`. |
+| install-deps | --extras | Installs dependencies from a `setup.cfg` file                                  |
+| docs.build   | --target | Builds the Sphinx documentation. Requires `Sphinx`.                            |
+| docs.show    | --target | Shows the documentation in the browser. Requires `Sphinx`.                     |
+| docs.clean   | --target | Cleans the documentation build. Requires `Sphinx`.                             |
 
 `sdss` assumes that the documentation lives in `docs/sphinx` relative to the root of the repository. This can be changed by setting the `sphinx.target` configuration in an `invoke.yaml` file, for example
 
 ```yaml
 sphinx:
-    target: docs
+  target: docs
 ```
 
 ## Click daemon command

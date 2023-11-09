@@ -6,6 +6,7 @@
 # @Filename: test_configuration.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+import copy
 import inspect
 import io
 import os
@@ -300,3 +301,50 @@ def test_read_empty_yaml(tmp_path):
     data = read_yaml_file(path)
 
     assert data == {}
+
+
+def test_configuration_copy():
+    config = {"cat1": {"key1": 1}}
+    conf = Configuration(base_config=config)
+
+    copy1 = conf.copy()
+    assert isinstance(copy1, Configuration)
+    assert copy1["cat1"] != conf["key1"]
+
+    copy2 = copy.copy(conf)
+    assert isinstance(copy2, Configuration)
+    assert copy2["cat1"] != conf["key1"]
+
+    copy3 = copy.deepcopy(conf)
+    assert isinstance(copy3, Configuration)
+    assert copy3["cat1"] != conf["key1"]
+
+
+def test_configuration_recursive_getitem():
+    config = {"cat1": {"key1": 1}}
+    conf = Configuration(base_config=config)
+
+    assert conf["cat1.key1"] == 1
+    assert conf["cat1.key2"] is None
+
+
+def test_configuration_recursive_getitem_strict():
+    config = {"cat1": {"key1": 1}}
+    conf = Configuration(base_config=config)
+
+    conf.strict_mode = True
+
+    assert conf["cat1"]["key1"] == 1
+
+    with pytest.raises(KeyError):
+        conf["cat1.key2"]
+
+
+def test_configuration_recursive_get():
+    config = {"cat1": {"key1": 1}}
+    conf = Configuration(base_config=config)
+
+    assert conf.get("cat1.key1") == 1
+    assert conf.get("cat1.key2") is None
+    assert conf.get("cat1.key2", default=-1) == -1
+    assert conf.get("cat1.key1.a1", default=-1) == -1

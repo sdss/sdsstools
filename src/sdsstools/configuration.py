@@ -6,13 +6,16 @@
 # @Filename: configuration.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+from __future__ import annotations
+
 import inspect
 import itertools
 import os
 import pathlib
 import re
+from copy import deepcopy
 
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Type, Union
 
 import yaml
 from typing_extensions import Self
@@ -55,42 +58,6 @@ yaml.add_constructor("!env", env_constructor)
 
 ConfigType = Dict[str, Any]
 AnyPath = Union[str, pathlib.Path]
-
-
-def read_yaml_file(
-    path: AnyPath,
-    use_extends: bool = True,
-    loader: Any = yaml.FullLoader,
-) -> ConfigType:
-    """Read a YAML file and returns a dictionary."""
-
-    if isinstance(path, (str, pathlib.Path)):
-        fp = open(path, "r")
-    else:
-        fp = path
-
-    fp.seek(0)
-    config: Union[ConfigType, None] = yaml.load(fp, Loader=loader)
-
-    if config is None or config == {}:
-        return {}
-
-    if use_extends:
-        fp.seek(0)
-        for line in fp.readlines():
-            if line.strip().startswith("#!extends"):
-                base_file = line.strip().split()[1]
-                if not os.path.isabs(base_file) and hasattr(fp, "buffer"):
-                    base_file = os.path.join(os.path.dirname(str(path)), base_file)
-                if not os.path.exists(base_file):
-                    raise FileExistsError(f"cannot find !extends file {base_file}.")
-                return merge_config(
-                    read_yaml_file(base_file, use_extends=False), config
-                )
-            elif line.strip().startswith("#") or line.strip() == "":
-                continue
-
-    return config
 
 
 def merge_config(user: ConfigType, default: ConfigType) -> ConfigType:
@@ -209,7 +176,56 @@ def get_config(
         )
 
 
-class Configuration(dict):
+class RecursiveDict(Dict[str, Any]):
+    """A dictionary in which ``__getitem__`` and ``get`` behave recursively.
+
+    This subclass of ``dict`` behaves like a normal dictionary but ``.get()``
+    has been overridden to behave recursively. ``__getitem__`` points to
+    ``.get()`` with ``default=None``. For example ::
+
+        >> dd = RecursiveDict({'a': {'b': 1}})
+        >> dd['a.b']
+        1
+        >> dd['a.c']
+        None
+        >> dd.get('a.c', default=-1)
+        -1
+
+    Parameters
+    ----------
+    value
+        The initial value of the dictionary.
+    strict_mode
+        When set to `True`, the objects essentially behaves like a normal
+        dictionary.
+
+    """
+
+    def __init__(self, value: dict[str, Any] = {}, strict_mode: bool = False):
+        self.strict_mode = strict_mode
+
+        dict.__init__(self, value)
+
+    def __getitem__(self, __key: str):
+        if self.strict_mode:
+            return super().__getitem__(__key)
+
+        return self.get(__key)
+
+    def get(self, __key: str, default: Any = None, strict: bool | None = None):
+        if (strict is None and self.strict_mode is True) or strict is True:
+            return super().get(__key, default)
+
+        current = dict(self)
+        for item in __key.split("."):
+            if isinstance(current, dict):
+                current = current.get(item, default)
+            else:
+                return default
+        return current
+
+
+class Configuration(RecursiveDict):
     """A configuration class.
 
     Parameters
@@ -222,6 +238,9 @@ class Configuration(dict):
     default_envvars
         Default values for environment variables used in the configuration
         file.
+    strict_mode
+        See `.RecursiveDict`.
+
     """
 
     def __init__(
@@ -229,11 +248,14 @@ class Configuration(dict):
         config: Optional[Union[AnyPath, ConfigType]] = None,
         base_config: Optional[Union[AnyPath, ConfigType]] = None,
         default_envvars: Dict[str, Any] = {},
+        strict_mode: bool = False,
     ):
         global __ENVVARS__
 
-        self._BASE: dict | None = None
-        self._CONFIG: dict | None = None
+        self.strict_mode = strict_mode
+
+        self._BASE: dict[str, Any] = {}
+        self._CONFIG: dict[str, Any] = {}
 
         self._BASE_CONFIG_FILE: AnyPath | None = None
         self._CONFIG_FILE: AnyPath | None = None
@@ -256,6 +278,12 @@ class Configuration(dict):
         __ENVVARS__ = default_envvars
 
         self.load(config)
+
+    def copy(self):
+        return deepcopy(self)
+
+    def __copy__(self):
+        return deepcopy(self)
 
     def _parse_config(self, config, use_base=True):
         """Parses the configuration and merges it with the base one."""
@@ -288,11 +316,14 @@ class Configuration(dict):
         self.clear()
 
         if config is None:
-            dict.__init__(self, self._BASE)
+            super().__init__(self._BASE, strict_mode=self.strict_mode)
             self._CONFIG_FILE = self._BASE_CONFIG_FILE
             return
 
-        dict.__init__(self, self._parse_config(config, use_base=use_base))
+        super().__init__(
+            self._parse_config(config, use_base=use_base),
+            strict_mode=self.strict_mode,
+        )
 
         # Save name of the configuration file (if the input is a file).
         if isinstance(config, (str, pathlib.Path)):
@@ -314,3 +345,40 @@ class Configuration(dict):
         self.load(self._CONFIG_FILE or dict(self))
 
         return self
+
+
+def read_yaml_file(
+    path: AnyPath,
+    use_extends: bool = True,
+    loader: Any = yaml.FullLoader,
+    return_class: Type[Dict] = Configuration,
+) -> ConfigType:
+    """Read a YAML file and returns a dictionary."""
+
+    if isinstance(path, (str, pathlib.Path)):
+        fp = open(path, "r")
+    else:
+        fp = path
+
+    fp.seek(0)
+    config: Union[ConfigType, None] = yaml.load(fp, Loader=loader)
+
+    if config is None or config == {}:
+        return {}
+
+    if use_extends:
+        fp.seek(0)
+        for line in fp.readlines():
+            if line.strip().startswith("#!extends"):
+                base_file = line.strip().split()[1]
+                if not os.path.isabs(base_file) and hasattr(fp, "buffer"):
+                    base_file = os.path.join(os.path.dirname(str(path)), base_file)
+                if not os.path.exists(base_file):
+                    raise FileExistsError(f"cannot find !extends file {base_file}.")
+                return merge_config(
+                    read_yaml_file(base_file, use_extends=False), config
+                )
+            elif line.strip().startswith("#") or line.strip() == "":
+                continue
+
+    return return_class(config)
