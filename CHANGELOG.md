@@ -1,6 +1,6 @@
 # Changelog
 
-## [Next version](https://github.com/sdss/sdsstools/compare/1.2.3...HEAD)
+## [1.3.0](https://github.com/sdss/sdsstools/compare/1.2.3...1.3.0)
 
 - [#40](https://github.com/sdss/sdsstools/pr/40) Additional options to `start_file_logger` for the `TimedRotatingFileHandler`.
 - [#41](https://github.com/sdss/sdsstools/pr/41) `Configuration` now supports a recursive getter (e.g., `config['a.b.c']`).
