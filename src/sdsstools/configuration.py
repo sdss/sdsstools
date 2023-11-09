@@ -209,7 +209,56 @@ def get_config(
         )
 
 
-class Configuration(dict[str, Any]):
+class RecursiveDict(dict[str, Any]):
+    """A dictionary in which ``__getitem__`` and ``get`` behave recursively.
+
+    This subclass of ``dict`` behaves like a normal dictionary but ``.get()``
+    has been overridden to behave recursively. ``__getitem__`` points to
+    ``.get()`` with ``default=None``. For example ::
+
+        >> dd = RecursiveDict({'a': {'b': 1}})
+        >> dd['a.b']
+        1
+        >> dd['a.c']
+        None
+        >> dd.get('a.c', default=-1)
+        -1
+
+    Parameters
+    ----------
+    value
+        The initial value of the dictionary.
+    strict_mode
+        When set to `True`, the objects essentially behaves like a normal
+        dictionary.
+
+    """
+
+    def __init__(self, value: dict[str, Any] = {}, strict_mode: bool = False):
+        self.strict_mode = strict_mode
+
+        dict.__init__(self, value)
+
+    def __getitem__(self, __key: str):
+        if self.strict_mode:
+            return super().__getitem__(__key)
+
+        return self.get(__key)
+
+    def get(self, __key: str, default: Any = None, strict: bool | None = None):
+        if (strict is None and self.strict_mode is True) or strict is True:
+            return super().get(__key, default)
+
+        current = dict(self)
+        for item in __key.split("."):
+            if isinstance(current, dict):
+                current = current.get(item, default)
+            else:
+                return default
+        return current
+
+
+class Configuration(RecursiveDict):
     """A configuration class.
 
     Parameters
@@ -223,6 +272,7 @@ class Configuration(dict[str, Any]):
         Default values for environment variables used in the configuration
         file.
     strict_mode
+        See `.RecursiveDict`.
 
     """
 
@@ -262,24 +312,6 @@ class Configuration(dict[str, Any]):
 
         self.load(config)
 
-    def __getitem__(self, __key: str):
-        if self.strict_mode:
-            return super().__getitem__(__key)
-
-        return self.get(__key)
-
-    def get(self, __key: str, default: Any = None, strict: bool | None = None):
-        if (strict is None and self.strict_mode is True) or strict is True:
-            return super().get(__key, default)
-
-        current = dict(self)
-        for item in __key.split("."):
-            if isinstance(current, dict):
-                current = current.get(item, default)
-            else:
-                return default
-        return current
-
     def _parse_config(self, config, use_base=True):
         """Parses the configuration and merges it with the base one."""
 
@@ -311,11 +343,14 @@ class Configuration(dict[str, Any]):
         self.clear()
 
         if config is None:
-            dict.__init__(self, self._BASE)
+            super().__init__(self._BASE, strict_mode=self.strict_mode)
             self._CONFIG_FILE = self._BASE_CONFIG_FILE
             return
 
-        dict.__init__(self, self._parse_config(config, use_base=use_base))
+        super().__init__(
+            self._parse_config(config, use_base=use_base),
+            strict_mode=self.strict_mode,
+        )
 
         # Save name of the configuration file (if the input is a file).
         if isinstance(config, (str, pathlib.Path)):
