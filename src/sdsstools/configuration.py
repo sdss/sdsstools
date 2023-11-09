@@ -12,7 +12,7 @@ import os
 import pathlib
 import re
 
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Type, Union
 
 import yaml
 from typing_extensions import Self
@@ -55,42 +55,6 @@ yaml.add_constructor("!env", env_constructor)
 
 ConfigType = Dict[str, Any]
 AnyPath = Union[str, pathlib.Path]
-
-
-def read_yaml_file(
-    path: AnyPath,
-    use_extends: bool = True,
-    loader: Any = yaml.FullLoader,
-) -> ConfigType:
-    """Read a YAML file and returns a dictionary."""
-
-    if isinstance(path, (str, pathlib.Path)):
-        fp = open(path, "r")
-    else:
-        fp = path
-
-    fp.seek(0)
-    config: Union[ConfigType, None] = yaml.load(fp, Loader=loader)
-
-    if config is None or config == {}:
-        return {}
-
-    if use_extends:
-        fp.seek(0)
-        for line in fp.readlines():
-            if line.strip().startswith("#!extends"):
-                base_file = line.strip().split()[1]
-                if not os.path.isabs(base_file) and hasattr(fp, "buffer"):
-                    base_file = os.path.join(os.path.dirname(str(path)), base_file)
-                if not os.path.exists(base_file):
-                    raise FileExistsError(f"cannot find !extends file {base_file}.")
-                return merge_config(
-                    read_yaml_file(base_file, use_extends=False), config
-                )
-            elif line.strip().startswith("#") or line.strip() == "":
-                continue
-
-    return config
 
 
 def merge_config(user: ConfigType, default: ConfigType) -> ConfigType:
@@ -372,3 +336,40 @@ class Configuration(RecursiveDict):
         self.load(self._CONFIG_FILE or dict(self))
 
         return self
+
+
+def read_yaml_file(
+    path: AnyPath,
+    use_extends: bool = True,
+    loader: Any = yaml.FullLoader,
+    return_class: Type[Dict] = Configuration,
+) -> ConfigType:
+    """Read a YAML file and returns a dictionary."""
+
+    if isinstance(path, (str, pathlib.Path)):
+        fp = open(path, "r")
+    else:
+        fp = path
+
+    fp.seek(0)
+    config: Union[ConfigType, None] = yaml.load(fp, Loader=loader)
+
+    if config is None or config == {}:
+        return {}
+
+    if use_extends:
+        fp.seek(0)
+        for line in fp.readlines():
+            if line.strip().startswith("#!extends"):
+                base_file = line.strip().split()[1]
+                if not os.path.isabs(base_file) and hasattr(fp, "buffer"):
+                    base_file = os.path.join(os.path.dirname(str(path)), base_file)
+                if not os.path.exists(base_file):
+                    raise FileExistsError(f"cannot find !extends file {base_file}.")
+                return merge_config(
+                    read_yaml_file(base_file, use_extends=False), config
+                )
+            elif line.strip().startswith("#") or line.strip() == "":
+                continue
+
+    return return_class(config)
