@@ -187,7 +187,7 @@ def test_logger_when_options(tmp_path):
     logger1.start_file_logger(log_file, utc=False, when="M")
 
     assert logger1.fh.when == "M"
-    assert logger1.fh.utc == False
+    assert logger1.fh.utc is False
 
 
 def test_rich_handler_logger(caplog):
