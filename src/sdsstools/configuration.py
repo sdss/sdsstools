@@ -11,6 +11,7 @@ import itertools
 import os
 import pathlib
 import re
+from copy import deepcopy
 
 from typing import Any, Dict, Optional, Type, Union
 
@@ -275,6 +276,12 @@ class Configuration(RecursiveDict):
         __ENVVARS__ = default_envvars
 
         self.load(config)
+
+    def copy(self):
+        return deepcopy(self)
+
+    def __copy__(self):
+        return deepcopy(self)
 
     def _parse_config(self, config, use_base=True):
         """Parses the configuration and merges it with the base one."""
