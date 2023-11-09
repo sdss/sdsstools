@@ -209,7 +209,7 @@ def get_config(
         )
 
 
-class Configuration(dict):
+class Configuration(dict[str, Any]):
     """A configuration class.
 
     Parameters
@@ -222,6 +222,8 @@ class Configuration(dict):
     default_envvars
         Default values for environment variables used in the configuration
         file.
+    strict_mode
+
     """
 
     def __init__(
@@ -229,11 +231,14 @@ class Configuration(dict):
         config: Optional[Union[AnyPath, ConfigType]] = None,
         base_config: Optional[Union[AnyPath, ConfigType]] = None,
         default_envvars: Dict[str, Any] = {},
+        strict_mode: bool = False,
     ):
         global __ENVVARS__
 
-        self._BASE: dict | None = None
-        self._CONFIG: dict | None = None
+        self.strict_mode = strict_mode
+
+        self._BASE: dict[str, Any] = {}
+        self._CONFIG: dict[str, Any] = {}
 
         self._BASE_CONFIG_FILE: AnyPath | None = None
         self._CONFIG_FILE: AnyPath | None = None
@@ -256,6 +261,24 @@ class Configuration(dict):
         __ENVVARS__ = default_envvars
 
         self.load(config)
+
+    def __getitem__(self, __key: str):
+        if self.strict_mode:
+            return super().__getitem__(__key)
+
+        return self.get(__key)
+
+    def get(self, __key: str, default: Any = None, strict: bool | None = None):
+        if (strict is None and self.strict_mode is True) or strict is True:
+            return super().get(__key, default)
+
+        current = dict(self)
+        for item in __key.split("."):
+            if isinstance(current, dict):
+                current = current.get(item, default)
+            else:
+                return default
+        return current
 
     def _parse_config(self, config, use_base=True):
         """Parses the configuration and merges it with the base one."""
