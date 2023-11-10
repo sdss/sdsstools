@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.2](https://github.com/sdss/sdsstools/compare/1.3.1...1.3.2)
+
+- Better typing for `RecursiveDict`.
+
+
 ## [1.3.1](https://github.com/sdss/sdsstools/compare/1.3.0...1.3.1)
 
 - Improved typing for `read_yaml_file`.
