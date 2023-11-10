@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.1](https://github.com/sdss/sdsstools/compare/1.3.0...1.3.1)
+
+- Improved typing for `read_yaml_file`.
+
+
 ## [1.3.0](https://github.com/sdss/sdsstools/compare/1.2.3...1.3.0)
 
 - [#40](https://github.com/sdss/sdsstools/pr/40) Additional options to `start_file_logger` for the `TimedRotatingFileHandler`.
