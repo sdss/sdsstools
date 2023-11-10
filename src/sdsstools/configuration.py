@@ -206,13 +206,13 @@ class RecursiveDict(Dict[str, Any]):
 
         dict.__init__(self, value)
 
-    def __getitem__(self, __key: str):
+    def __getitem__(self, __key: str) -> Any:
         if self.strict_mode:
             return super().__getitem__(__key)
 
         return self.get(__key)
 
-    def get(self, __key: str, default: Any = None, strict: bool | None = None):
+    def get(self, __key: str, default: Any = None, strict: bool | None = None) -> Any:
         if (strict is None and self.strict_mode is True) or strict is True:
             return super().get(__key, default)
 
