@@ -15,7 +15,7 @@ import pathlib
 import re
 from copy import deepcopy
 
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, Optional, Type, TypeVar, Union
 
 import yaml
 from typing_extensions import Self
@@ -347,12 +347,15 @@ class Configuration(RecursiveDict):
         return self
 
 
+ReturnClass = TypeVar("ReturnClass", bound=dict)
+
+
 def read_yaml_file(
     path: AnyPath,
     use_extends: bool = True,
     loader: Any = yaml.FullLoader,
-    return_class: Type[Dict] = Configuration,
-) -> ConfigType:
+    return_class: Type[ReturnClass] = Configuration,
+) -> ReturnClass:
     """Read a YAML file and returns a dictionary."""
 
     if isinstance(path, (str, pathlib.Path)):
@@ -364,7 +367,7 @@ def read_yaml_file(
     config: Union[ConfigType, None] = yaml.load(fp, Loader=loader)
 
     if config is None or config == {}:
-        return {}
+        return return_class({})
 
     if use_extends:
         fp.seek(0)
@@ -375,9 +378,11 @@ def read_yaml_file(
                     base_file = os.path.join(os.path.dirname(str(path)), base_file)
                 if not os.path.exists(base_file):
                     raise FileExistsError(f"cannot find !extends file {base_file}.")
-                return merge_config(
-                    read_yaml_file(base_file, use_extends=False), config
-                )
+
+                base = read_yaml_file(base_file, use_extends=False, return_class=dict)
+                new_config = merge_config(base, config)
+                return return_class(new_config)
+
             elif line.strip().startswith("#") or line.strip() == "":
                 continue
 
