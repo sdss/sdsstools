@@ -387,6 +387,10 @@ class SDSSLogger(logging.Logger):
         at_time
             The time of day when rollover occurs, when rollover is set to occur
             at “midnight” or “on a particular weekday”.
+        as_json
+            If `True`, outputs a JSON log instead of a human log
+        with_json
+            If `True`, outputs both a JSON log and a human log
         """
 
         # suffix = pathlib.Path(path).suffix
