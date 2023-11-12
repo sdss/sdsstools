@@ -8,7 +8,6 @@
 
 import copy
 import datetime
-import json
 import logging
 import os
 import pathlib
@@ -419,13 +418,7 @@ class SDSSLogger(logging.Logger):
             if at_time and isinstance(at_time, str):
                 at_time = datetime.time.fromisoformat(at_time)
 
-            # if rotating:
-            #     self.fh = TimedRotatingFileHandler(
-            #         str(log_file_path), when=when, utc=utc, atTime=at_time
-            #     )
-            #     self.fh.suffix = SUFFIX  # type: ignore
-            # else:
-            #     self.fh = logging.FileHandler(str(log_file_path), mode=mode)
+            # get the file handler
             self.fh = self._set_file_handler(log_file_path, SUFFIX, mode=mode,
                                              rotating=rotating, when=when, utc=utc,
                                              at_time=at_time)
@@ -435,15 +428,6 @@ class SDSSLogger(logging.Logger):
                                                 rotating=rotating, when=when, utc=utc,
                                                 at_time=at_time)
 
-            # if with_json:
-            #     if rotating:
-            #         self.jh = TimedRotatingFileHandler(
-            #             str(log_file_path), when=when, utc=utc, atTime=at_time
-            #         )
-            #         self.jh.suffix = SUFFIX  # type: ignore
-            #     else:
-            #         self.jh = logging.FileHandler(str(log_file_path), mode=mode)
-
         except (IOError, OSError, ValueError) as ee:
             warnings.warn(
                 "log file {0!r} could not be opened for "
@@ -452,7 +436,7 @@ class SDSSLogger(logging.Logger):
             )
 
         else:
-            #json_fmt = json.dumps('%(timestamp)s %(level)s %(name)s %(message)s')
+            # set the correct file or json formatter
             formatter = CustomJsonFormatter() if as_json else FileFormatter()
             self.fh.setFormatter(formatter)
             self.addHandler(self.fh)
@@ -463,6 +447,7 @@ class SDSSLogger(logging.Logger):
 
             self.log_filename = log_file_path
 
+            # set json file handler and formatter
             if with_json and self.jh:
                 self.jh.setFormatter(CustomJsonFormatter())
                 self.addHandler(self.jh)
