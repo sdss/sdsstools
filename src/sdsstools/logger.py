@@ -393,10 +393,6 @@ class SDSSLogger(logging.Logger):
             If `True`, outputs both a JSON log and a human log
         """
 
-        # suffix = pathlib.Path(path).suffix
-        # if as_json and suffix != '.json':
-        #     path = path.replace(suffix, '.json')
-
         log_file_path = os.path.realpath(os.path.expanduser(path))
         logdir = os.path.dirname(log_file_path)
 
