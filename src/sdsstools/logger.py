@@ -144,21 +144,26 @@ class FileFormatter(logging.Formatter):
 
         return logging.Formatter.format(self, record_cp)
 
+
 class CustomJsonFormatter(jsonlogger.JsonFormatter):
-    """ Custom `jsonlogger.JsonFormatter` for the JSON file handler """
+    """Custom `jsonlogger.JsonFormatter` for the JSON file handler"""
 
     def add_fields(self, log_record, record, message_dict):
-        """ Add custom fields to the JSON body """
+        """Add custom fields to the JSON body"""
         super().add_fields(log_record, record, message_dict)
-        if not log_record.get('timestamp'):
-            now = datetime.datetime.fromtimestamp(record.created).strftime('%Y-%m-%dT%H:%M:%S.%fZ')  # noqa: E501
+        if not log_record.get("timestamp"):
+            now = datetime.datetime.fromtimestamp(record.created).strftime(
+                "%Y-%m-%dT%H:%M:%S.%fZ"
+            )  # noqa: E501
             log_record["timestamp"] = now
         log_record["type"] = "log"
         log_record["level"] = record.levelname
         log_record.update(record.__dict__)
         if record.exc_info:
-            log_record['error'] = {'type': record.exc_info[0].__name__,
-                                   'trace': message_dict['exc_info']}
+            log_record["error"] = {
+                "type": record.exc_info[0].__name__,
+                "trace": message_dict["exc_info"],
+            }
 
 
 class CustomRichHandler(RichHandler):
@@ -336,11 +341,16 @@ class SDSSLogger(logging.Logger):
             assert self.json_log_filename, "JSON file logger not running."
             shutil.copyfile(self.json_log_filename, os.path.expanduser(path))
 
-    def _set_file_handler(self, filepath: str, suffix: str, rotating: bool = True,
-                          mode: str = 'a',
-                          when: str = 'midnight',
-                          utc: bool = True,
-                          at_time: Union[str, datetime.time] = None):
+    def _set_file_handler(
+        self,
+        filepath: str,
+        suffix: str,
+        rotating: bool = True,
+        mode: str = "a",
+        when: str = "midnight",
+        utc: bool = True,
+        at_time: Union[str, datetime.time] = None,
+    ):
         if rotating:
             fh = TimedRotatingFileHandler(
                 str(filepath), when=when, utc=utc, atTime=at_time
@@ -400,10 +410,10 @@ class SDSSLogger(logging.Logger):
 
         # set the JSON file path name
         suffix = pathlib.Path(log_file_path).suffix
-        if as_json and suffix != '.json':
-            log_file_path = log_file_path.replace(suffix, '.json')
+        if as_json and suffix != ".json":
+            log_file_path = log_file_path.replace(suffix, ".json")
         elif with_json:
-            json_log_file_path = log_file_path.replace(suffix, '.json')
+            json_log_file_path = log_file_path.replace(suffix, ".json")
 
         try:
             if not os.path.exists(logdir):
@@ -419,14 +429,26 @@ class SDSSLogger(logging.Logger):
                 at_time = datetime.time.fromisoformat(at_time)
 
             # get the file handler
-            self.fh = self._set_file_handler(log_file_path, SUFFIX, mode=mode,
-                                             rotating=rotating, when=when, utc=utc,
-                                             at_time=at_time)
+            self.fh = self._set_file_handler(
+                log_file_path,
+                SUFFIX,
+                mode=mode,
+                rotating=rotating,
+                when=when,
+                utc=utc,
+                at_time=at_time,
+            )
 
             if with_json:
-                self.jh = self._set_file_handler(json_log_file_path, SUFFIX, mode=mode,
-                                                rotating=rotating, when=when, utc=utc,
-                                                at_time=at_time)
+                self.jh = self._set_file_handler(
+                    json_log_file_path,
+                    SUFFIX,
+                    mode=mode,
+                    rotating=rotating,
+                    when=when,
+                    utc=utc,
+                    at_time=at_time,
+                )
 
         except (IOError, OSError, ValueError) as ee:
             warnings.warn(
@@ -455,7 +477,6 @@ class SDSSLogger(logging.Logger):
                 self.json_log_filename = json_log_file_path
                 if self.warnings_logger:
                     self.warnings_logger.addHandler(self.jh)
-
 
     def handle(self, record):
         """Handles a record but first stores it."""
