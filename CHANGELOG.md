@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.4.0](https://github.com/sdss/sdsstools/compare/1.3.2...1.4.0)
+
+- Add support for outputting log file in JSON format, via new options in `start_file_logger`.
+
+
 ## [1.3.2](https://github.com/sdss/sdsstools/compare/1.3.1...1.3.2)
 
 - Better typing for `RecursiveDict`.
