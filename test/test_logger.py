@@ -7,6 +7,7 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 import asyncio
+import json
 import logging
 import logging.handlers
 import os
@@ -217,3 +218,34 @@ def test_catch_exception_rich_logger(tmp_path, mocker):
 
     logger.handle_exceptions(excinfo.type, excinfo.value, excinfo.tb)
     emit_mock.assert_called()
+
+
+def test_as_json_logger(tmp_path):
+    log_file = tmp_path / "logs" / "test_log.log"
+
+    logger1 = get_logger(str(uuid.uuid4()))
+    logger1.start_file_logger(log_file, as_json=True)
+    logger1.info("test message")
+
+    files = list((tmp_path / "logs").glob("*"))
+    assert len(files) == 1
+    assert files[0].name.endswith(".json")
+    assert not files[0].name.endswith(".log")
+
+    with open(str(log_file).replace(".log", ".json")) as f:
+        data = [json.loads(i) for i in f.readlines()]
+        assert len(data) == 1
+        assert data[0]["message"] == "test message"
+
+
+def test_with_json_logger(tmp_path):
+    log_file = tmp_path / "logs" / "test_log.log"
+
+    logger1 = get_logger(str(uuid.uuid4()))
+    logger1.start_file_logger(log_file, with_json=True)
+    logger1.info("test message")
+
+    files = list(sorted((tmp_path / "logs").glob("*")))
+    assert len(files) == 2
+    assert files[0].name.endswith(".json")
+    assert files[1].name.endswith(".log")

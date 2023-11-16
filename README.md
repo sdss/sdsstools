@@ -53,9 +53,12 @@ log = get_logger(NAME)
 
 You can get a logger using the `rich` `RichHandler` by passing `use_rich_handler=True`.
 
-The file logger is disabled by default and can be started by calling `log.start_file_logger(path)`. By default a `TimedRotatingFileHandler` is created. If you want a normal `FileHandler` use `rotate=False`. The file mode defaults to `mode='a'` (append).
+The file logger is disabled by default and can be started by calling `log.start_file_logger(path)`. By default a `TimedRotatingFileHandler` is created. If you want a normal `FileHandler` use `rotating=False`. The file mode defaults to `mode='a'` (append).  The `TimedRotatingFileHandler` options `when`, `utc`, and `at_time` are available to
+`log.start_file_logger` for controlling aspects of the rollover time.
 
-The `SDSSLoger` instance also include an `asyncio_exception_handler` method that can be added to the asyncio event loop to handle exceptions; for example `loop.set_exception_handler(log.asyncio_exception_handler)`.
+By default, the file logger is formatted to output a human-readble `log` file.  To output a JSON log instead, set `as_json=True`, when calling `log.start_file_logger`.  This will create a `.json` log file which can machine-read and more easily parsed for content.  To output both a human-readable (`.log`) and JSON log (`.json`), set `with_json=True`.
+
+The `SDSSLogger` instance also include an `asyncio_exception_handler` method that can be added to the asyncio event loop to handle exceptions; for example `loop.set_exception_handler(log.asyncio_exception_handler)`.
 
 Console logging uses the standard `StreamHandler`. It's possible to use the `rich` library [RichHandler](https://rich.readthedocs.io/en/stable/logging.html) instead by
 passing `use_rich_handler=True` to `get_logger()`. Additional keyword arguments to `RichHandler` can be passed as a `rich_handler_kwargs` dictionary. In the future the `rich` handler may become the default console logger.
