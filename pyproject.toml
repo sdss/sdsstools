@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.8,<3.13"
 pyyaml = ">=4.0"
 pygments = "^2.5.2"
 invoke = "^2.0.0"
