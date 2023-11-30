@@ -117,7 +117,7 @@ The path to the base file must be absolute or relative to the location of the fi
 By default `get_config()` and `read_yaml_file()` return a `Configuration` instance. For the most part a `Configuration` object is the same as a dictionary, and it can be used as such. It has two main differences:
 
 - When a `Configuration` object is initialised from a file (or a base and custom configuration files) as with `get_config()`, the object keeps the information about the file paths. It's then possible to call `Configuration.reload()` to hot-reload the contents of the file after it has changed.
-- It is possible to recursively get a nested configuration value, for example `config['a.b']`, which is equivalent to `a['a']['b']` but will return `None` if a key does not exist anywhere in the chain. This behaviour can be disabled by setting `config.strict_mode=True`.
+- It is possible to recursively get a nested configuration value, for example `config['a.b']`, which is equivalent to `dd['a']['b']` but will return `None` if a key does not exist anywhere in the chain. This behaviour can be disabled by setting `config.strict_mode=True`. Note that this syntax is not valid for assignement and attempting to do `d['a.b'] = 1` will raise an error.
 
 ## Metadata
 

@@ -360,3 +360,21 @@ def test_configuration_recursive_inherits():
 
     assert isinstance(conf["cat1"], Configuration)
     assert isinstance(conf["cat1.key1"], int)
+
+
+def test_configuration_assignment():
+    config = {"cat1": {"key1": {"subkey1": 1}}}
+    conf = Configuration(base_config=config)
+
+    conf["cat1"]["key1"] = {"subkey2": 2}
+
+    assert conf == {"cat1": {"key1": {"subkey2": 2}}}
+    assert isinstance(conf["cat1"]["key1"], Configuration)
+
+
+def test_configuration_assignment_dot_raises():
+    config = {"cat1": {"key1": {"subkey1": 1}}}
+    conf = Configuration(base_config=config)
+
+    with pytest.raises(ValueError):
+        conf["cat1.key1"] = {"subkey2": 2}

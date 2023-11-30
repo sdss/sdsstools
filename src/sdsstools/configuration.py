@@ -198,13 +198,28 @@ class RecursiveDict(Dict[str, Any]):
     strict_mode
         When set to `True`, the objects essentially behaves like a normal
         dictionary.
+    propagate_type
+        If ``True``, recursively converts nested dictionaries to instances of
+        `.RecursiveDict`. This also applies to future assignments.
 
     """
 
-    def __init__(self, value: dict[str, Any] = {}, strict_mode: bool = False):
+    def __init__(
+        self,
+        value: dict[str, Any] = {},
+        strict_mode: bool = False,
+        propagate_type: bool = True,
+    ):
         self.strict_mode = strict_mode
+        self.propagate_type = propagate_type
 
         dict.__init__(self, value)
+
+        if self.propagate_type:
+            for key in self:
+                value = self[key]
+                if isinstance(value, dict) and not isinstance(value, self.__class__):
+                    self[key] = self.__class__(self[key], strict_mode=self.strict_mode)
 
     def __getitem__(self, __key: str) -> Any:
         if self.strict_mode:
@@ -212,21 +227,30 @@ class RecursiveDict(Dict[str, Any]):
 
         return self.get(__key)
 
+    def __setitem__(self, __key: str, __value: Any) -> None:
+        if "." in __key:
+            raise ValueError("Periods are not allowed in keys.")
+
+        if isinstance(__value, dict) and self.propagate_type:
+            __value = self.__class__(__value, strict_mode=self.strict_mode)
+
+        return super().__setitem__(__key, __value)
+
     def get(self, __key: str, default: Any = None, strict: bool | None = None) -> Any:
         if (strict is None and self.strict_mode is True) or strict is True:
             return dict.get(self, __key, default)
 
-        current = dict(self)
+        return_value = self
         for item in __key.split("."):
-            if isinstance(current, dict):
-                current = current.get(item, default)
-            else:
+            try:
+                return_value = dict.get(return_value, item, default)
+            except Exception:
                 return default
 
-        if isinstance(current, dict):
-            current = self.__class__(current, strict_mode=self.strict_mode)
+        # if isinstance(return_value, dict) and self.propagate_type:
+        #     return_value = self.__class__(return_value, strict_mode=self.strict_mode)
 
-        return current
+        return return_value
 
 
 class Configuration(RecursiveDict):

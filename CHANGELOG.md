@@ -1,5 +1,10 @@
 # Changelog
 
+## Next version
+
+- Fixed an issue assigning dictionaries caused by returning nested dictionaries in a `RecursiveDict` and `RecursiveDict` instances. This has been fixed by doing the conversion at assignment time. A keyword argument, ``propagate_type``, allows to disable that behaviour.
+
+
 ## [1.5.0](https://github.com/sdss/sdsstools/compare/1.4.1...1.5.0) - 2023-11-29
 
 - [#44](https://github.com/sdss/sdsstools/issues/44) If `RecursiveDict` or `Configuration` return a dictionary, the dictionary is itself a `RecursiveDict` or `Configuration` object.
