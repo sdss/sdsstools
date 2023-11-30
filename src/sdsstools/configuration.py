@@ -237,15 +237,15 @@ class RecursiveDict(Dict[str, Any]):
         if (strict is None and self.strict_mode is True) or strict is True:
             return dict.get(self, __key, default)
 
+        if __key in self:
+            return dict.get(self, __key, default)
+
         return_value = self
         for item in __key.split("."):
             try:
                 return_value = dict.get(return_value, item, default)
             except Exception:
                 return default
-
-        # if isinstance(return_value, dict) and self.propagate_type:
-        #     return_value = self.__class__(return_value, strict_mode=self.strict_mode)
 
         return return_value
 

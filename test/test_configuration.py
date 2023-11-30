@@ -372,9 +372,10 @@ def test_configuration_assignment():
     assert isinstance(conf["cat1"]["key1"], Configuration)
 
 
-def test_configuration_assignment_dot_raises():
+def test_configuration_assignment_dot():
     config = {"cat1": {"key1": {"subkey1": 1}}}
     conf = Configuration(base_config=config)
 
-    with pytest.raises(ValueError):
-        conf["cat1.key1"] = {"subkey2": 2}
+    conf["cat1.key1"] = {"subkey2": 2}
+    assert len(conf) == 2
+    assert conf["cat1.key1"] == {"subkey2": 2}
