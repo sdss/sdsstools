@@ -214,7 +214,7 @@ class RecursiveDict(Dict[str, Any]):
 
     def get(self, __key: str, default: Any = None, strict: bool | None = None) -> Any:
         if (strict is None and self.strict_mode is True) or strict is True:
-            return super().get(__key, default)
+            return dict.get(self, __key, default)
 
         current = dict(self)
         for item in __key.split("."):
@@ -222,6 +222,10 @@ class RecursiveDict(Dict[str, Any]):
                 current = current.get(item, default)
             else:
                 return default
+
+        if isinstance(current, dict):
+            current = self.__class__(current, strict_mode=self.strict_mode)
+
         return current
 
 

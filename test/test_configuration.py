@@ -339,6 +339,10 @@ def test_configuration_recursive_getitem_strict():
     with pytest.raises(KeyError):
         conf["cat1.key2"]
 
+    conf.strict_mode = False
+
+    assert conf.get("cat1.key1", strict=True) is None
+
 
 def test_configuration_recursive_get():
     config = {"cat1": {"key1": 1}}
@@ -348,3 +352,11 @@ def test_configuration_recursive_get():
     assert conf.get("cat1.key2") is None
     assert conf.get("cat1.key2", default=-1) == -1
     assert conf.get("cat1.key1.a1", default=-1) == -1
+
+
+def test_configuration_recursive_inherits():
+    config = {"cat1": {"key1": 1}}
+    conf = Configuration(base_config=config)
+
+    assert isinstance(conf["cat1"], Configuration)
+    assert isinstance(conf["cat1.key1"], int)
