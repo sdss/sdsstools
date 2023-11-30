@@ -3,6 +3,7 @@
 ## Next version
 
 - [#44](https://github.com/sdss/sdsstools/issues/44) If `RecursiveDict` or `Configuration` return a dictionary, the dictionary is itself a `RecursiveDict` or `Configuration` object.
+- [#45](https://github.com/sdss/sdsstools/issues/45) Add support for Python 3.12.
 
 
 ## [1.4.0](https://github.com/sdss/sdsstools/compare/1.3.2...1.4.0)
