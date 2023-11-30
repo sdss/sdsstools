@@ -1,27 +1,27 @@
 # Changelog
 
-## Next version
+## [1.5.0](https://github.com/sdss/sdsstools/compare/1.4.1...1.5.0) - 2023-11-29
 
 - [#44](https://github.com/sdss/sdsstools/issues/44) If `RecursiveDict` or `Configuration` return a dictionary, the dictionary is itself a `RecursiveDict` or `Configuration` object.
 - [#45](https://github.com/sdss/sdsstools/issues/45) Add support for Python 3.12.
 
 
-## [1.4.0](https://github.com/sdss/sdsstools/compare/1.3.2...1.4.0)
+## [1.4.0](https://github.com/sdss/sdsstools/compare/1.3.2...1.4.0) - 2023-11-16
 
 - Add support for outputting log file in JSON format, via new options in `start_file_logger`.
 
 
-## [1.3.2](https://github.com/sdss/sdsstools/compare/1.3.1...1.3.2)
+## [1.3.2](https://github.com/sdss/sdsstools/compare/1.3.1...1.3.2) - 2023-11-10
 
 - Better typing for `RecursiveDict`.
 
 
-## [1.3.1](https://github.com/sdss/sdsstools/compare/1.3.0...1.3.1)
+## [1.3.1](https://github.com/sdss/sdsstools/compare/1.3.0...1.3.1) - 2023-11-10
 
 - Improved typing for `read_yaml_file`.
 
 
-## [1.3.0](https://github.com/sdss/sdsstools/compare/1.2.3...1.3.0)
+## [1.3.0](https://github.com/sdss/sdsstools/compare/1.2.3...1.3.0) - 2023-11-09
 
 - [#40](https://github.com/sdss/sdsstools/pr/40) Additional options to `start_file_logger` for the `TimedRotatingFileHandler`.
 - [#41](https://github.com/sdss/sdsstools/pr/41) `Configuration` now supports a recursive getter (e.g., `config['a.b.c']`).
