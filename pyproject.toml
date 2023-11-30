@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sdsstools"
-version = "1.5.1a0"
+version = "1.5.1"
 description = "Small tools for SDSS products"
 authors = ["José Sánchez-Gallego <gallegoj@uw.edu>"]
 license = "BSD-3-Clause"

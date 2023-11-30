@@ -1,6 +1,6 @@
 # Changelog
 
-## Next version
+## [1.5.1](https://github.com/sdss/sdsstools/compare/1.5.0...1.5.1) - 2023-11-30
 
 - Fixed an issue assigning dictionaries caused by returning nested dictionaries in a `RecursiveDict` and `RecursiveDict` instances. This has been fixed by doing the conversion at assignment time. A keyword argument, ``propagate_type``, allows to disable that behaviour.
 
