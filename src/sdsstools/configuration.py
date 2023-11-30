@@ -228,9 +228,6 @@ class RecursiveDict(Dict[str, Any]):
         return self.get(__key)
 
     def __setitem__(self, __key: str, __value: Any) -> None:
-        if "." in __key:
-            raise ValueError("Periods are not allowed in keys.")
-
         if isinstance(__value, dict) and self.propagate_type:
             __value = self.__class__(__value, strict_mode=self.strict_mode)
 
