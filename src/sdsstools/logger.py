@@ -349,13 +349,16 @@ class SDSSLogger(logging.Logger):
         mode: str = "a",
         when: str = "midnight",
         utc: bool = True,
-        at_time: Union[str, datetime.time] = None,
+        at_time: datetime.time | None = None,
     ):
         if rotating:
             fh = TimedRotatingFileHandler(
-                str(filepath), when=when, utc=utc, atTime=at_time
+                str(filepath),
+                when=when,
+                utc=utc,
+                atTime=at_time,
             )
-            fh.suffix = suffix  # type: ignore
+            fh.suffix = suffix
         else:
             fh = logging.FileHandler(str(filepath), mode=mode)
         return fh
@@ -369,7 +372,7 @@ class SDSSLogger(logging.Logger):
         rollover: bool = False,
         when: str = "midnight",
         utc: bool = True,
-        at_time: Union[str, datetime.time] = None,
+        at_time: datetime.time | None = None,
         as_json: bool = False,
         with_json: bool = False,
     ):
@@ -396,7 +399,7 @@ class SDSSLogger(logging.Logger):
             If `True`, times in UTC will be used; otherwise local time is used.
         at_time
             The time of day when rollover occurs, when rollover is set to occur
-            at “midnight” or “on a particular weekday”.
+            at "midnight" or "on a particular weekday".
         as_json
             If `True`, outputs a JSON log instead of a human log
         with_json
@@ -409,6 +412,7 @@ class SDSSLogger(logging.Logger):
         SUFFIX = "%Y-%m-%d_%H:%M:%S"
 
         # set the JSON file path name
+        json_log_file_path: str | None = None
         suffix = pathlib.Path(log_file_path).suffix
         if as_json and suffix != ".json":
             log_file_path = log_file_path.replace(suffix, ".json")
@@ -439,7 +443,7 @@ class SDSSLogger(logging.Logger):
                 at_time=at_time,
             )
 
-            if with_json:
+            if with_json and json_log_file_path:
                 self.jh = self._set_file_handler(
                     json_log_file_path,
                     SUFFIX,
