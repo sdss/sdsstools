@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.3](https://github.com/sdss/sdsstools/compare/1.5.2...1.5.3) - 2023-12-08
+
+- Vendorise `pydl`'s `yanny` module which can be accessed as `sdsstools.yanny`.
+
+
 ## [1.5.2](https://github.com/sdss/sdsstools/compare/1.5.1...1.5.2) - 2023-11-30
 
 - Allow periods in `RecursiveDict` assignments but treat them as normal dictionary keys.
