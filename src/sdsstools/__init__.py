@@ -18,13 +18,13 @@ __version__ = get_package_version(path=__file__, package_name="sdsstools")
 NAME = "sdsstools"
 
 
-from ._vendor import color_print, toml
+from ._vendor import color_print, toml, yanny
 from .configuration import *
 from .logger import *
 from .metadata import *
 from .time import get_sjd
 
 
-# This is a hack to allow doing from sdsstools.color_print import color_text
-# which some code already does.
+# # This is a hack to allow doing from sdsstools.color_print import color_text
+# # which some code already does.
 sys.modules["sdsstools.color_print"] = color_print
