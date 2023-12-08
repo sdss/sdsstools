@@ -6,6 +6,8 @@
 # @Filename: logger.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+from __future__ import annotations
+
 import copy
 import datetime
 import logging
