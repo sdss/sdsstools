@@ -240,8 +240,10 @@ The function `sdsstools.time.get_sjd()` returns the integer with the SDSS-style 
 
 For convenience, `sdsstools` bundles the following products:
 
-- A copy of [releases](https://github.com/bitprophet/releases) that fixes some issues with recent versions of `semantic-version`. This copy is not available in `sdsstools>=1.0.0`. `releases` is not maintained anymore, so use at your own risk.
+- **(Up to version 1.0.0)** A copy of [releases](https://github.com/bitprophet/releases) that fixes some issues with recent versions of `semantic-version`. This copy is not available in `sdsstools>=1.0.0`. `releases` is not maintained anymore, so use at your own risk.
 - A copy of [toml](https://github.com/uiri/toml) to read TOML files (used by the metadata submodule).
+- An adapted version of Astropy's [color_print](https://docs.astropy.org/en/stable/api/astropy.utils.console.color_print.html).
+- A copy of the pydl's [yanny module](https://github.com/weaverba137/pydl).
 
 You can access them directly from the top-level namespace, `sdsstools.toml`, `sdsstools.releases`. To use `releases` with sphinx, simply add the following to your `config.py`
 
