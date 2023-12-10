@@ -223,15 +223,22 @@ class RecursiveDict(Dict[str, Any]):
 
     def __getitem__(self, __key: str) -> Any:
         if self.strict_mode:
-            return super().__getitem__(__key)
+            return dict.__getitem__(self, __key)
 
         return self.get(__key)
 
     def __setitem__(self, __key: str, __value: Any) -> None:
-        if isinstance(__value, dict) and self.propagate_type:
-            __value = self.__class__(__value, strict_mode=self.strict_mode)
+        # We use getattr to give default values to the non-default dict attributes.
+        # This only seems to matter when pickling/unpickling, and at the end of
+        # unpickling the values are set correctly anyway.
 
-        return super().__setitem__(__key, __value)
+        if isinstance(__value, dict) and getattr(self, "propagate_type", True):
+            __value = self.__class__(
+                __value,
+                strict_mode=getattr(self, "strict_mode", False),
+            )
+
+        return dict.__setitem__(self, __key, __value)
 
     def get(self, __key: str, default: Any = None, strict: bool | None = None) -> Any:
         if (strict is None and self.strict_mode is True) or strict is True:

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.4](https://github.com/sdss/sdsstools/compare/1.5.3...1.5.4) - 2023-12-10
+
+- Fix unpickling of `Configuration` instances. This only seems relevant when trying to pass a `Configuration` object to a `multiprocessing` callback.
+
+
 ## [1.5.3](https://github.com/sdss/sdsstools/compare/1.5.2...1.5.3) - 2023-12-08
 
 - Vendorise `pydl`'s `yanny` module which can be accessed as `sdsstools.yanny`.

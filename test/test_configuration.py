@@ -9,6 +9,7 @@
 import copy
 import inspect
 import io
+import multiprocessing
 import os
 import unittest.mock
 
@@ -379,3 +380,14 @@ def test_configuration_assignment_dot():
     conf["cat1.key1"] = {"subkey2": 2}
     assert len(conf) == 2
     assert conf["cat1.key1"] == {"subkey2": 2}
+
+
+def _process(config):
+    assert config["cat1"]["key1"] == "another_value"
+
+
+def test_configuration_with_multiprocessing(config_file):
+    config = Configuration(config_file)
+    config.propagate_type = False
+    with multiprocessing.Pool(2) as pool:
+        pool.apply(_process, (config,))
