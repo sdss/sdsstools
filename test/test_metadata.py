@@ -66,6 +66,6 @@ version = "0.2.2"
 
 
 def test_get_package_version_name():
-    assert get_package_version(package_name="pip") is not None
+    assert get_package_version(package_name="click") is not None
 
     assert get_package_version(package_name="non-existing-package") is None
