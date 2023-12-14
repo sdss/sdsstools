@@ -23,6 +23,7 @@ from .configuration import *
 from .logger import *
 from .metadata import *
 from .time import get_sjd
+from .utils import *
 
 
 # # This is a hack to allow doing from sdsstools.color_print import color_text
