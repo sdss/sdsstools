@@ -92,7 +92,6 @@ omit = [
     "*/_vendor/*",
     "*/cli.py",
     "*/_tasks.py",
-    "*/utils.py"
 ]
 
 [build-system]
