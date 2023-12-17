@@ -1034,7 +1034,7 @@ class yanny(OrderedDict):
 
         Parsing proceeds in this order:
 
-        #. Lines that end with a backslash character ``\`` are reattached
+        #. Lines that end with a backslash character are reattached
            to following lines.
         #. Structure & enum definitions are identified, saved into the
            'symbols' dictionary & stripped from the contents.

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.6.1](https://github.com/sdss/sdsstools/compare/1.6.0...1.6.1) - 2023-12-17
+
+- Fix docstring in vendorised `yany` module that caused warning on import.
+
 ## [1.6.0](https://github.com/sdss/sdsstools/compare/1.5.5...1.6.0) - 2023-12-13
 
 - [#46](https://github.com/sdss/sdsstools/pull/46) Added several small utilities:
