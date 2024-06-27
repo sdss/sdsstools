@@ -57,8 +57,6 @@ import datetime
 import warnings
 from collections import OrderedDict
 import numpy as np
-from astropy.table import Table
-import astropy.utils.exceptions as aue
 
 
 class PydlException(Exception):
@@ -75,7 +73,7 @@ class PydlutilsException(PydlException):
     pass
 
 
-class PydlutilsUserWarning(aue.AstropyUserWarning):
+class PydlutilsUserWarning(UserWarning):
     """Class for warnings issued by :mod:`pydl.pydlutils`."""
 
     pass
@@ -1231,13 +1229,20 @@ def write_ndarray_to_yanny(
     PydlutilsException
         If `filename` already exists, or if the metadata are incorrect.
     """
+
+    try:
+        from astropy.table import Table
+        array_types = (np.ndarray, np.recarray, Table)
+    except ImportError:
+        array_types = (np.ndarray, np.recarray)
+
     par = yanny(filename)
     if par:
         #
         # If the file already exists
         #
         raise PydlutilsException("Apparently {0} already exists.".format(filename))
-    if isinstance(datatables, (np.ndarray, np.recarray, Table)):
+    if isinstance(datatables, array_types):
         datatables = (datatables,)
     if structnames is None:
         structnames = ["MYSTRUCT{0:d}".format(k) for k in range(len(datatables))]
@@ -1323,6 +1328,12 @@ def read_table_yanny(filename, tablename=None):
     :exc:`KeyError`
         If `tablename` does not exist in the file.
     """
+
+    try:
+        from astropy.table import Table
+    except ImportError:
+        raise ImportError("astropy is required for read_table_yanny().")
+
     if tablename is None:
         raise PydlutilsException("The name of the table is required!")
     #
