@@ -458,8 +458,7 @@ class SDSSLogger(logging.Logger):
 
         except (IOError, OSError, ValueError) as ee:
             warnings.warn(
-                "log file {0!r} could not be opened for "
-                "writing: {1}".format(log_file_path, ee),
+                f"log file {log_file_path!r} could not be opened for writing: {ee}",
                 RuntimeWarning,
             )
 
