@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.7.0](https://github.com/sdss/sdsstools/compare/1.6.1...1.7.0) - 2024-06-26
+
+- Remove `astropy` as a dependency. `yanny` will work without `astropy` except for a couple astropy-specific functions that require it, for which an exception will be raised.
+
 ## [1.6.1](https://github.com/sdss/sdsstools/compare/1.6.0...1.6.1) - 2023-12-17
 
 - Fix docstring in vendorised `yany` module that caused warning on import.
