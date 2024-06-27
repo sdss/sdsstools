@@ -28,6 +28,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
 
+      - name: Install package
+        run: |
+          pip install -U pip
+          pip install .
+
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov pytest-mock pytest-asyncio
