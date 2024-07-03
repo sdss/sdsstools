@@ -640,9 +640,9 @@ class yanny(OrderedDict):
         for c in self.columns(structure):
             typ = self.basetype(structure, c)
             if typ == "char":
-                d = "S{0:d}".format(self.char_length(structure, c))
+                d = "U{0:d}".format(self.char_length(structure, c))
             elif self.isenum(structure, c):
-                d = "S{0:d}".format(max([len(x) for x in self._enum_cache[typ]]))
+                d = "U{0:d}".format(max([len(x) for x in self._enum_cache[typ]]))
             else:
                 d = dtmap[typ]
             if self.isarray(structure, c):

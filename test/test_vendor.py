@@ -8,6 +8,8 @@
 
 import pathlib
 
+import numpy
+
 from sdsstools import yanny
 from sdsstools._vendor.color_print import color_text
 
@@ -22,3 +24,7 @@ def test_yanny():
     assert yy is not None
     assert yy["configuration_id"] == "145"
     assert len(yy["FIBERMAP"]) == 33
+
+    cadence = yy["FIBERMAP"]["cadence"][1]
+    assert isinstance(cadence, numpy.str_)
+    assert str(cadence) == "bright_1x1"
