@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.7.1](https://github.com/sdss/sdsstools/compare/1.7.0...1.7.1) - 2024-07-02
+
+- Support Numpy 2 (this only affects the `yanny` module).
+- Read yanny text columns as unicode.
+
 ## [1.7.0](https://github.com/sdss/sdsstools/compare/1.6.1...1.7.0) - 2024-06-26
 
 - Remove `astropy` as a dependency. `yanny` will work without `astropy` except for a couple astropy-specific functions that require it, for which an exception will be raised.
