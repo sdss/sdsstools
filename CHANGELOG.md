@@ -1,6 +1,6 @@
 # Changelog
 
-## [main](https://github.com/sdss/sdsstools/compare/1.7.1...main)
+## [1.8.0](https://github.com/sdss/sdsstools/compare/1.7.1...1.8.0)
 
 - Added `GatheringTaskGroup` class that extends the functionality of `asyncio.TaskGroup`.
 
@@ -15,7 +15,7 @@
 
 ## [1.6.1](https://github.com/sdss/sdsstools/compare/1.6.0...1.6.1) - 2023-12-17
 
-- Fix docstring in vendorised `yany` module that caused warning on import.
+- Fix docstring in vendorised `yanny` module that caused warning on import.
 
 ## [1.6.0](https://github.com/sdss/sdsstools/compare/1.5.5...1.6.0) - 2023-12-13
 
