@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import asyncio
+import sys
 import warnings
 from time import sleep
 
@@ -97,6 +98,7 @@ async def test_cancel_task_None():
     await cancel_task(task)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="requires python3.11 or higher")
 async def test_gathering_task_group():
     async def _task(i):
         await asyncio.sleep(0.1)
@@ -109,6 +111,7 @@ async def test_gathering_task_group():
     assert group.results() == list(range(10))
 
 
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="requires python3.11 or higher")
 async def test_gathering_task_group_results_fails():
     async def _task(i):
         await asyncio.sleep(0.1)
