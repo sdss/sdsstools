@@ -16,12 +16,15 @@ from time import sleep
 import pytest
 
 from sdsstools.utils import (
-    GatheringTaskGroup,
     Timer,
     cancel_task,
     get_temporary_file_path,
     run_in_executor,
 )
+
+
+if sys.version_info >= (3, 11):
+    from sdsstools.utils import GatheringTaskGroup
 
 
 def test_timer():
