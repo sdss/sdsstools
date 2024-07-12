@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.8.1](https://github.com/sdss/sdsstools/compare/1.8.0...1.8.1)
+
+- Fixed import of `GatheringTaskGroup` for Python < 3.11.
+
 ## [1.8.0](https://github.com/sdss/sdsstools/compare/1.7.1...1.8.0)
 
 - Added `GatheringTaskGroup` class that extends the functionality of `asyncio.TaskGroup`.
