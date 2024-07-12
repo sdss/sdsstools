@@ -17,7 +17,13 @@ from contextlib import suppress
 from functools import partial
 
 
-__all__ = ["Timer", "get_temporary_file_path", "run_in_executor", "cancel_task"]
+__all__ = [
+    "Timer",
+    "get_temporary_file_path",
+    "run_in_executor",
+    "cancel_task",
+    "GatheringTaskGroup",
+]
 
 
 class Timer:
@@ -102,3 +108,31 @@ async def cancel_task(task: asyncio.Future | None):
     task.cancel()
     with suppress(asyncio.CancelledError):
         await task
+
+
+class GatheringTaskGroup(asyncio.TaskGroup):
+    """An extension to ``asyncio.TaskGroup`` that keeps track of the tasks created.
+
+    Adapted from https://stackoverflow.com/questions/75204560/consuming-taskgroup-response
+
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.__tasks = []
+
+    def create_task(self, coro, *, name=None, context=None):
+        """Creates a task and appends it to the list of tasks."""
+
+        task = super().create_task(coro, name=name, context=context)
+        self.__tasks.append(task)
+
+        return task
+
+    def results(self):
+        """Returns the results of the tasks in the same order they were created."""
+
+        if len(self._tasks) > 0:
+            raise RuntimeError("Not all tasks have completed yet.")
+
+        return [task.result() for task in self.__tasks]

@@ -14,7 +14,13 @@ from time import sleep
 
 import pytest
 
-from sdsstools.utils import Timer, cancel_task, get_temporary_file_path, run_in_executor
+from sdsstools.utils import (
+    GatheringTaskGroup,
+    Timer,
+    cancel_task,
+    get_temporary_file_path,
+    run_in_executor,
+)
 
 
 def test_timer():
@@ -89,3 +95,28 @@ async def test_cancel_task_done():
 async def test_cancel_task_None():
     task = None
     await cancel_task(task)
+
+
+async def test_gathering_task_group():
+    async def _task(i):
+        await asyncio.sleep(0.1)
+        return i
+
+    async with GatheringTaskGroup() as group:
+        for i in range(10):
+            group.create_task(_task(i))
+
+    assert group.results() == list(range(10))
+
+
+async def test_gathering_task_group_results_fails():
+    async def _task(i):
+        await asyncio.sleep(0.1)
+        return i
+
+    async with GatheringTaskGroup() as group:
+        for i in range(10):
+            group.create_task(_task(i))
+
+        with pytest.raises(RuntimeError):
+            group.results()

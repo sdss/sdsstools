@@ -1,5 +1,9 @@
 # Changelog
 
+## [main](https://github.com/sdss/sdsstools/compare/1.7.1...main)
+
+- Added `GatheringTaskGroup` class that extends the functionality of `asyncio.TaskGroup`.
+
 ## [1.7.1](https://github.com/sdss/sdsstools/compare/1.7.0...1.7.1) - 2024-07-02
 
 - Support Numpy 2 (this only affects the `yanny` module).
