@@ -11,6 +11,7 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import pathlib
+import sys
 import tempfile
 import time
 from contextlib import suppress
@@ -22,7 +23,6 @@ __all__ = [
     "get_temporary_file_path",
     "run_in_executor",
     "cancel_task",
-    "GatheringTaskGroup",
 ]
 
 
@@ -110,29 +110,33 @@ async def cancel_task(task: asyncio.Future | None):
         await task
 
 
-class GatheringTaskGroup(asyncio.TaskGroup):
-    """An extension to ``asyncio.TaskGroup`` that keeps track of the tasks created.
+if sys.version_info >= (3, 11):
 
-    Adapted from https://stackoverflow.com/questions/75204560/consuming-taskgroup-response
+    class GatheringTaskGroup(asyncio.TaskGroup):
+        """An extension to ``asyncio.TaskGroup`` that keeps track of the tasks created.
 
-    """
+        Adapted from https://stackoverflow.com/questions/75204560/consuming-taskgroup-response
 
-    def __init__(self):
-        super().__init__()
-        self.__tasks = []
+        """
 
-    def create_task(self, coro, *, name=None, context=None):
-        """Creates a task and appends it to the list of tasks."""
+        def __init__(self):
+            super().__init__()
+            self.__tasks = []
 
-        task = super().create_task(coro, name=name, context=context)
-        self.__tasks.append(task)
+        def create_task(self, coro, *, name=None, context=None):
+            """Creates a task and appends it to the list of tasks."""
 
-        return task
+            task = super().create_task(coro, name=name, context=context)
+            self.__tasks.append(task)
 
-    def results(self):
-        """Returns the results of the tasks in the same order they were created."""
+            return task
 
-        if len(self._tasks) > 0:
-            raise RuntimeError("Not all tasks have completed yet.")
+        def results(self):
+            """Returns the results of the tasks in the same order they were created."""
 
-        return [task.result() for task in self.__tasks]
+            if len(self._tasks) > 0:
+                raise RuntimeError("Not all tasks have completed yet.")
+
+            return [task.result() for task in self.__tasks]
+
+    __all__.append("GatheringTaskGroup")
