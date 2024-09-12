@@ -165,14 +165,14 @@ else:
 
         async def __aexit__(self, exc_type, exc_value, traceback):
             if exc_type is not None:
-                raise RuntimeError("An error occurred in the task group.")
+                return False
 
             await asyncio.gather(*self._tasks)
 
         def create_task(self, coro):
             """Creates a task and appends it to the list of tasks."""
 
-            task = self.create_task(coro)
+            task = asyncio.create_task(coro)
             self._tasks.append(task)
 
             return task
