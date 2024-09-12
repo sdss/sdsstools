@@ -1,6 +1,6 @@
 # Changelog
 
-## Next version
+## [1.8.2](https://github.com/sdss/sdsstools/compare/1.8.1...1.8.2)
 
 - [#52](https://github.com/sdss/sdsstools/pull/52) Add basic support for `GatheringTaskGroup` for Python versions 3.10 and below.
 
