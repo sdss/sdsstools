@@ -168,6 +168,7 @@ else:
                 return False
 
             await asyncio.gather(*self._tasks)
+            self._joined = True
 
         def create_task(self, coro):
             """Creates a task and appends it to the list of tasks."""
@@ -180,7 +181,7 @@ else:
         def results(self):
             """Returns the results of the tasks in the same order they were created."""
 
-            if self._joined:
+            if not self._joined:
                 raise RuntimeError("Tasks have not been gathered yet.")
 
             return [task.result() for task in self._tasks]
