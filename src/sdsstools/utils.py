@@ -23,6 +23,7 @@ __all__ = [
     "get_temporary_file_path",
     "run_in_executor",
     "cancel_task",
+    "GatheringTaskGroup",
 ]
 
 
@@ -138,5 +139,51 @@ if sys.version_info >= (3, 11):
                 raise RuntimeError("Not all tasks have completed yet.")
 
             return [task.result() for task in self.__tasks]
+
+else:
+
+    class GatheringTaskGroup:
+        """Simple implementation of ``asyncio.TaskGroup`` for Python 3.10 and below.
+
+        The behaviour of this class is not exactly the same as ``asyncio.TaskGroup``,
+        especially when it comes to handling of exceptions during execution.
+
+        """
+
+        def __init__(self):
+            self._tasks = []
+            self._joined: bool = False
+
+        def __repr__(self):
+            return f"<GatheringTaskGroup tasks={len(self._tasks)}>"
+
+        async def __aenter__(self):
+            self._joined = False
+            self._tasks = []
+
+            return self
+
+        async def __aexit__(self, exc_type, exc_value, traceback):
+            if exc_type is not None:
+                return False
+
+            await asyncio.gather(*self._tasks)
+            self._joined = True
+
+        def create_task(self, coro):
+            """Creates a task and appends it to the list of tasks."""
+
+            task = asyncio.create_task(coro)
+            self._tasks.append(task)
+
+            return task
+
+        def results(self):
+            """Returns the results of the tasks in the same order they were created."""
+
+            if not self._joined:
+                raise RuntimeError("Tasks have not been gathered yet.")
+
+            return [task.result() for task in self._tasks]
 
     __all__.append("GatheringTaskGroup")

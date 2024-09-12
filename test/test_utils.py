@@ -9,22 +9,18 @@
 from __future__ import annotations
 
 import asyncio
-import sys
 import warnings
 from time import sleep
 
 import pytest
 
 from sdsstools.utils import (
+    GatheringTaskGroup,
     Timer,
     cancel_task,
     get_temporary_file_path,
     run_in_executor,
 )
-
-
-if sys.version_info >= (3, 11):
-    from sdsstools.utils import GatheringTaskGroup
 
 
 def test_timer():
@@ -101,7 +97,6 @@ async def test_cancel_task_None():
     await cancel_task(task)
 
 
-@pytest.mark.skipif(sys.version_info < (3, 11), reason="requires python3.11 or higher")
 async def test_gathering_task_group():
     async def _task(i):
         await asyncio.sleep(0.1)
@@ -114,7 +109,6 @@ async def test_gathering_task_group():
     assert group.results() == list(range(10))
 
 
-@pytest.mark.skipif(sys.version_info < (3, 11), reason="requires python3.11 or higher")
 async def test_gathering_task_group_results_fails():
     async def _task(i):
         await asyncio.sleep(0.1)
