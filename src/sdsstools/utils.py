@@ -177,7 +177,7 @@ else:
 
             return task
 
-        async def results(self):
+        def results(self):
             """Returns the results of the tasks in the same order they were created."""
 
             if self._joined:
