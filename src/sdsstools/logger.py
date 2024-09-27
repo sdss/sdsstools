@@ -299,7 +299,7 @@ class SDSSLogger(logging.Logger):
         """Catches all exceptions and logs them."""
 
         if self.use_rich_handler:
-            self.exception("An exeption was raised.", exc_info=(exctype, value, tb))
+            self.exception("An exception was raised.", exc_info=(exctype, value, tb))
         else:
             self.error(get_exception_formatted(exctype, value, tb))
 
