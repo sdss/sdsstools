@@ -83,6 +83,7 @@ typing = ["typing"]
 # Disable warnings system because it interferes with the logger warning capture.
 addopts = "--cov sdsstools --cov-report html --cov-report xml --cov-report term -p no:warnings"
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.coverage.run]
 branch = true
