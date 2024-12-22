@@ -43,7 +43,7 @@ jobs:
         run: |
           uv pip install pytest pytest-cov pytest-mock pytest-asyncio
           uv pip install daemonocle click pytest-click
-          pytest
+          uv run pytest
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
