@@ -11,13 +11,15 @@ on:
       - '*.md'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  test:
+    name: Test
+
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
       - uses: actions/checkout@v4
@@ -28,20 +30,23 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
 
-      - name: Install package
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
         run: |
-          pip install -U pip
-          pip install .
+          uv sync --no-dev --frozen
 
       - name: Test with pytest
         run: |
-          pip install pytest pytest-cov pytest-mock pytest-asyncio
-          pip install daemonocle click pytest-click
-          pip install coverage[toml]
+          uv pip install pytest pytest-cov pytest-mock pytest-asyncio
+          uv pip install daemonocle click pytest-click
           pytest
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          files: ./coverage.xml

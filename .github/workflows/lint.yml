@@ -2,17 +2,17 @@ name: Lint
 
 on:
   push:
-    branches: [main]
     paths-ignore:
-      - '*.md'
+      - 'docs/**'
   pull_request:
-    branches: [main]
     paths-ignore:
-      - '*.md'
+      - 'docs/**'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  lint:
+    name: Lint
+
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -20,11 +20,11 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: '3.12'
           cache: 'pip'
 
       - name: Lint with ruff
         run: |
           pip install ruff
-          ruff check .
-          ruff format --check .
+          ruff check src/ tests/
+          ruff format --check src/ tests/
