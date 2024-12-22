@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.9.0](https://github.com/sdss/sdsstools/compare/1.8.2...1.9.0)
+
+- Allow to define a default value for environment variables in the configuration file. If a value is defined as `${ENVAR|default_value}`, the environment variable `ENVAR` will be used if it exists, otherwise `default_value` will be used.
+- Updated workflows and moved from Poetry to `uv` for dependency management.
+
 ## [1.8.2](https://github.com/sdss/sdsstools/compare/1.8.1...1.8.2)
 
 - [#52](https://github.com/sdss/sdsstools/pull/52) Add basic support for `GatheringTaskGroup` for Python versions 3.10 and below.
