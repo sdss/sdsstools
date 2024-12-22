@@ -45,8 +45,14 @@ def env_constructor(loader, node):
     assert match
 
     for matched_value in match:
-        default_env_var = __ENVVARS__.get(matched_value, "${" + matched_value + "}")
-        env_var = os.environ.get(matched_value, default_env_var)
+        var, *fallback = matched_value.split("|")
+        if len(fallback) > 0:
+            default = fallback[0]
+        else:
+            default = "${" + var + "}"
+
+        default_env_var = __ENVVARS__.get(var, default)
+        env_var = os.environ.get(var, default_env_var)
         value = value.replace("${" + matched_value + "}", env_var)
 
     return value

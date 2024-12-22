@@ -5,3 +5,4 @@ cat2:
   key3: true
   key4: ${A_TEST_VARIABLE}
   key5: ${A_TEST_VARIABLE}/Downloads/${ANOTHER_VARIABLE}
+  key6: ${NON_EXISTENT_VARIABLE|my default value}

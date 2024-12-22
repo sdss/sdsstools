@@ -121,6 +121,11 @@ def test_configuration_envvar_defaults():
     assert config["cat2"]["key4"] == "foo"
 
 
+def test_configuration_envvar_with_fallback():
+    config = Configuration(BASE_CONFIG_FILE)
+    assert config["cat2"]["key6"] == "my default value"
+
+
 def test_configurations_bad_value():
     with pytest.raises(ValueError):
         Configuration(1)  # type: ignore
