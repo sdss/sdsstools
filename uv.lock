@@ -1432,7 +1432,7 @@ wheels = [
 
 [[package]]
 name = "sdsstools"
-version = "1.9.1a0"
+version = "1.9.1"
 source = { editable = "." }
 dependencies = [
     { name = "daemonocle" },
@@ -1479,7 +1479,7 @@ requires-dist = [
     { name = "numpy", marker = "python_full_version >= '3.10'", specifier = ">=1.26.0,<3" },
     { name = "packaging", specifier = ">=20.4" },
     { name = "pygments", specifier = ">=2.5.2" },
-    { name = "python-json-logger", specifier = ">=2.0.7" },
+    { name = "python-json-logger", specifier = ">=3.2.1" },
     { name = "pyyaml", specifier = ">=4.0" },
     { name = "rich", specifier = ">=13.4.2" },
     { name = "typing-extensions", specifier = ">=4.6.3" },
