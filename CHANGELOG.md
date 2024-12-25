@@ -1,5 +1,9 @@
 # Changelog
 
+## [main](https://github.com/sdss/sdsstools/compare/1.9.0...HEAD)
+
+- Update `python-json-logger` to 3.2.1 to silence warnings about module deprecation.
+
 ## [1.9.0](https://github.com/sdss/sdsstools/compare/1.8.2...1.9.0)
 
 - Allow to define a default value for environment variables in the configuration file. If a value is defined as `${ENVAR|default_value}`, the environment variable `ENVAR` will be used if it exists, otherwise `default_value` will be used.

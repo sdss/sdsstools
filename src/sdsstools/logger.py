@@ -25,7 +25,7 @@ from typing import Any, Dict, List, Optional, Union, cast
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
 from pygments.lexers import get_lexer_by_name
-from pythonjsonlogger import jsonlogger
+from pythonjsonlogger.json import JsonFormatter
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.text import Text
@@ -147,7 +147,7 @@ class FileFormatter(logging.Formatter):
         return logging.Formatter.format(self, record_cp)
 
 
-class CustomJsonFormatter(jsonlogger.JsonFormatter):
+class CustomJsonFormatter(JsonFormatter):
     """Custom `jsonlogger.JsonFormatter` for the JSON file handler"""
 
     def add_fields(self, log_record, record, message_dict):
@@ -163,7 +163,7 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
         log_record.update(record.__dict__)
         if record.exc_info:
             log_record["error"] = {
-                "type": record.exc_info[0].__name__,
+                "type": record.exc_info[0].__name__ if record.exc_info[0] else None,
                 "trace": message_dict["exc_info"],
             }
 
