@@ -1,5 +1,9 @@
 # Changelog
 
+## Next release
+
+- Fix timezone handling in `get_sjd`.
+
 ## [1.9.1](https://github.com/sdss/sdsstools/compare/1.9.0...1.9.1)
 
 - Update `python-json-logger` to 3.2.1 to silence warnings about module deprecation.
