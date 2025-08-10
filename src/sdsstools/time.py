@@ -142,7 +142,7 @@ def get_sjd(
     """
 
     if date is None:
-        date = datetime.datetime.utcnow()
+        date = datetime.datetime.now(datetime.timezone.utc)
 
     jd = datetime2jd(date)
 
