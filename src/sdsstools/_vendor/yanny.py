@@ -886,7 +886,7 @@ class yanny(OrderedDict):
             raise PydlutilsException("{0} exists, aborting write!".format(newfile))
         if comments is None:
             basefile = os.path.basename(newfile)
-            timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+            timestamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
             comments = "#\n# {0}\n#\n# Created by pydl.pydlutils.yanny.yanny\n#\n# {1}\n#\n".format(
                 basefile, timestamp
             )
@@ -968,7 +968,7 @@ class yanny(OrderedDict):
             raise ValueError(
                 "Data to append is not of the correct type. " + "Use a dict!"
             )
-        timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+        timestamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         contents = ""
         #
         # Print any key/value pairs

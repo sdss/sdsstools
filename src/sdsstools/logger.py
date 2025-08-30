@@ -426,7 +426,7 @@ class SDSSLogger(logging.Logger):
                 os.makedirs(logdir)
 
             if os.path.exists(log_file_path) and rotating and rollover:
-                now = datetime.datetime.utcnow()
+                now = datetime.datetime.now(datetime.timezone.utc)
                 dst = str(log_file_path) + "." + now.strftime(SUFFIX)
                 shutil.move(str(log_file_path), dst)
 
