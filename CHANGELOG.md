@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## [1.9.2](https://github.com/sdss/sdsstools/compare/1.9.1...1.9.2)
 
 - Fix timezone handling in `get_sjd`.
 - Fix calls to `datetime.datetime.utcnow()`.
