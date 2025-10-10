@@ -153,13 +153,14 @@ def test_log_non_standard_level(logger, caplog):
 
 
 @pytest.mark.asyncio
-async def test_asyncio_exception_handler(logger, caplog, event_loop):
+async def test_asyncio_exception_handler(logger, caplog):
     async def coro_raise():
         raise ValueError("An error in a task.")
 
+    event_loop = asyncio.get_event_loop()
     event_loop.set_exception_handler(logger.asyncio_exception_handler)
 
-    event_loop.create_task(coro_raise())
+    asyncio.create_task(coro_raise())
 
     await asyncio.sleep(0.01)
 

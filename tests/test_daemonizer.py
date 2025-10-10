@@ -78,7 +78,7 @@ def test_no_prog():
 
 
 @pytest.mark.skipif(sys.version_info < (3, 7), reason="Requires Python 3.7 or higher.")
-def test_daemon_coro(cli_runner, event_loop):
+def test_daemon_coro(cli_runner):
     @click.group(cls=DaemonGroup, prog="test_async", pidfile="./test.pid")
     @click.argument("name")
     @cli_coro()
@@ -93,7 +93,7 @@ def test_daemon_coro(cli_runner, event_loop):
 
 
 @pytest.mark.skipif(sys.version_info < (3, 7), reason="Requires Python 3.7 or higher.")
-def test_coro_signal_handling(cli_runner, event_loop):
+def test_coro_signal_handling(cli_runner):
     def dummy_handler(signal, loop):
         pass
 
