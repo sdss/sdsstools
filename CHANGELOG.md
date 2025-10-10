@@ -1,33 +1,33 @@
 # Changelog
 
-## [main](https://github.com/sdss/sdsstools/compare/1.9.2...HEAD)
+## [1.9.3](https://github.com/sdss/sdsstools/compare/1.9.2...1.9.3) - 2025-10-10
 
 - Breaking change: `read_yaml_file` now returns a standard `dict` by default.
 - Support the use of variables in YAML files.
 
-## [1.9.2](https://github.com/sdss/sdsstools/compare/1.9.1...1.9.2)
+## [1.9.2](https://github.com/sdss/sdsstools/compare/1.9.1...1.9.2) - 2025-08-29
 
 - Fix timezone handling in `get_sjd`.
 - Fix calls to `datetime.datetime.utcnow()`.
 
-## [1.9.1](https://github.com/sdss/sdsstools/compare/1.9.0...1.9.1)
+## [1.9.1](https://github.com/sdss/sdsstools/compare/1.9.0...1.9.1) - 2024-12-25
 
 - Update `python-json-logger` to 3.2.1 to silence warnings about module deprecation.
 
-## [1.9.0](https://github.com/sdss/sdsstools/compare/1.8.2...1.9.0)
+## [1.9.0](https://github.com/sdss/sdsstools/compare/1.8.2...1.9.0) - 2024-12-22
 
 - Allow to define a default value for environment variables in the configuration file. If a value is defined as `${ENVAR|default_value}`, the environment variable `ENVAR` will be used if it exists, otherwise `default_value` will be used.
 - Updated workflows and moved from Poetry to `uv` for dependency management.
 
-## [1.8.2](https://github.com/sdss/sdsstools/compare/1.8.1...1.8.2)
+## [1.8.2](https://github.com/sdss/sdsstools/compare/1.8.1...1.8.2) - 2024-09-12
 
 - [#52](https://github.com/sdss/sdsstools/pull/52) Add basic support for `GatheringTaskGroup` for Python versions 3.10 and below.
 
-## [1.8.1](https://github.com/sdss/sdsstools/compare/1.8.0...1.8.1)
+## [1.8.1](https://github.com/sdss/sdsstools/compare/1.8.0...1.8.1) - 2024-07-12
 
 - Fixed import of `GatheringTaskGroup` for Python < 3.11.
 
-## [1.8.0](https://github.com/sdss/sdsstools/compare/1.7.1...1.8.0)
+## [1.8.0](https://github.com/sdss/sdsstools/compare/1.7.1...1.8.0) - 2024-07-12
 
 - Added `GatheringTaskGroup` class that extends the functionality of `asyncio.TaskGroup`.
 
