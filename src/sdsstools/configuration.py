@@ -330,7 +330,7 @@ class Configuration(RecursiveDict):
             if isinstance(config, dict):
                 return config
             elif isinstance(config, (str, pathlib.Path)):
-                return read_yaml_file(config)
+                return read_yaml_file(config, return_class=self.__class__)
             else:
                 raise ValueError("Invalid config of type {}".format(type(config)))
 
@@ -392,9 +392,32 @@ def read_yaml_file(
     path: AnyPath,
     use_extends: bool = True,
     loader: Any = yaml.FullLoader,
-    return_class: Type[ReturnClass] = Configuration,
+    return_class: Type[ReturnClass] = dict,
+    use_variables: bool = True,
 ) -> ReturnClass:
-    """Read a YAML file and returns a dictionary."""
+    """Reads a YAML file and returns a dictionary.
+
+    Parameters
+    ----------
+    path
+        The path to the YAML file or a file-like object.
+    use_extends
+        If :obj:`True`, looks for lines starting with ``#!extends <basefile>`` and
+        merges the current file with the base file.
+    loader
+        The YAML loader to use.
+    return_class
+        The class of the returned object. Typically a subclass of :obj:`dict`.
+    use_variables
+        If :obj:`True`, looks for a ``variables`` section in the YAML file and
+        replaces occurrences of ``$(VARNAME)`` with the value of that variable.
+
+    Returns
+    -------
+    yaml_data
+        The YAML data as an object of type ``return_class``.
+
+    """
 
     if isinstance(path, (str, pathlib.Path)):
         fp = open(path, "r")
@@ -402,9 +425,19 @@ def read_yaml_file(
         fp = path
 
     fp.seek(0)
-    config: Union[ConfigType, None] = yaml.load(fp, Loader=loader)
+    yaml_data: Union[ConfigType, None] = yaml.load(fp, Loader=loader)
 
-    if config is None or config == {}:
+    if yaml_data is not None and use_variables:
+        variables = yaml_data.get("variables", {})
+
+        fp.seek(0)
+        file_content = fp.read()
+
+        for var, value in variables.items():
+            file_content = re.sub(rf"\$\(\s*{var}\s*\)", str(value), file_content)
+        yaml_data = yaml.load(file_content, Loader=loader)
+
+    if yaml_data is None or yaml_data == {}:
         return return_class({})
 
     if use_extends:
@@ -418,10 +451,10 @@ def read_yaml_file(
                     raise FileExistsError(f"cannot find !extends file {base_file}.")
 
                 base = read_yaml_file(base_file, use_extends=False, return_class=dict)
-                new_config = merge_config(base, config)
+                new_config = merge_config(base, yaml_data)
                 return return_class(new_config)
 
             elif line.strip().startswith("#") or line.strip() == "":
                 continue
 
-    return return_class(config)
+    return return_class(yaml_data)

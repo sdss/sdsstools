@@ -1,5 +1,10 @@
 # Changelog
 
+## [main](https://github.com/sdss/sdsstools/compare/1.9.2...HEAD)
+
+- Breaking change: `read_yaml_file` now returns a standard `dict` by default.
+- Support the use of variables in YAML files.
+
 ## [1.9.2](https://github.com/sdss/sdsstools/compare/1.9.1...1.9.2)
 
 - Fix timezone handling in `get_sjd`.

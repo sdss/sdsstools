@@ -112,6 +112,25 @@ you can use `read_yaml_file` to parse the result
 
 The path to the base file must be absolute or relative to the location of the file to be extended.
 
+### Using variables in YAML files
+
+`read_yaml_file` and `get_config` support the use of variables in YAML files. A special section `variables` can be defined at the top level of the YAML file, and any `$(VAR)` string in the file will be replaced by the value of the variable. For example
+
+```yaml
+variables:
+  greeting: hello
+
+cat1:
+  key1: $(greeting) world
+```
+
+```python
+>>> read_yaml_file('file.yaml', use_variables=True)
+{'cat1': {'key1': 'hello world'}, 'variables': {'greeting': 'hello'}}
+```
+
+Environment variables can also be used by including a `${ENV_VAR}` string in the YAML file, which will be replaced with the content of the `$ENV_VAR` environment variable.
+
 ### The `Configuration` class
 
 By default `get_config()` and `read_yaml_file()` return a `Configuration` instance. For the most part a `Configuration` object is the same as a dictionary, and it can be used as such. It has two main differences:

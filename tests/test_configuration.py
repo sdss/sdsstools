@@ -11,6 +11,7 @@ import inspect
 import io
 import multiprocessing
 import os
+import pathlib
 import unittest.mock
 
 import pytest
@@ -307,6 +308,23 @@ def test_read_empty_yaml(tmp_path):
     data = read_yaml_file(path)
 
     assert data == {}
+
+
+def test_read_yaml_file_with_variables(tmp_path: pathlib.Path):
+    content = """
+    variables:
+        my_variable: hello
+
+    cat1:
+        key1: $(  my_variable) world
+    """
+
+    path = tmp_path / "test_config.yml"
+    path.write_text(content)
+
+    data = read_yaml_file(path, use_variables=True)
+
+    assert data["cat1"]["key1"] == "hello world"
 
 
 def test_configuration_copy():
