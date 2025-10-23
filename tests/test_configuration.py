@@ -327,6 +327,23 @@ def test_read_yaml_file_with_variables(tmp_path: pathlib.Path):
     assert data["cat1"]["key1"] == "hello world"
 
 
+def test_read_yaml_file_list(tmp_path: pathlib.Path):
+    content = """
+    - cat1:
+        key1: value 1
+    - cat2:
+        key2: value 2
+    """
+
+    path = tmp_path / "test_config.yml"
+    path.write_text(content)
+
+    data = read_yaml_file(path)
+
+    assert isinstance(data, list)
+    assert data[0]["cat1"]["key1"] == "value 1"
+
+
 def test_configuration_copy():
     config = {"cat1": {"key1": 1}}
     conf = Configuration(base_config=config)

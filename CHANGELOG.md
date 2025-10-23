@@ -1,5 +1,9 @@
 # Changelog
 
+## Next release
+
+- Fix issues casting YAML data to `return_class` in `read_yaml_file`.
+
 ## [1.9.3](https://github.com/sdss/sdsstools/compare/1.9.2...1.9.3) - 2025-10-10
 
 - Breaking change: `read_yaml_file` now returns a standard `dict` by default.
