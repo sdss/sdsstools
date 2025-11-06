@@ -1,5 +1,9 @@
 # Changelog
 
+## [main](https://github.com/sdss/sdsstools/compare/1.9.4...HEAD)
+
+- Fix changes to `get_event_loop` policy in Python 3.14.
+
 ## [1.9.4](https://github.com/sdss/sdsstools/compare/1.9.3...1.9.4) - 2025-10-23
 
 - Fix issues casting YAML data to `return_class` in `read_yaml_file`.

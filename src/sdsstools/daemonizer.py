@@ -23,7 +23,19 @@ from click.decorators import pass_context
 from daemonocle import Daemon
 
 
-__all__ = ["cli_coro", "DaemonGroup"]
+__all__ = ["cli_coro", "DaemonGroup", "get_event_loop", "daemonize"]
+
+
+def get_event_loop() -> asyncio.AbstractEventLoop:
+    """Gets the current event loop, or creates a new one if none exists."""
+
+    try:
+        return asyncio.get_event_loop()
+    except RuntimeError:
+        # "There is no current event loop in thread %r"
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        return loop
 
 
 def cli_coro(
@@ -35,7 +47,7 @@ def cli_coro(
     def decorator_cli_coro(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            loop = asyncio.get_event_loop()
+            loop = get_event_loop()
             if shutdown_func:
                 for ss in signals:
                     loop.add_signal_handler(ss, shutdown_func, ss, loop)
