@@ -1,6 +1,6 @@
 # Changelog
 
-## [main](https://github.com/sdss/sdsstools/compare/1.9.4...HEAD)
+## [1.9.5](https://github.com/sdss/sdsstools/compare/1.9.4...1.9.5) - 2025-11-06
 
 - Fix changes to `get_event_loop` policy in Python 3.14.
 
