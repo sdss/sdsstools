@@ -19,12 +19,11 @@ from typing import (
     Any,
     Awaitable,
     Callable,
-    ParamSpec,
     TypeVar,
     overload,
 )
 
-from typing_extensions import Self
+from typing_extensions import ParamSpec, Self
 
 
 __all__ = ["Retrier"]
