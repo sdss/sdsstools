@@ -78,10 +78,10 @@
 ## 1.6.0 - 2023-12-13
 
 * [#46](https://github.com/sdss/sdsstools/pull/46) Added several small utilities:
-  - `Timer()` (already existed, but mentioning for completeness): a context manager to determine the duration of the task executed between `__enter__` and `__exit__`.
-  - `get_temporary_file_path()`: returns a valid temporary named path.
-  - `run_in_executor()`: simple wrapper around `asyncio` `run_in_executor` that allows to use `thread` or `process` pool executors and handles arguments and keyword arguments.
-  - `cancel_task()`: cancels a task, suppressing the `CancelledError`.
+  * `Timer()` (already existed, but mentioning for completeness): a context manager to determine the duration of the task executed between `__enter__` and `__exit__`.
+  * `get_temporary_file_path()`: returns a valid temporary named path.
+  * `run_in_executor()`: simple wrapper around `asyncio` `run_in_executor` that allows to use `thread` or `process` pool executors and handles arguments and keyword arguments.
+  * `cancel_task()`: cancels a task, suppressing the `CancelledError`.
 
 
 ## 1.5.5 - 2023-12-10
