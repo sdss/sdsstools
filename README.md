@@ -255,6 +255,32 @@ To stop the daemon do `daemonize stop NAME`. See `daemonize --help` for more opt
 
 The function `sdsstools.time.get_sjd()` returns the integer with the SDSS-style Modified Julian Day. The function accepts an observatory (`'APO'` or `'LCO'`) but otherwise will try to determine the current location from environment variables or the fully qualified domain name.
 
+## Retrier
+
+The `Retrier` class provides a simple way to add retry logic to functions that may fail intermittently. It can be used to wrap both synchronous and asynchronous functions. `Retrier` produces a callable that can be used as a decorator or called directly. For example:
+
+```python
+from sdsstools.retrier import Retrier
+
+@Retrier(max_attempts=5, delay=2.0)
+async def my_function(param1, param2):
+    ...
+
+await my_function(1, 2)
+```
+
+or
+
+```python
+def my_function(param1, param2):
+    ...
+
+retrier = Retrier(max_attempts=5, delay=2.0)
+retrier(my_function)(1, 2)
+```
+
+By default `Retrier` will try three times with a one second delay between attempts. An exponential backoff is used by default. If the function keeps failing after the maximum number of attempts, the last exception is raised. It is possible to stop the retry process early if a certain type of exception is raised by passing a list of such exception classes to `raise_on_exception_class`.
+
 ## Bundled packages
 
 For convenience, `sdsstools` bundles the following products:

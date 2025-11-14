@@ -2,6 +2,10 @@
 
 ## Next release
 
+### 🚀 New
+
+* Added `Retrier` class to implement retry mechanism for functions and coroutines. Copied from [lvmopstools](https://github.com/sdss/lvmopstools).
+
 ### 🏷️ Changed
 
 * Change the CHANGELOG header format to be compatible with `kraken`.
