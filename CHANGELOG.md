@@ -1,5 +1,12 @@
 # Changelog
 
+## Next release
+
+### 🔧 Fixed
+
+* Fix `get_package_version` to get the version from `pyproject.toml` if `poetry` is not used.
+
+
 ## 1.9.6 - 2025-11-14
 
 ### 🚀 New

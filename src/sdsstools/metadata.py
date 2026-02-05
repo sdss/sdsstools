@@ -94,7 +94,9 @@ def get_package_version(
         if metadata_file:
             if "pyproject.toml" in str(metadata_file):
                 pyproject = toml.load(open(metadata_file))
-                if "tool" in pyproject and "poetry" in pyproject["tool"]:
+                if "project" in pyproject and "version" in pyproject["project"]:
+                    version = pyproject["project"]["version"]
+                elif "tool" in pyproject and "poetry" in pyproject["tool"]:
                     version = pyproject["tool"]["poetry"]["version"]
             elif "setup.cfg" in str(metadata_file):
                 setupcfg = configparser.ConfigParser()
