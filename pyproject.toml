@@ -1,6 +1,6 @@
 [project]
 name = "sdsstools"
-version = "1.9.7"
+version = "1.9.8a1"
 description = "Small tools for SDSS products"
 authors = [
     { name = "José Sánchez-Gallego", email = "gallegoj@uw.edu" }
