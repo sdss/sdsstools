@@ -64,6 +64,17 @@ version = "0.2.2"
 
     assert get_package_version(path=init_path) == "0.2.2"
 
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(
+        """
+[project]
+name = "sdsstools"
+version = "0.1.1"
+"""
+    )
+
+    assert get_package_version(path=init_path) == "0.1.1"
+
 
 def test_get_package_version_name():
     assert get_package_version(package_name="click") is not None
