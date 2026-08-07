@@ -391,6 +391,14 @@ class Configuration(RecursiveDict):
 
         return self
 
+    def to_dict(self) -> dict:
+        """Recursively converts the ``Configuration`` instance to a normal ``dict``."""
+
+        return {
+            k: v.to_dict() if isinstance(v, Configuration) else v
+            for k, v in self.items()
+        }
+
 
 def read_yaml_file(
     path: AnyPath,

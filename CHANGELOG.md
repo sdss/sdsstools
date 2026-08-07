@@ -2,6 +2,10 @@
 
 ## Next release
 
+### ✨ Improved
+
+* Add `Configuration.to_dict()` method to convert a `Configuration` object to a standard Python dictionary.
+
 ### ⚙️ Engineering
 
 * Updated dependencies and solved some typing and formatting errors.

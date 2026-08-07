@@ -431,3 +431,23 @@ def test_configuration_with_multiprocessing(config_file):
     config.propagate_type = False
     with multiprocessing.Pool(2) as pool:
         pool.apply(_process, (config,))
+
+
+def test_configuration_to_dict():
+
+    config = Configuration(
+        {
+            "value1": 2,
+            "value2": [1, 2, 3],
+            "value3": {"subkey1": 1, "subkey2": {"subkey3": 3, "suebkey4": 4}},
+        }
+    )
+
+    config["value3"] = Configuration(config["value3"])
+    config["value3"]["subkey2"] = Configuration(config["value3"]["subkey2"])
+
+    result = config.to_dict()
+
+    assert isinstance(result, dict)
+    assert isinstance(result["value3"], dict)
+    assert isinstance(result["value3"]["subkey2"], dict)
