@@ -22,6 +22,9 @@ if TYPE_CHECKING:
     from pytest_mock import MockFixture
 
 
+n_attempts: int
+
+
 @overload
 def get_test_function(
     fail: bool = False,

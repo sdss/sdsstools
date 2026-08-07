@@ -246,7 +246,13 @@ class RecursiveDict(Dict[str, Any]):
 
         return dict.__setitem__(self, __key, __value)
 
-    def get(self, __key: str, default: Any = None, strict: bool | None = None) -> Any:
+    def get(
+        self,
+        __key: object,
+        default: Any = None,
+        strict: bool | None = None,
+    ) -> Any:
+
         if (strict is None and self.strict_mode is True) or strict is True:
             return dict.get(self, __key, default)
 
@@ -254,11 +260,12 @@ class RecursiveDict(Dict[str, Any]):
             return dict.get(self, __key, default)
 
         return_value = self
-        for item in __key.split("."):
-            try:
-                return_value = dict.get(return_value, item, default)
-            except Exception:
-                return default
+        if isinstance(__key, str):
+            for item in __key.split("."):
+                try:
+                    return_value = dict.get(return_value, item, default)
+                except Exception:
+                    return default
 
         return return_value
 

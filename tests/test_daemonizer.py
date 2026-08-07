@@ -134,4 +134,4 @@ def test_pid_file():
         pass
 
     real_path = os.path.realpath("/var/test.pid")
-    assert daemon_grp.daemon.pid_file == real_path  # type: ignore
+    assert daemon_grp.daemon.pid_file == real_path

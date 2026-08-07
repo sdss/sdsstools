@@ -197,10 +197,10 @@ class DaemonGroup(click.Group):
         """Get a list of subcommands."""
         return ["start", "stop", "restart", "status"]
 
-    def get_command(self, ctx, name):
+    def get_command(self, ctx, cmd_name):
         """Get a callable command object."""
 
-        if name not in Daemon.list_actions():
+        if cmd_name not in Daemon.list_actions():
             return None
 
         # Assign the daemon worker as the partial of the group callback
@@ -209,7 +209,7 @@ class DaemonGroup(click.Group):
         assert self.group_cb
         self.daemon.worker = partial(self.group_cb, **ctx.params)
 
-        return self.commands[name]
+        return self.commands[cmd_name]
 
 
 @click.command()

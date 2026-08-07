@@ -188,8 +188,9 @@ def test_logger_when_options(tmp_path):
     logger1 = get_logger(str(uuid.uuid4()))
     logger1.start_file_logger(log_file, utc=False, when="M")
 
-    assert logger1.fh.when == "M"
-    assert logger1.fh.utc is False
+    assert isinstance(logger1.fh, logging.FileHandler)
+    assert logger1.fh.when == "M"  # type: ignore
+    assert logger1.fh.utc is False  # type: ignore
 
 
 def test_rich_handler_logger(caplog):

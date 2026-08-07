@@ -1,5 +1,12 @@
 # Changelog
 
+## Next release
+
+### ⚙️ Engineering
+
+* Updated dependencies and solved some typing and formatting errors.
+
+
 ## 1.9.7 - 2026-02-05
 
 ### 🔧 Fixed

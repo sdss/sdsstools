@@ -23,7 +23,7 @@ from logging.handlers import TimedRotatingFileHandler
 from typing import Any, Dict, List, Optional, Union, cast
 
 from pygments import highlight
-from pygments.formatters import TerminalFormatter
+from pygments.formatters.terminal import TerminalFormatter
 from pygments.lexers import get_lexer_by_name
 from pythonjsonlogger.json import JsonFormatter
 from rich.console import Console
@@ -150,19 +150,19 @@ class FileFormatter(logging.Formatter):
 class CustomJsonFormatter(JsonFormatter):
     """Custom `jsonlogger.JsonFormatter` for the JSON file handler"""
 
-    def add_fields(self, log_record, record, message_dict):
+    def add_fields(self, log_data, record, message_dict):
         """Add custom fields to the JSON body"""
-        super().add_fields(log_record, record, message_dict)
-        if not log_record.get("timestamp"):
+        super().add_fields(log_data, record, message_dict)
+        if not log_data.get("timestamp"):
             now = datetime.datetime.fromtimestamp(record.created).strftime(
                 "%Y-%m-%dT%H:%M:%S.%fZ"
             )  # noqa: E501
-            log_record["timestamp"] = now
-        log_record["type"] = "log"
-        log_record["level"] = record.levelname
-        log_record.update(record.__dict__)
+            log_data["timestamp"] = now
+        log_data["type"] = "log"
+        log_data["level"] = record.levelname
+        log_data.update(record.__dict__)
         if record.exc_info:
-            log_record["error"] = {
+            log_data["error"] = {
                 "type": record.exc_info[0].__name__ if record.exc_info[0] else None,
                 "trace": message_dict["exc_info"],
             }
@@ -264,7 +264,7 @@ class SDSSLogger(logging.Logger):
         else:
             self.sh = logging.StreamHandler()
             if fmt is not None:
-                formatter = StreamFormatter(fmt)  # type: ignore
+                formatter = StreamFormatter(fmt)
             else:
                 formatter = StreamFormatter()
             self.sh.setFormatter(formatter)
