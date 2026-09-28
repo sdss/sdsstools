@@ -1,5 +1,12 @@
 # Changelog
 
+## Next release
+
+### ⚙️ Engineering
+
+* Add `AGENTS.md` and `CLAUDE.md` files.
+
+
 ## 1.9.8 - 2026-08-07
 
 ### ✨ Improved
