@@ -2,6 +2,10 @@
 
 ## Next release
 
+### 🔥 Removed
+
+* Remove the `install-deps` task.
+
 ### ⚙️ Engineering
 
 * Add `AGENTS.md` and `CLAUDE.md` files.
