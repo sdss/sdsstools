@@ -6,6 +6,7 @@
 
 * Add `AGENTS.md` and `CLAUDE.md` files.
 * Use `ty` for type checking. Update some `ruff` rules and format and lint files accordingly.
+* Use `uv` build system instead of `hatchling`.
 
 
 ## 1.9.8 - 2026-08-07
