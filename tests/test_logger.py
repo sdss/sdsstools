@@ -93,7 +93,7 @@ def test_warning(logger, caplog):
 
     assert "A warning" in caplog.messages[0]
 
-    nlines = 1 if sys.version_info.minor < 11 else 3
+    nlines = 1 if sys.version_info < (3, 11) else 3
     assert len(open(str(logger.log_filename), "r").read().splitlines()) == nlines
 
 
@@ -235,7 +235,7 @@ def test_as_json_logger(tmp_path):
     assert not files[0].name.endswith(".log")
 
     with open(str(log_file).replace(".log", ".json")) as f:
-        data = [json.loads(i) for i in f.readlines()]
+        data = [json.loads(i) for i in f]
         assert len(data) == 1
         assert data[0]["message"] == "test message"
 
@@ -247,7 +247,7 @@ def test_with_json_logger(tmp_path):
     logger1.start_file_logger(log_file, with_json=True)
     logger1.info("test message")
 
-    files = list(sorted((tmp_path / "logs").glob("*")))
+    files = sorted((tmp_path / "logs").glob("*"))
     assert len(files) == 2
     assert files[0].name.endswith(".json")
     assert files[1].name.endswith(".log")

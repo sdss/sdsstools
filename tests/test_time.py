@@ -26,14 +26,32 @@ def test_get_sjd_fails():
 
 
 def test_get_sjd_with_date():
-    dt = datetime.datetime(2022, 4, 25, 11, 27, 51, 30690)
+    dt = datetime.datetime(
+        2022,
+        4,
+        25,
+        11,
+        27,
+        51,
+        30690,
+        tzinfo=datetime.timezone.utc,
+    )
     assert get_sjd("APO", date=dt) == 59694
 
 
 def test_get_sjd_envvar(monkeypatch):
     monkeypatch.setenv("OBSERVATORY", "APO")
 
-    dt = datetime.datetime(2022, 4, 25, 11, 27, 51, 30690)
+    dt = datetime.datetime(
+        2022,
+        4,
+        25,
+        11,
+        27,
+        51,
+        30690,
+        tzinfo=datetime.timezone.utc,
+    )
     assert get_sjd(date=dt) == 59694
 
 
@@ -44,7 +62,16 @@ def test_get_sjd_fqdn(mocker, monkeypatch, fqdn):
 
     mocker.patch.object(socket, "getfqdn", return_value=fqdn)
 
-    dt = datetime.datetime(2022, 4, 25, 11, 27, 51, 30690)
+    dt = datetime.datetime(
+        2022,
+        4,
+        25,
+        11,
+        27,
+        51,
+        30690,
+        tzinfo=datetime.timezone.utc,
+    )
     assert get_sjd(date=dt) == 59694
 
 

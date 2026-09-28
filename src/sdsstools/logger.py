@@ -94,7 +94,7 @@ class StreamFormatter(logging.Formatter):
             level_colour = colours[levelname]
             header = color_text("[{}]: ".format(levelname.upper()), level_colour)
             if self.print_time:
-                now = datetime.datetime.now()
+                now = datetime.datetime.now(tz=datetime.timezone.utc)
                 header = color_text(now.strftime("%H:%M:%S "), "lightgrey") + header
         else:
             return logging.Formatter.format(self, record)
@@ -154,9 +154,10 @@ class CustomJsonFormatter(JsonFormatter):
         """Add custom fields to the JSON body"""
         super().add_fields(log_data, record, message_dict)
         if not log_data.get("timestamp"):
-            now = datetime.datetime.fromtimestamp(record.created).strftime(
-                "%Y-%m-%dT%H:%M:%S.%fZ"
-            )  # noqa: E501
+            now = datetime.datetime.fromtimestamp(
+                record.created,
+                tz=datetime.timezone.utc,
+            ).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
             log_data["timestamp"] = now
         log_data["type"] = "log"
         log_data["level"] = record.levelname
@@ -204,7 +205,7 @@ class SDSSLogger(logging.Logger):
         capture_exceptions: bool = True,
         capture_warnings: bool = True,
         fmt: Optional[logging.Formatter] = None,
-        rich_handler_kwargs={},
+        rich_handler_kwargs: Dict[str, Any] | None = None,
     ):
         """Initialise the logger.
 
@@ -258,7 +259,7 @@ class SDSSLogger(logging.Logger):
             self.sh = CustomRichHandler(
                 level=log_level,
                 console=self.rich_console,
-                **rich_handler_kwargs,
+                **(rich_handler_kwargs or {}),
             )
 
         else:
@@ -486,9 +487,12 @@ class SDSSLogger(logging.Logger):
     def handle(self, record):
         """Handles a record but first stores it."""
 
-        if hasattr(self, "header") and self.header is not None:
-            if not isinstance(record.msg, Exception):
-                record.msg = self.header + record.msg
+        if (
+            hasattr(self, "header")
+            and self.header is not None
+            and not isinstance(record.msg, Exception)
+        ):
+            record.msg = self.header + record.msg
 
         if record.levelno == logging.ERROR:
             self._last_error = record.getMessage()
@@ -520,7 +524,7 @@ def get_logger(
     capture_exceptions: bool = True,
     capture_warnings: bool = True,
     fmt: Optional[logging.Formatter] = None,
-    rich_handler_kwargs: Dict[str, Any] = {},
+    rich_handler_kwargs: Dict[str, Any] | None = None,
 ) -> SDSSLogger:
     """Gets or creates a new SDSS logger.
 
@@ -555,7 +559,7 @@ def get_logger(
         "rich_tracebacks": True,
         "tracebacks_show_locals": False,
     }
-    default_rich_handler_kwargs.update(rich_handler_kwargs)
+    default_rich_handler_kwargs.update(rich_handler_kwargs or {})
 
     log = cast(SDSSLogger, logging.getLogger(name))
     log.init(

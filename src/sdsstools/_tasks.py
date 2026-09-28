@@ -20,7 +20,7 @@ import shutil
 # Monkeypatching needed for invoke to work in Python 3.10 and 3.11 for now.
 # See https://github.com/pyinvoke/invoke/issues/833#issuecomment-1293148106
 if not hasattr(inspect, "getargspec"):
-    inspect.getargspec = inspect.getfullargspec  # type: ignore
+    inspect.getargspec = inspect.getfullargspec
 
 
 from invoke import Collection, task  # isort: skip

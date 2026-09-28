@@ -7,12 +7,12 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 import asyncio
+import datetime
 import inspect
 import os
 import signal
 import subprocess
 import sys
-from datetime import datetime
 from functools import partial, wraps
 from shutil import move
 
@@ -23,7 +23,7 @@ from click.decorators import pass_context
 from daemonocle import Daemon
 
 
-__all__ = ["cli_coro", "DaemonGroup", "get_event_loop", "daemonize"]
+__all__ = ["DaemonGroup", "cli_coro", "daemonize", "get_event_loop"]
 
 
 def get_event_loop() -> asyncio.AbstractEventLoop:
@@ -91,7 +91,7 @@ def start(ctx, debug, log_file, pid_file):
 
         log_file = os.path.realpath(os.path.expanduser(os.path.expandvars(log_file)))
         if os.path.exists(log_file):
-            date = datetime.now()
+            date = datetime.datetime.now(tz=datetime.timezone.utc)
             suffix = date.strftime(".%Y-%m-%d_%H:%M:%S")
             move(log_file, log_file + suffix)
 
@@ -257,7 +257,7 @@ def daemonize(
         if log_file:
             path = os.path.realpath(os.path.expanduser(os.path.expandvars(log_file)))
             if os.path.exists(path):
-                date = datetime.now()
+                date = datetime.datetime.now(tz=datetime.timezone.utc)
                 suffix = date.strftime(".%Y-%m-%d_%H:%M:%S")
                 move(path, path + suffix)
 
@@ -272,6 +272,7 @@ def daemonize(
             shell=True,
             capture_output=False,
             cwd=os.getcwd(),
+            check=False,
         )
 
     pid_file = f"/var/tmp/{name}.pid"

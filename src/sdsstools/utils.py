@@ -19,11 +19,11 @@ from functools import partial
 
 
 __all__ = [
+    "GatheringTaskGroup",
     "Timer",
+    "cancel_task",
     "get_temporary_file_path",
     "run_in_executor",
-    "cancel_task",
-    "GatheringTaskGroup",
 ]
 
 

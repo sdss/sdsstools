@@ -21,7 +21,7 @@ import yaml
 from typing_extensions import Self
 
 
-__all__ = ["read_yaml_file", "merge_config", "get_config", "Configuration"]
+__all__ = ["Configuration", "get_config", "merge_config", "read_yaml_file"]
 
 
 __ENVVARS__ = {}
@@ -86,8 +86,8 @@ def get_config(
     user_path: Optional[AnyPath] = None,
     config_envvar: Optional[str] = None,
     merge_mode: str = "update",
-    default_envvars: Dict[str, Any] = {},
-) -> "Configuration":
+    default_envvars: Dict[str, Any] | None = None,
+) -> Configuration:
     """Returns a configuration dictionary.
 
     The configuration dictionary is created by merging the default
@@ -131,6 +131,8 @@ def get_config(
         A `.Configuration` instance.
     """
 
+    default_envvars = default_envvars or {}
+
     assert merge_mode in ["update", "replace"], "invalid merge mode."
 
     if not config_file:
@@ -146,7 +148,7 @@ def get_config(
     if allow_user is False:
         return Configuration(base_config=config_file, default_envvars=default_envvars)
 
-    config_envvar = config_envvar or "{}_CONFIG_PATH".format(name.upper())
+    config_envvar = config_envvar or f"{name.upper()}_CONFIG_PATH"
 
     if user_path is not None:
         user_path = os.path.expanduser(os.path.expandvars(str(user_path)))
@@ -212,10 +214,13 @@ class RecursiveDict(Dict[str, Any]):
 
     def __init__(
         self,
-        value: dict[str, Any] = {},
+        value: dict[str, Any] | None = None,
         strict_mode: bool = False,
         propagate_type: bool = True,
     ):
+
+        value = value or {}
+
         self.strict_mode = strict_mode
         self.propagate_type = propagate_type
 
@@ -292,10 +297,12 @@ class Configuration(RecursiveDict):
         self,
         config: Optional[Union[AnyPath, ConfigType]] = None,
         base_config: Optional[Union[AnyPath, ConfigType]] = None,
-        default_envvars: Dict[str, Any] = {},
+        default_envvars: Dict[str, Any] | None = None,
         strict_mode: bool = False,
     ):
         global __ENVVARS__
+
+        default_envvars = default_envvars or {}
 
         self.strict_mode = strict_mode
 
@@ -339,7 +346,7 @@ class Configuration(RecursiveDict):
             elif isinstance(config, (str, pathlib.Path)):
                 return read_yaml_file(config, return_class=self.__class__)
             else:
-                raise ValueError("Invalid config of type {}".format(type(config)))
+                raise ValueError(f"Invalid config of type {type(config)}")
 
         return merge_config(self._parse_config(config, use_base=False), self._BASE)
 

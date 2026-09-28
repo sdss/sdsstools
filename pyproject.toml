@@ -56,7 +56,8 @@ dev = [
     "pytest-click>=0.3",
     "pytest-mock>=3.2.0",
     "pytest-asyncio>=0.14.0",
-    "ruff>=0.0.285"
+    "ruff>=0.0.285",
+    "ty>=0.0.84",
 ]
 
 [tool.ruff]
@@ -65,11 +66,12 @@ target-version = 'py312'
 exclude = ["**/_vendor"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "NPY201"]
+ignore = ["UP009", "EXE001", "BLE001", "SIM115", "UP"]
 unfixable = ["F841"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "F403", "E402"]
+"src/sdsstools/configuration.py" = ["PYI063"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["sdsstools"]
@@ -78,6 +80,9 @@ section-order = ["future", "standard-library", "typing", "third-party", "first-p
 
 [tool.ruff.lint.isort.sections]
 typing = ["typing"]
+
+[tool.ty.src]
+exclude = ["**/_vendor"]
 
 [tool.pytest.ini_options]
 # Disable warnings system because it interferes with the logger warning capture.

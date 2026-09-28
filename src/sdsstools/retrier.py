@@ -139,11 +139,14 @@ class Retrier:
                             timeout=self.timeout,
                         )
                     except Exception as ee:
+                        is_exception = isinstance(
+                            ee,
+                            tuple(self.raise_on_exception_class),
+                        )
+
                         attempt += 1
-                        if attempt >= self.max_attempts:
-                            raise ee
-                        elif isinstance(ee, tuple(self.raise_on_exception_class)):
-                            raise ee
+                        if attempt >= self.max_attempts or is_exception:
+                            raise
                         else:
                             if self.on_retry:
                                 self.on_retry(ee)
@@ -166,11 +169,13 @@ class Retrier:
                             )
                         return func(*args, **kwargs)
                     except Exception as ee:
+                        is_exception = isinstance(
+                            ee,
+                            tuple(self.raise_on_exception_class),
+                        )
                         attempt += 1
-                        if attempt >= self.max_attempts:
-                            raise ee
-                        elif isinstance(ee, tuple(self.raise_on_exception_class)):
-                            raise ee
+                        if attempt >= self.max_attempts or is_exception:
+                            raise
                         else:
                             if self.on_retry:
                                 self.on_retry(ee)

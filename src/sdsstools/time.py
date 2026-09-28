@@ -33,7 +33,7 @@ def datetime2decimalTime(
     """Converts a Python ``datetime.datetime`` object into a decimal hour."""
 
     if datetime_obj is None:
-        datetime_obj = datetime.datetime.now()
+        datetime_obj = datetime.datetime.now(tz=datetime.timezone.utc)
 
     return sex2dec(
         datetime_obj.hour,
