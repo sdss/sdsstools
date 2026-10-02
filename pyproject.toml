@@ -99,6 +99,7 @@ omit = [
     "*/_vendor/*",
     "*/cli.py",
     "*/_tasks.py",
+    "*/rich.py",
 ]
 
 [build-system]
