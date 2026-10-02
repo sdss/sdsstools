@@ -6,6 +6,10 @@
 
 * Remove the `install-deps` task.
 
+### 🚀 New
+
+* [#61](https://github.com/sdss/sdsstools/pull/61) Add a `rich` submodule with several wrappers around [rich](https://rich.readthedocs.io/en/stable/) tools.
+
 ### ⚙️ Engineering
 
 * Add `AGENTS.md` and `CLAUDE.md` files.
