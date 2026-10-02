@@ -2794,7 +2794,7 @@ wheels = [
 
 [[package]]
 name = "sdsstools"
-version = "1.9.9"
+version = "1.9.10a1"
 source = { editable = "." }
 dependencies = [
     { name = "daemonocle" },
