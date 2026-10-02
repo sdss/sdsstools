@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.8, <4"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -2794,7 +2794,7 @@ wheels = [
 
 [[package]]
 name = "sdsstools"
-version = "1.9.9a1"
+version = "1.9.9"
 source = { editable = "." }
 dependencies = [
     { name = "daemonocle" },

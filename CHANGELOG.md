@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## 1.9.9 - 2026-10-02
 
 ### 🔥 Removed
 
